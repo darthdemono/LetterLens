@@ -1,674 +1,440 @@
-const sessionId = 'session_' + Math.random().toString(36).substring(2, 10);
-let pendingImages = [];
-let pendingFiles = [];
-let allCountriesData = {};
-let dragCounter = 0;
+(function () {
+  'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-  setupChatHandlers();
-  setupDragAndDrop();
-  setupClipboardPaste();
-  setupAutoResizeTextarea();
-  setupNewDocAndClear();
-  loadCountryPortals();
-});
+  const R = window.LLRender;
+  const $ = (id) => document.getElementById(id);
+  const MAX_ATTACH = 5;
+  const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+  const TEXT_EXT = /\.(md|markdown|txt|rst|csv|log|json|ya?ml|html)$/i;
+  const IMAGE_EXT = /\.(png|jpe?g|webp|gif)$/i;
 
-function setupAutoResizeTextarea() {
-  const textarea = document.getElementById('userInput');
-  if (!textarea) return;
+  const state = { sid: newSid(), images: [], files: [], busy: false, controller: null, countries: {} };
 
-  function resize() {
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.min(textarea.scrollHeight, 180) + 'px';
+  function newSid() {
+    const bytes = new Uint8Array(12);
+    crypto.getRandomValues(bytes);
+    return 's' + Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
   }
 
-  textarea.addEventListener('input', resize);
-  textarea.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      document.getElementById('chatForm').dispatchEvent(new Event('submit'));
-    }
-  });
-}
+  const store = {
+    get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* storage blocked */ } },
+  };
 
-function setupNewDocAndClear() {
-  const btnNewDoc = document.getElementById('btnNewDoc');
-  const btnClearChat = document.getElementById('btnClearChat');
-
-  function resetChat() {
-    pendingImages = [];
-    pendingFiles = [];
-    renderPreviews();
-
-    const log = document.getElementById('log');
-    if (log) {
-      log.innerHTML = `
-        <div class="msg-wrap agent">
-          <div class="msg-sender">LetterLens Agent</div>
-          <div class="msg-bubble">
-            <p><strong>LetterLens Agent is ready.</strong> Provide an official letter, notice, bill, or legal document as a <strong>picture</strong>, <strong>Markdown file (.md)</strong>, or <strong>plain text</strong>.</p>
-            <p>The agent consults official country legal portals as its primary source of truth and explains documents in clear A1–B2 plain English with verified hyperlinks in footnotes.</p>
-          </div>
-        </div>
-      `;
-    }
-
-    const input = document.getElementById('userInput');
-    if (input) {
-      input.value = '';
-      input.style.height = 'auto';
-      input.focus();
-    }
+  let toastTimer = 0;
+  function toast(message) {
+    const el = $('toast');
+    el.textContent = message;
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.hidden = true; }, 5000);
   }
 
-  if (btnNewDoc) btnNewDoc.addEventListener('click', resetChat);
-  if (btnClearChat) btnClearChat.addEventListener('click', resetChat);
-}
-
-async function loadCountryPortals() {
-  try {
-    const res = await fetch('/api/countries');
-    if (res.ok) {
-      allCountriesData = await res.json();
-      populateCountryDropdown(allCountriesData);
-      updateJurisdictionBadge();
-    }
-  } catch (err) {
-    console.error('Failed to load countries', err);
+  function formatBytes(n) {
+    if (n < 1024) return n + ' B';
+    if (n < 1048576) return Math.round(n / 1024) + ' KB';
+    return (n / 1048576).toFixed(1) + ' MB';
   }
-}
 
-function populateCountryDropdown(data) {
-  const select = document.getElementById('countrySelect');
-  if (!select) return;
-  const current = localStorage.getItem('letterlens_country') || '';
-  const names = Object.keys(data).sort();
-  names.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = `${name} (${data[name].code || ''})`;
-    select.appendChild(opt);
-  });
-  if (current && data[current]) {
-    select.value = current;
+  function readAs(file, method) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error);
+      reader[method](file);
+    });
   }
-  select.addEventListener('change', () => {
-    localStorage.setItem('letterlens_country', select.value);
-    updateJurisdictionBadge();
-  });
-}
 
-function updateJurisdictionBadge() {
-  const select = document.getElementById('countrySelect');
-  const label = document.getElementById('jurisdictionLabel');
-  if (!label) return;
-
-  const val = select ? select.value : '';
-  if (val && allCountriesData[val]) {
-    const code = allCountriesData[val].code || '';
-    const portals = (allCountriesData[val].portals || []).length;
-    label.innerHTML = `Active Jurisdiction: <strong>${escapeHtml(val)} (${code})</strong> &bull; ${portals} Official Portals Injected into Context`;
-  } else {
-    label.innerHTML = `Active Jurisdiction: <strong>Auto-detect from document</strong> (select country above to fix jurisdiction)`;
+  async function shrinkImage(file) {
+    if (file.type === 'image/gif' || file.size < 600 * 1024) return readAs(file, 'readAsDataURL');
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 1800 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+    return readAs(blob, 'readAsDataURL');
   }
-}
 
-function setupChatHandlers() {
-  const form = document.getElementById('chatForm');
-  const input = document.getElementById('userInput');
-  const fileInput = document.getElementById('fileInput');
-
-  form.addEventListener('submit', handleSubmit);
-
-  document.getElementById('attachBtn').addEventListener('click', () => fileInput.click());
-
-  fileInput.addEventListener('change', (e) => {
-    handleFilesList(e.target.files);
-    fileInput.value = '';
-  });
-
-  const btnSampleNotice = document.getElementById('btnSampleNotice');
-  if (btnSampleNotice) {
-    btnSampleNotice.addEventListener('click', async () => {
+  async function addFiles(list) {
+    for (const file of Array.from(list)) {
+      if (state.images.length + state.files.length >= MAX_ATTACH) {
+        toast('You can attach up to ' + MAX_ATTACH + ' files at once.');
+        break;
+      }
       try {
-        const res = await fetch('/sample/notice.md');
-        if (res.ok) {
-          const text = await res.text();
-          pendingFiles.push({ name: 'lease_amendment_notice.md', content: text, size: text.length });
-          renderPreviews();
-          input.value = 'Explain this notice in simple English and cite official legal portals with footnotes.';
-          input.style.height = 'auto';
-          input.focus();
+        if (IMAGE_TYPES.includes(file.type) || IMAGE_EXT.test(file.name)) {
+          const dataUrl = await shrinkImage(file);
+          state.images.push({ name: file.name || 'pasted-image.png', dataUrl, size: file.size });
+        } else if (TEXT_EXT.test(file.name)) {
+          const content = await readAs(file, 'readAsText');
+          state.files.push({ name: file.name, content, size: file.size });
+        } else {
+          toast(file.name + ' is not supported. Use a photo (PNG, JPG, WebP) or a .md or .txt file.');
         }
       } catch (err) {
-        console.error(err);
-      }
-    });
-  }
-
-  const btnSampleScan = document.getElementById('btnSampleScan');
-  if (btnSampleScan) {
-    btnSampleScan.addEventListener('click', async () => {
-      try {
-        const res = await fetch('/sample/scan.png');
-        if (res.ok) {
-          const dataUrl = await res.text();
-          pendingImages.push({ name: 'sample_letter_scan.png', dataUrl: dataUrl, size: Math.round(dataUrl.length * 0.75) });
-          renderPreviews();
-          input.value = 'Explain this scanned letter in simple English and cite official country legal portals in footnotes.';
-          input.style.height = 'auto';
-          input.focus();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    });
-  }
-
-  const btnWhatCanYouDo = document.getElementById('btnWhatCanYouDo');
-  if (btnWhatCanYouDo) {
-    btnWhatCanYouDo.addEventListener('click', () => {
-      input.value = 'What can you do? Explain your capabilities and how you analyze legal documents.';
-      form.dispatchEvent(new Event('submit'));
-    });
-  }
-}
-
-function setupDragAndDrop() {
-  const overlay = document.getElementById('dropOverlay');
-  const zone = document.getElementById('dropZone');
-
-  window.addEventListener('dragenter', (e) => {
-    e.preventDefault();
-    dragCounter++;
-    if (overlay) overlay.removeAttribute('hidden');
-    if (zone) zone.classList.add('dragover');
-  });
-
-  window.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    dragCounter--;
-    if (dragCounter <= 0) {
-      dragCounter = 0;
-      if (overlay) overlay.setAttribute('hidden', '');
-      if (zone) zone.classList.remove('dragover');
-    }
-  });
-
-  window.addEventListener('dragover', (e) => {
-    e.preventDefault();
-  });
-
-  window.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dragCounter = 0;
-    if (overlay) overlay.setAttribute('hidden', '');
-    if (zone) zone.classList.remove('dragover');
-
-    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFilesList(e.dataTransfer.files);
-    }
-  });
-}
-
-function setupClipboardPaste() {
-  window.addEventListener('paste', (e) => {
-    const items = e.clipboardData && e.clipboardData.items;
-    if (!items) return;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        const file = items[i].getAsFile();
-        if (file) {
-          readFileAsImage(file);
-        }
+        toast('Could not read ' + (file.name || 'that file') + '. Try a JPG or PNG.');
       }
     }
-  });
-}
+    renderChips();
+  }
 
-function formatBytes(bytes) {
-  if (!bytes || bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-}
-
-function handleFilesList(files) {
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const name = file.name.toLowerCase();
-    if (name.endsWith('.png') || name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.webp')) {
-      readFileAsImage(file);
-    } else {
-      readFileAsText(file);
+  function chip(label, size, thumb, onRemove) {
+    const el = document.createElement('div');
+    el.className = 'chip';
+    if (thumb) {
+      const img = document.createElement('img');
+      img.src = thumb;
+      img.alt = '';
+      el.appendChild(img);
     }
-  }
-}
-
-function readFileAsImage(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    pendingImages.push({
-      name: file.name || 'pasted_image.png',
-      dataUrl: e.target.result,
-      size: file.size || Math.round(e.target.result.length * 0.75)
-    });
-    renderPreviews();
-  };
-  reader.readAsDataURL(file);
-}
-
-function readFileAsText(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    pendingFiles.push({
-      name: file.name,
-      content: e.target.result,
-      size: file.size || e.target.result.length
-    });
-    renderPreviews();
-  };
-  reader.readAsText(file);
-}
-
-function renderPreviews() {
-  const bar = document.getElementById('previewBar');
-  bar.innerHTML = '';
-
-  pendingImages.forEach((img, idx) => {
-    const chip = document.createElement('div');
-    chip.className = 'upload-chip';
-    chip.innerHTML = `
-      <img class="thumb" src="${img.dataUrl}" alt="Preview">
-      <span class="chip-name">${escapeHtml(img.name)}</span>
-      <span class="chip-size">${formatBytes(img.size)}</span>
-      <button type="button" title="Remove">&times;</button>
-    `;
-    chip.querySelector('button').addEventListener('click', () => {
-      pendingImages.splice(idx, 1);
-      renderPreviews();
-    });
-    bar.appendChild(chip);
-  });
-
-  pendingFiles.forEach((f, idx) => {
-    const chip = document.createElement('div');
-    chip.className = 'upload-chip';
-    chip.innerHTML = `
-      <span class="file-badge">DOC</span>
-      <span class="chip-name">${escapeHtml(f.name)}</span>
-      <span class="chip-size">${formatBytes(f.size)}</span>
-      <button type="button" title="Remove">&times;</button>
-    `;
-    chip.querySelector('button').addEventListener('click', () => {
-      pendingFiles.splice(idx, 1);
-      renderPreviews();
-    });
-    bar.appendChild(chip);
-  });
-}
-
-function addMessage(role, rawContent, imgs = [], files = []) {
-  const log = document.getElementById('log');
-  const wrap = document.createElement('div');
-  wrap.className = `msg-wrap ${role === 'u' ? 'user' : 'agent'}`;
-
-  const sender = document.createElement('div');
-  sender.className = 'msg-sender';
-  sender.textContent = role === 'u' ? 'You' : 'LetterLens Agent';
-  wrap.appendChild(sender);
-
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-
-  if (imgs.length > 0 || files.length > 0) {
-    const attachments = document.createElement('div');
-    attachments.style.display = 'flex';
-    attachments.style.gap = '8px';
-    attachments.style.marginBottom = '8px';
-    attachments.style.flexWrap = 'wrap';
-
-    imgs.forEach(im => {
-      const chip = document.createElement('span');
-      chip.className = 'upload-chip';
-      chip.innerHTML = `<span class="file-badge">IMG</span> <span class="chip-name">${escapeHtml(im.name)}</span>`;
-      attachments.appendChild(chip);
-    });
-    files.forEach(f => {
-      const chip = document.createElement('span');
-      chip.className = 'upload-chip';
-      chip.innerHTML = `<span class="file-badge">DOC</span> <span class="chip-name">${escapeHtml(f.name)}</span>`;
-      attachments.appendChild(chip);
-    });
-    bubble.appendChild(attachments);
+    const name = document.createElement('span');
+    name.className = 'chip-name';
+    name.textContent = label;
+    const meta = document.createElement('span');
+    meta.className = 'chip-size';
+    meta.textContent = formatBytes(size);
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', 'Remove ' + label);
+    remove.textContent = '×';
+    remove.addEventListener('click', onRemove);
+    el.append(name, meta, remove);
+    return el;
   }
 
-  const textDiv = document.createElement('div');
-  textDiv.className = 'msg-content';
-  textDiv.innerHTML = role === 'u' ? escapeHtml(rawContent).replace(/\n/g, '<br>') : parseMarkdown(rawContent);
-  bubble.appendChild(textDiv);
+  function renderChips() {
+    const bar = $('previews');
+    bar.replaceChildren();
+    state.images.forEach((img, i) => bar.appendChild(chip(img.name, img.size, img.dataUrl, () => {
+      state.images.splice(i, 1);
+      renderChips();
+    })));
+    state.files.forEach((f, i) => bar.appendChild(chip(f.name, f.size, '', () => {
+      state.files.splice(i, 1);
+      renderChips();
+    })));
+    bar.hidden = !(state.images.length + state.files.length);
+  }
 
-  wrap.appendChild(bubble);
-  log.appendChild(wrap);
-  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  return { bubble, textDiv, wrap };
-}
-
-function attachBubbleActions(bubble, rawMarkdown) {
-  if (bubble.querySelector('.bubble-actions')) return;
-
-  const actions = document.createElement('div');
-  actions.className = 'bubble-actions';
-
-  const copyBtn = document.createElement('button');
-  copyBtn.type = 'button';
-  copyBtn.className = 'action-chip-btn copy-btn';
-  copyBtn.innerHTML = `
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-    </svg>
-    <span>Copy Summary</span>
-  `;
-
-  copyBtn.addEventListener('click', async () => {
-    try {
-      const cleanText = bubble.innerText.replace(/Copy Summary|Print \/ PDF/g, '').trim();
-      await navigator.clipboard.writeText(cleanText);
-      copyBtn.classList.add('copied');
-      copyBtn.querySelector('span').textContent = 'Copied!';
-      setTimeout(() => {
-        copyBtn.classList.remove('copied');
-        copyBtn.querySelector('span').textContent = 'Copy Summary';
-      }, 2000);
-    } catch (err) {
-      console.error('Failed to copy', err);
+  function addMessage(role, text, attachments) {
+    $('app').classList.add('has-chat');
+    const wrap = document.createElement('article');
+    wrap.className = 'msg ' + role;
+    const who = document.createElement('div');
+    who.className = 'msg-who';
+    who.textContent = role === 'user' ? 'You' : 'LetterLens';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    if (attachments && attachments.length) {
+      const row = document.createElement('div');
+      row.className = 'attached';
+      attachments.forEach((name) => {
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = name;
+        row.appendChild(tag);
+      });
+      bubble.appendChild(row);
     }
-  });
-
-  const printBtn = document.createElement('button');
-  printBtn.type = 'button';
-  printBtn.className = 'action-chip-btn print-btn';
-  printBtn.innerHTML = `
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="6 9 6 2 18 2 18 9"></polyline>
-      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-      <rect x="6" y="14" width="12" height="8"></rect>
-    </svg>
-    <span>Print / PDF</span>
-  `;
-  printBtn.addEventListener('click', () => window.print());
-
-  actions.appendChild(copyBtn);
-  actions.appendChild(printBtn);
-  bubble.appendChild(actions);
-}
-
-async function handleSubmit(e) {
-  e.preventDefault();
-  const input = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const text = input.value.trim();
-
-  if (!text && pendingImages.length === 0 && pendingFiles.length === 0) {
-    return;
+    const body = document.createElement('div');
+    body.className = 'body';
+    if (role === 'user') body.textContent = text;
+    bubble.appendChild(body);
+    wrap.append(who, bubble);
+    $('log').appendChild(wrap);
+    wrap.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    return { wrap, bubble, body };
   }
 
-  const currentImages = [...pendingImages];
-  const currentFiles = [...pendingFiles];
-  pendingImages = [];
-  pendingFiles = [];
-  renderPreviews();
-
-  input.value = '';
-  input.style.height = 'auto';
-
-  addMessage('u', text || '(Analyzed attachments)', currentImages, currentFiles);
-  const { bubble, textDiv } = addMessage('a', 'LetterLens Agent is analyzing input with Gemma 4 and official legal portals...');
-  sendBtn.disabled = true;
-
-  try {
-    const countrySelect = document.getElementById('countrySelect');
-    const payload = {
-      sid: sessionId,
-      message: text,
-      images: currentImages.map(im => im.dataUrl),
-      files: currentFiles,
-      country: countrySelect ? countrySelect.value : ''
+  function addActions(msg, raw, took) {
+    const bar = document.createElement('div');
+    bar.className = 'actions';
+    const button = (label, onClick) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.addEventListener('click', onClick);
+      bar.appendChild(b);
+      return b;
     };
-
-    const res = await fetch('/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    const copy = button('Copy text', async () => {
+      try {
+        await navigator.clipboard.writeText(raw);
+        copy.textContent = 'Copied';
+        setTimeout(() => { copy.textContent = 'Copy text'; }, 1800);
+      } catch (e) {
+        toast('Copy was blocked by the browser.');
+      }
     });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error ${res.status}`);
+    const glance = R.parseGlance(raw);
+    const due = (glance['due date'] || '').match(/\d{4}-\d{2}-\d{2}/);
+    if (due) {
+      button('Add deadline to calendar', () => {
+        const ics = R.icsFor('Deadline: ' + (glance.document || 'legal document'), due[0],
+          'From LetterLens. Check the original document before you act.');
+        const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'letterlens-deadline.ics';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
     }
+    button('Print', () => {
+      msg.wrap.classList.add('print-this');
+      window.print();
+    });
+    if (took) {
+      const note = document.createElement('span');
+      note.className = 'took';
+      note.textContent = took;
+      bar.appendChild(note);
+    }
+    msg.bubble.appendChild(bar);
+  }
 
-    const reader = res.body.getReader();
+  function setBusy(busy) {
+    state.busy = busy;
+    $('sendBtn').hidden = busy;
+    $('stopBtn').hidden = !busy;
+  }
+
+  async function readEvents(response, onEvent) {
+    const reader = response.body.getReader();
     const decoder = new TextDecoder('utf-8');
     let buffer = '';
-    let accumulated = '';
-
-    while (true) {
+    for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop();
-
-      for (const line of lines) {
-        if (!line.trim()) continue;
-        try {
-          const data = JSON.parse(line);
-          if (data.t) {
-            accumulated += data.t;
-            textDiv.innerHTML = parseMarkdown(accumulated) + '<span class="streaming-cursor"></span>';
-          } else if (data.error) {
-            accumulated += `\n\nError: ${data.error}`;
-            textDiv.innerHTML = parseMarkdown(accumulated);
-          }
-        } catch (parseErr) {
-          console.error(parseErr);
-        }
-      }
-    }
-
-    textDiv.innerHTML = parseMarkdown(accumulated);
-    attachBubbleActions(bubble, accumulated);
-  } catch (err) {
-    textDiv.innerHTML = `<span style="color:#ff6b6b">Communication error: ${escapeHtml(err.message)}</span>`;
-  } finally {
-    sendBtn.disabled = false;
-    input.focus();
-  }
-}
-
-function parseMarkdown(md) {
-  if (!md) return '';
-  const lines = md.split('\n');
-  const out = [];
-  let inList = false;
-  let inOrdered = false;
-  let inTable = false;
-  let tableHeader = true;
-  const footnoteDefs = [];
-
-  function flushList() {
-    if (inList) {
-      out.push('</ul>');
-      inList = false;
-    }
-    if (inOrdered) {
-      out.push('</ol>');
-      inOrdered = false;
-    }
-  }
-
-  function flushTable() {
-    if (inTable) {
-      out.push('</tbody></table>');
-      inTable = false;
-      tableHeader = true;
-    }
-  }
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const trimmed = line.trim();
-
-    if (!trimmed) {
-      flushList();
-      flushTable();
-      continue;
-    }
-
-    const fnMatch = trimmed.match(/^\[\^(\d+)\]:\s*(.*)$/);
-    if (fnMatch) {
-      flushList();
-      flushTable();
-      footnoteDefs.push({ id: fnMatch[1], text: fnMatch[2].trim() });
-      continue;
-    }
-
-    const fnNumMatch = trimmed.match(/^(\d+)\.\s+(https?:\/\/[^\s]+)(.*)$/i);
-    if (fnNumMatch) {
-      flushList();
-      flushTable();
-      footnoteDefs.push({
-        id: fnNumMatch[1],
-        url: fnNumMatch[2],
-        text: (fnNumMatch[2] + ' ' + (fnNumMatch[3] || '')).trim()
+      lines.filter((l) => l.trim()).forEach((l) => {
+        try { onEvent(JSON.parse(l)); } catch (e) { /* ignore a broken line */ }
       });
-      continue;
     }
-
-    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
-      flushList();
-      const cells = trimmed.slice(1, -1).split('|').map(c => c.trim());
-      const isSep = cells.every(c => /^:?-+:?$/.test(c));
-
-      if (isSep) {
-        tableHeader = false;
-        continue;
-      }
-
-      if (!inTable) {
-        out.push('<table><thead><tr>');
-        cells.forEach(c => out.push(`<th>${inlineFormat(c)}</th>`));
-        out.push('</tr></thead><tbody>');
-        inTable = true;
-        tableHeader = false;
-      } else {
-        out.push('<tr>');
-        cells.forEach(c => out.push(`<td>${inlineFormat(c)}</td>`));
-        out.push('</tr>');
-      }
-      continue;
-    } else {
-      flushTable();
-    }
-
-    if (trimmed.startsWith('### ')) {
-      flushList();
-      out.push(`<h3>${inlineFormat(trimmed.slice(4))}</h3>`);
-      continue;
-    }
-    if (trimmed.startsWith('## ')) {
-      flushList();
-      out.push(`<h2>${inlineFormat(trimmed.slice(3))}</h2>`);
-      continue;
-    }
-    if (trimmed.startsWith('# ')) {
-      flushList();
-      out.push(`<h2>${inlineFormat(trimmed.slice(2))}</h2>`);
-      continue;
-    }
-
-    if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
-      if (inOrdered) flushList();
-      if (!inList) {
-        out.push('<ul>');
-        inList = true;
-      }
-      out.push(`<li>${inlineFormat(trimmed.slice(2))}</li>`);
-      continue;
-    }
-
-    const numMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-    if (numMatch && !fnNumMatch) {
-      if (inList) flushList();
-      if (!inOrdered) {
-        out.push('<ol>');
-        inOrdered = true;
-      }
-      out.push(`<li>${inlineFormat(numMatch[2])}</li>`);
-      continue;
-    }
-
-    flushList();
-
-    if (trimmed.startsWith('Disclaimer:')) {
-      out.push(`<div class="disclaimer-box">${inlineFormat(trimmed)}</div>`);
-      continue;
-    }
-
-    out.push(`<p>${inlineFormat(trimmed)}</p>`);
   }
 
-  flushList();
-  flushTable();
+  async function send(override) {
+    if (state.busy) return;
+    const input = $('userInput');
+    const text = override != null ? override : input.value.trim();
+    const images = state.images.slice();
+    const files = state.files.slice();
+    if (!text && !images.length && !files.length) return;
 
-  if (footnoteDefs.length > 0) {
-    let fnHtml = '<div class="footnotes-section"><div class="footnotes-title">Footnotes &amp; Official Legal Sources</div><ol class="footnotes-list">';
-    footnoteDefs.forEach((fn, idx) => {
-      let url = fn.url;
-      let desc = '';
-      if (!url) {
-        const urlMatch = fn.text.match(/(https?:\/\/[^\s\)\],]+)/i);
-        if (urlMatch) {
-          url = urlMatch[1];
-          desc = fn.text.replace(url, '').replace(/^[-—:\s]+/, '').trim();
-        } else {
-          url = fn.text.trim();
-        }
-      } else {
-        desc = fn.text.replace(url, '').replace(/^[-—:\s]+/, '').trim();
+    state.images = [];
+    state.files = [];
+    renderChips();
+    input.value = '';
+    autosize();
+    addMessage('user', text || 'Please explain this document.', [...images, ...files].map((a) => a.name));
+    const msg = addMessage('agent', '');
+    msg.body.innerHTML = '<span class="dots" role="status" aria-label="Reading your document"><i></i><i></i><i></i></span>';
+    setBusy(true);
+    state.controller = new AbortController();
+
+    let raw = '';
+    let frame = 0;
+    let firstAt = null;
+    const startedAt = performance.now();
+    const timer = document.createElement('p');
+    timer.className = 'elapsed';
+    timer.textContent = '0.0 s';
+    msg.bubble.appendChild(timer);
+    const tick = setInterval(() => { timer.textContent = R.duration(performance.now() - startedAt); }, 100);
+    const warnings = [];
+    const draw = () => {
+      frame = 0;
+      msg.body.innerHTML = R.render(raw) + (state.busy ? '<span class="caret"></span>' : '');
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(draw); };
+    const notice = (kind, message) => {
+      const el = document.createElement('p');
+      el.className = 'notice notice-' + kind;
+      el.textContent = message;
+      msg.bubble.appendChild(el);
+    };
+
+    try {
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: state.controller.signal,
+        body: JSON.stringify({
+          sid: state.sid,
+          message: text,
+          images: images.map((i) => i.dataUrl),
+          files: files.map((f) => ({ name: f.name, content: f.content })),
+          country: $('countrySelect').value,
+        }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || 'Request failed (' + response.status + ')');
       }
+      await readEvents(response, (ev) => {
+        if (ev.t) {
+          if (firstAt === null) firstAt = performance.now() - startedAt;
+          raw += ev.t;
+          schedule();
+        }
+        else if (ev.reset) { raw = ''; schedule(); }
+        else if (ev.status) { $('sr').textContent = ev.status; }
+        else if (ev.warn) { warnings.push(ev.warn); }
+        else if (ev.error) { throw new Error(ev.error); }
+      });
+    } catch (err) {
+      if (err.name === 'AbortError') notice('info', 'Stopped.');
+      else notice('error', err.message);
+    } finally {
+      const total = performance.now() - startedAt;
+      clearInterval(tick);
+      timer.remove();
+      setBusy(false);
+      cancelAnimationFrame(frame);
+      msg.body.innerHTML = R.render(raw);
+      warnings.forEach((w) => notice('warn', w));
+      if (raw) addActions(msg, raw, R.tookText(total, firstAt));
+      $('sr').textContent = 'Answer ready.';
+      input.focus();
+    }
+  }
 
-      if (url.startsWith('http://') || url.startsWith('https://')) {
-        const descSuffix = desc ? ` &mdash; ${escapeHtml(desc)}` : '';
-        fnHtml += `<li value="${idx + 1}"><a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>${descSuffix}</li>`;
+  function autosize() {
+    const input = $('userInput');
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 180) + 'px';
+  }
+
+  async function reset() {
+    if (state.controller) state.controller.abort();
+    const old = state.sid;
+    state.sid = newSid();
+    state.images = [];
+    state.files = [];
+    renderChips();
+    $('log').replaceChildren();
+    $('app').classList.remove('has-chat');
+    $('userInput').value = '';
+    autosize();
+    fetch('/reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sid: old }),
+    }).catch(() => {});
+  }
+
+  async function useSample(kind) {
+    try {
+      if (kind === 'scan') {
+        const blob = await (await fetch('/sample/scan.png')).blob();
+        state.images.push({ name: 'sample-scan.png', dataUrl: await readAs(blob, 'readAsDataURL'), size: blob.size });
       } else {
-        fnHtml += `<li value="${idx + 1}">${escapeHtml(fn.text)}</li>`;
+        const path = kind === 'notice' ? '/sample/notice.md' : '/sample/rent_hu.txt';
+        const content = await (await fetch(path)).text();
+        state.files.push({ name: kind === 'notice' ? 'lease-notice.md' : 'rent-letter-hu.txt', content, size: content.length });
+      }
+      renderChips();
+      send('');
+    } catch (e) {
+      toast('Could not load the sample.');
+    }
+  }
+
+  async function loadStatus() {
+    try {
+      const status = await (await fetch('/api/status')).json();
+      const el = $('modeChip');
+      const offline = status.mode === 'offline';
+      el.textContent = offline ? 'Offline: local model' : 'Cloud: ' + status.model;
+      el.className = 'mode ' + (offline ? 'mode-offline' : 'mode-cloud');
+      el.title = offline
+        ? 'Your document stays on this computer.'
+        : 'Your document is sent to the model provider to be read.';
+      if (!offline && !status.keys) {
+        el.textContent = 'No API key';
+        el.className = 'mode mode-warn';
+        el.title = 'Add GEMINI_1_KEY to .env, or start with --offline.';
+      }
+    } catch (e) { /* status is optional */ }
+  }
+
+  function updateCountryNote() {
+    const name = $('countrySelect').value;
+    const info = state.countries[name];
+    $('countryNote').textContent = info
+      ? (info.portals || []).length + ' official links (starter list)'
+      : 'Country not set';
+  }
+
+  async function loadCountries() {
+    try {
+      state.countries = await (await fetch('/api/countries')).json();
+    } catch (e) {
+      return;
+    }
+    const select = $('countrySelect');
+    Object.keys(state.countries).sort().forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+    const saved = store.get('letterlens_country');
+    select.value = saved !== null && (saved === '' || state.countries[saved]) ? saved : 'Hungary';
+    updateCountryNote();
+    select.addEventListener('change', () => {
+      store.set('letterlens_country', select.value);
+      updateCountryNote();
+    });
+  }
+
+  function setupDrop() {
+    let depth = 0;
+    const overlay = $('dropOverlay');
+    window.addEventListener('dragenter', (e) => { e.preventDefault(); depth++; overlay.hidden = false; });
+    window.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      depth = Math.max(0, depth - 1);
+      if (!depth) overlay.hidden = true;
+    });
+    window.addEventListener('dragover', (e) => e.preventDefault());
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      depth = 0;
+      overlay.hidden = true;
+      if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+    });
+    window.addEventListener('paste', (e) => {
+      const files = Array.from((e.clipboardData && e.clipboardData.files) || []);
+      if (files.length) addFiles(files);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    $('chatForm').addEventListener('submit', (e) => { e.preventDefault(); send(); });
+    $('userInput').addEventListener('input', autosize);
+    $('userInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+        e.preventDefault();
+        send();
       }
     });
-    fnHtml += '</ol></div>';
-    out.push(fnHtml);
-  }
-
-  return out.join('');
-}
-
-function inlineFormat(txt) {
-  let s = escapeHtml(txt);
-  s = s.replace(/\[\^(\d+)\]/g, '<sup><a href="#fn-$1">[$1]</a></sup>');
-  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-  s = s.replace(/(^|[\s(])(https?:\/\/[^\s\)<>"]+)/g, '$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>');
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-  return s;
-}
-
-function escapeHtml(str) {
-  return String(str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+    $('attachBtn').addEventListener('click', () => $('fileInput').click());
+    $('pickBtn').addEventListener('click', () => $('fileInput').click());
+    $('fileInput').addEventListener('change', (e) => { addFiles(e.target.files); e.target.value = ''; });
+    $('stopBtn').addEventListener('click', () => state.controller && state.controller.abort());
+    $('btnNew').addEventListener('click', reset);
+    document.querySelectorAll('[data-sample]').forEach((b) =>
+      b.addEventListener('click', () => useSample(b.dataset.sample)));
+    window.addEventListener('afterprint', () =>
+      document.querySelectorAll('.print-this').forEach((el) => el.classList.remove('print-this')));
+    setupDrop();
+    loadStatus();
+    loadCountries();
+    renderChips();
+  });
+})();

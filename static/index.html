@@ -3,153 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LetterLens: Plain English Legal Document Intelligence Agent</title>
-  <meta name="description" content="LetterLens is an AI agent powered by Gemma 4 that explains official letters, notices, contracts, and permits in A1-B2 plain English with verified country legal portals.">
+  <meta name="color-scheme" content="light dark">
+  <title>LetterLens: understand legal documents in plain English</title>
+  <meta name="description" content="Photograph or paste a legal document and get a plain English explanation: what it says, what to do, by when, and what it costs.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css">
+  <script src="/render.js" defer></script>
+  <script src="/app.js" defer></script>
 </head>
 <body>
-<div id="dropOverlay" class="drop-overlay" hidden>
-  <div class="drop-overlay-box">
-    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-      <polyline points="17 8 12 3 7 8"></polyline>
-      <line x1="12" y1="3" x2="12" y2="15"></line>
-    </svg>
-    <h3>Drop document or scan to analyze</h3>
-    <p>Official letters, notices (.md), leases, or pictures (.png, .jpg)</p>
+<div id="app">
+  <div id="dropOverlay" class="drop-overlay" hidden>
+    <div class="drop-box">Drop your legal document to read it</div>
   </div>
-</div>
 
-<header class="site">
-  <div class="wrap header-wrap">
-    <a class="brand" href="/">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-        <polyline points="14 2 14 8 20 8"></polyline>
-        <line x1="16" y1="13" x2="8" y2="13"></line>
-        <line x1="16" y1="17" x2="8" y2="17"></line>
-        <polyline points="10 9 9 9 8 9"></polyline>
-      </svg>
+  <header class="top">
+    <a class="brand" href="/" aria-label="LetterLens home">
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><rect class="tile" width="32" height="32" rx="7"/><path class="paper" d="M9 8h10l4 4v12H9z"/><path d="M12 15h8M12 19h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       <span>LetterLens</span>
     </a>
-    <span class="tag">Gemma 4 &bull; 195 Countries</span>
-
-    <div class="country-setting-wrap" title="Active Country Jurisdiction for Gemma Context Window">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="2" y1="12" x2="22" y2="12"></line>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-      </svg>
-      <select id="countrySelect" aria-label="Select Country Jurisdiction Context">
-        <option value="">Auto Jurisdiction</option>
-      </select>
+    <div class="top-right">
+      <span id="modeChip" class="mode" role="status">Checking...</span>
+      <label class="country">
+        <span class="sr-only">Country of the document</span>
+        <select id="countrySelect"><option value="">Auto-detect</option></select>
+      </label>
+      <button id="btnNew" class="ghost" type="button">New document</button>
     </div>
+  </header>
 
-    <nav class="top" aria-label="Main Navigation">
-      <button type="button" class="btn-top-reset" id="btnNewDoc" title="Start new document analysis">
-        <span>+ New Doc</span>
+  <main>
+    <section id="intro" class="intro">
+      <h1>Understand your legal documents.</h1>
+      <p class="lead">Photograph or paste a legal document. LetterLens explains it in plain English: what it says, what to do, by when, and what it costs.</p>
+      <div class="pick">
+        <button id="pickBtn" class="primary" type="button">Choose a photo or file</button>
+        <span class="hint">or drop it anywhere on this page</span>
+      </div>
+      <p class="try">
+        Try an example:
+        <button class="link" type="button" data-sample="hu">Hungarian rent notice</button>
+        <button class="link" type="button" data-sample="notice">Lease notice</button>
+        <button class="link" type="button" data-sample="scan">Scanned notice</button>
+      </p>
+      <ul class="points">
+        <li>Every date and amount comes with the exact line from your document.</li>
+        <li>Documents in Hungarian and other languages are fine.</li>
+        <li>Run it offline with a local model if the document is private.</li>
+      </ul>
+    </section>
+    <div id="log"></div>
+  </main>
+
+  <div class="composer-wrap">
+    <div id="previews" class="previews" hidden></div>
+    <form id="chatForm" class="composer">
+      <input type="file" id="fileInput" class="sr-only" multiple accept="image/png,image/jpeg,image/webp,image/gif,.md,.markdown,.txt,.csv,.log,.json,.yaml,.yml,.html" tabindex="-1">
+      <button id="attachBtn" class="icon" type="button" aria-label="Attach a photo or file">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
       </button>
-      <a href="/letterlens.zip" download class="add" title="Download Source Code Archive">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        <span>Download Code</span>
-      </a>
-    </nav>
-  </div>
-</header>
-
-<main class="wrap">
-  <section class="hero">
-    <div class="hero-grid">
-      <div>
-        <h1>Plain English legal document intelligence.</h1>
-        <p class="lead">Official letters, tenancy notices, permits, and fines are hard to read. LetterLens reads scans, files, and text, and explains deadlines, fees, and required actions in simple <strong>A1–B2 plain English</strong> with official source citations.</p>
-        <div class="actions">
-          <button type="button" class="btn primary" id="btnSampleNotice">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-            <span>Notice Document (.md)</span>
-          </button>
-          <button type="button" class="btn secondary" id="btnSampleScan">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <span>Scanned Letter (PNG)</span>
-          </button>
-          <button type="button" class="btn secondary" id="btnWhatCanYouDo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            <span>What can you do?</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="term" role="region" aria-label="Terminal Status">
-        <div class="term-head">
-          <span>letterlens-cli &bull; engine status</span>
-          <span class="green">&bull; ready</span>
-        </div>
-        <pre><code><span class="dim">$</span> letterlens status
-{ <span class="accent">"model"</span>: <span class="green">"gemma-4-26b-a4b-it"</span>,
-  <span class="accent">"language"</span>: <span class="green">"A1-B2 Plain English"</span>,
-  <span class="accent">"primary_source"</span>: <span class="green">"195 Country Legal Portals"</span>,
-  <span class="accent">"local_ocr"</span>: <span class="green">"Windows.Media.Ocr"</span>,
-  <span class="accent">"footnote_format"</span>: <span class="green">"1. {{hyperlink of source}}"</span> }</code></pre>
-      </div>
-    </div>
-  </section>
-
-  <section class="workspace">
-    <div class="workspace-bar">
-      <div class="jurisdiction-chip" id="jurisdictionBadge">
-        <span class="j-icon">&#9878;</span>
-        <span id="jurisdictionLabel">Active Jurisdiction: <strong>Auto-detect from document</strong></span>
-      </div>
-      <button type="button" class="clear-chat-btn" id="btnClearChat" title="Reset conversation">Clear Chat</button>
-    </div>
-
-    <div id="log" aria-live="polite">
-      <div class="msg-wrap agent">
-        <div class="msg-sender">LetterLens Agent</div>
-        <div class="msg-bubble">
-          <p><strong>LetterLens Agent is ready.</strong> Provide an official letter, notice, bill, or legal document as a <strong>picture</strong>, <strong>Markdown file (.md)</strong>, or <strong>plain text</strong>.</p>
-          <p>The agent consults official country legal portals as its primary source of truth and explains documents in clear A1–B2 plain English with verified hyperlinks in footnotes.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="upload-previews" id="previewBar"></div>
-
-    <form id="chatForm">
-      <div id="dropZone">
-        <input type="file" id="fileInput" multiple style="display:none" accept="image/*,.md,.txt">
-        <button type="button" class="icon-btn" id="attachBtn" title="Attach picture (.png, .jpg) or document (.md, .txt)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-          </svg>
-        </button>
-        <textarea id="userInput" rows="1" placeholder="Ask a question, paste text, or drag and drop a letter, contract, or notice..." autocomplete="off"></textarea>
-        <button type="submit" class="icon-btn send-btn" id="sendBtn" title="Send document to agent">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
-        </button>
-      </div>
+      <textarea id="userInput" rows="1" aria-label="Your message" placeholder="Paste the document text, or ask a question" autocomplete="off"></textarea>
+      <button id="sendBtn" class="icon send" type="submit" aria-label="Send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+      </button>
+      <button id="stopBtn" class="icon send" type="button" aria-label="Stop" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+      </button>
     </form>
-  </section>
-</main>
-
-<footer class="site">
-  <div class="wrap footer-content">
-    <div>LetterLens &bull; Plain English Legal Document Intelligence Agent</div>
-    <div class="footer-links">
-      <a href="/sample/notice.md" target="_blank">Notice Sample</a>
-      <a href="/sample/scan.png" target="_blank">Scan Sample</a>
-      <a href="/letterlens.zip" download>Export Code (.zip)</a>
-    </div>
+    <p class="fine">
+      Not legal advice. <span id="countryNote"></span>
+      <a href="/letterlens.zip" download>Source code</a>
+    </p>
   </div>
-</footer>
 
-<script src="/app.js"></script>
+  <div id="toast" class="toast" role="alert" hidden></div>
+  <div id="sr" class="sr-only" aria-live="polite"></div>
+</div>
 </body>
 </html>
