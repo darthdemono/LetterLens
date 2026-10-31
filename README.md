@@ -7,6 +7,9 @@ Official letters, tenancy contracts, utility notices, and government residency d
 - **Model:** `gemma-4-26b-a4b-it` (Gemma 4, 26B mixture-of-experts with 4B active parameters), open weights under the [Gemma terms](https://ai.google.dev/gemma/terms).
 - **A1–B2 Plain English:** Explanations are written in clear, direct English with short sentences, structured bullet points, and simplified explanations of any legal or bureaucratic term.
 - **Multimodal Inputs:** Ingests document scans and photos (`.png`, `.jpg`, `.webp`), Markdown files (`.md`), and raw text.
+- **Global Country Legal Repository:** Includes a verified primary database of official legal gazettes, immigration departments, tenancy tribunals, and tax portals for 195+ countries (`rules/country_legal_portals.json`), accessed via the `lookup_country_legal_portal` tool.
+- **Footnotes & Citations:** Backs every legal rule, decree, and official portal with inline citation markers (`[^1]`, `[^2]`) and structured footnote lists.
+- **Strict Legal Guardrails:** Strictly restricts reasoning to legal, administrative, governmental, tenancy, and contractual documents, refusing casual or off-topic queries.
 - **Local OCR Acceleration:** Automatically extracts text from pictures locally using native OS OCR before sending to Gemma, accelerating understanding and grounding numbers, dates, and reference codes.
 - **Secrets Pool Load Balancing:** Supports multiple API keys (`GEMINI_1_KEY`, `GEMINI_2_KEY`, etc.) with automatic round-robin rotation and failover.
 - **Clean Markdown Output:** Generates structured Markdown responses featuring summaries, action items, deadlines, fee tables, and legal disclaimers. The web interface includes a real-time Markdown-to-HTML parser.

@@ -123,6 +123,42 @@ class TestLetterLens(unittest.TestCase):
         self.assertIn("Strict Legal Scope Requirement", recorded[0])
         self.assertIn("I can only assist with legal, administrative, and official documents", res)
 
+    def test_country_legal_portals_repository_coverage_and_lookup(self):
+        tool = app.country_legal_portal_tool()
+        lookup = tool["fn"]
+        res = lookup("Hungary")
+        self.assertIn("magyarkozlony.hu", res)
+        self.assertIn("oif.gov.hu", res)
+        res_de = lookup("Germany")
+        self.assertIn("gesetze-im-internet.de", res_de)
+        res_us = lookup("United States")
+        self.assertIn("federalregister.gov", res_us)
+        res_jp = lookup("Japan")
+        self.assertIn("elaws.e-gov.go.jp", res_jp)
+
+    def test_country_legal_portal_aliases_and_listing(self):
+        tool = app.country_legal_portal_tool()
+        lookup = tool["fn"]
+        res_alias = lookup("USA")
+        self.assertIn("United States", res_alias)
+        res_uk = lookup("UK")
+        self.assertIn("legislation.gov.uk", res_uk)
+        res_code = lookup("DE")
+        self.assertIn("gesetze-im-internet.de", res_code)
+        res_all = lookup("all")
+        self.assertIn("total_countries", res_all)
+        self.assertIn("Primary official legal repository loaded", res_all)
+
+    def test_agent_registers_country_legal_portal_tool(self):
+        class FakeClient:
+            def chat(self, messages, tools=None, on_token=None):
+                return {"role": "assistant", "content": "Analysis complete"}
+
+        agent_inst = app.build_agent(FakeClient())
+        self.assertIn("lookup_country_legal_portal", agent_inst.tools)
+        tool_desc = agent_inst.tools["lookup_country_legal_portal"]["schema"]["function"]["description"]
+        self.assertIn("Primary Source of Information", tool_desc)
+
 
 def test_thought_text_is_removed_from_the_reply(monkeypatch=None):
     TestLetterLens().test_thought_text_is_removed_from_the_reply()
@@ -154,6 +190,18 @@ def test_markdown_parser_extracts_footnotes():
 
 def test_agent_refuses_non_legal_queries():
     TestLetterLens().test_agent_refuses_non_legal_queries()
+
+
+def test_country_legal_portals_repository_coverage_and_lookup():
+    TestLetterLens().test_country_legal_portals_repository_coverage_and_lookup()
+
+
+def test_country_legal_portal_aliases_and_listing():
+    TestLetterLens().test_country_legal_portal_aliases_and_listing()
+
+
+def test_agent_registers_country_legal_portal_tool():
+    TestLetterLens().test_agent_registers_country_legal_portal_tool()
 
 
 if __name__ == "__main__":

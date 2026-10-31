@@ -40,14 +40,15 @@ SYSTEM_PROMPT = (
     "If an official term is needed, explain what it means in simple words. "
     "Use short sentences and clear bullet points. "
     "Do not use any emojis. "
-    "Add footnote markers ([^1], [^2]) to statements citing local government data, official rules, "
-    "ordinances, municipal offices, or statutory deadlines. "
-    "Always search available local government rules tools before answering. "
+    "Primary Source of Information: You have access to a verified repository of official legal sites, "
+    "gazettes, immigration authorities, and municipal registries for all countries via the lookup_country_legal_portal tool "
+    "and rules database. You MUST consult this country legal repository as your primary source of truth. "
+    "Always check the country repository and add footnote markers ([^1], [^2]) citing the verified official "
+    "government legal site, gazette, or authority portal for the relevant country. "
     "Strict Legal Scope Requirement: You are strictly limited to legal, official, administrative, "
     "governmental, tenancy, visa, tax, and contractual documents or questions. "
     "If the input, attached document, image, or question is NOT about a legal, administrative, "
-    "or official government matter (for example: casual chat, jokes, recipes, programming, creative stories, "
-    "sports, gaming, math, or general knowledge), you MUST refuse to answer. "
+    "or official government matter, you MUST refuse to answer. "
     "When refusing, reply with only this sentence: "
     "'I can only assist with legal, administrative, and official documents, such as government notices, "
     "permits, tenancy agreements, contracts, and bills. Please provide a legal or official document.'\n\n"
@@ -65,8 +66,8 @@ SYSTEM_PROMPT = (
     "### Summary Table\n"
     "A simple Markdown table comparing options or summarizing key details.\n"
     "### Footnotes\n"
-    "List all cited local government rules, municipal decree numbers, official government departments, "
-    "and legal references formatted as [^1]: Source description.\n\n"
+    "List all cited local government rules, municipal decree numbers, and verified official country legal portals "
+    "from the repository formatted as [^1]: Official Government Source / URL - Description.\n\n"
     "Always end with a short notice: Disclaimer: This is a plain language explanation, not formal legal advice."
 )
 
@@ -473,6 +474,102 @@ class GeminiClient(Client):
         return reply
 
 
+def country_legal_portal_tool():
+    portals_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules", "country_legal_portals.json")
+    cached = {}
+
+    def _load_data():
+        nonlocal cached
+        if not cached and os.path.isfile(portals_path):
+            with open(portals_path, encoding="utf-8") as f:
+                cached = json.load(f)
+        return cached
+
+    aliases = {
+        "us": "United States",
+        "usa": "United States",
+        "america": "United States",
+        "united states of america": "United States",
+        "uk": "United Kingdom",
+        "britain": "United Kingdom",
+        "great britain": "United Kingdom",
+        "england": "United Kingdom",
+        "scotland": "United Kingdom",
+        "wales": "United Kingdom",
+        "uae": "United Arab Emirates",
+        "emirates": "United Arab Emirates",
+        "holland": "Netherlands",
+        "the netherlands": "Netherlands",
+        "czechia": "Czech Republic",
+        "korea": "Korea, South",
+        "south korea": "Korea, South",
+        "republic of korea": "Korea, South",
+        "drc": "Congo, Democratic Republic of the",
+        "dr congo": "Congo, Democratic Republic of the",
+        "ivory coast": "Cote d'Ivoire",
+        "russia": "Russia",
+        "russian federation": "Russia",
+        "deutschland": "Germany",
+        "magyarorszag": "Hungary",
+        "espana": "Spain",
+        "italia": "Italy",
+        "frankreich": "France",
+        "polska": "Poland",
+    }
+
+    def lookup_country_legal_portal(country: str = "") -> str:
+        data = _load_data()
+        if not data:
+            return "error: country legal portals database not found"
+        query = (country or "").strip().lower()
+        if not query or query in {"all", "list", "*"}:
+            return json.dumps({
+                "total_countries": len(data),
+                "countries": sorted(list(data.keys())),
+                "notice": "Primary official legal repository loaded for all countries. Query by country name or code."
+            }, indent=2)
+
+        if query in aliases:
+            query = aliases[query].lower()
+
+        for c_name, details in data.items():
+            if c_name.lower() == query or details.get("code", "").lower() == query:
+                return json.dumps({c_name: details}, indent=2)
+
+        for c_name, details in data.items():
+            if query in c_name.lower():
+                return json.dumps({c_name: details}, indent=2)
+
+        matches = [c for c in data.keys() if any(w in c.lower() for w in query.split())]
+        if matches:
+            subset = {c: data[c] for c in matches[:5]}
+            return json.dumps(subset, indent=2)
+
+        return f"No verified legal portal found for '{country}'. Total available countries in repository: {len(data)}. Query 'all' to list them."
+
+    return {
+        "name": "lookup_country_legal_portal",
+        "fn": lookup_country_legal_portal,
+        "schema": {
+            "type": "function",
+            "function": {
+                "name": "lookup_country_legal_portal",
+                "description": "Primary Source of Information: Look up verified official government legal portals, gazettes, immigration departments, tenancy registries, and tax authorities for all countries. Consult this repository first as your primary source of truth before providing legal analysis or citations.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "country": {
+                            "type": "string",
+                            "description": "The country name, alias, or 2-letter ISO code (e.g. Hungary, Germany, United Kingdom, US, FR, Japan, or 'all')."
+                        }
+                    },
+                    "required": ["country"]
+                }
+            }
+        }
+    }
+
+
 class GemmaAgent:
     def __init__(self, client: Optional[Client] = None, system: str = SYSTEM_PROMPT, max_steps: int = 6):
         self.client = client or GeminiClient()
@@ -499,12 +596,12 @@ class GemmaAgent:
     ) -> str:
         if isinstance(target, bytes) or (isinstance(target, str) and self._is_image_target(target)):
             ocr_text = LocalOCR.extract_text(target)
-            custom_prompt = prompt or "Explain this official letter or document in simple A1-B2 English and add footnotes for local government data:"
+            custom_prompt = prompt or "Explain this official letter or document in simple A1-B2 English and add footnotes citing official country legal portals:"
             if ocr_text:
                 full_prompt = (
                     f"[Extracted Document Text]:\n\"\"\"\n{ocr_text}\n\"\"\"\n\n"
                     f"{custom_prompt}\n"
-                    "Confirm the numbers, dates, and names from the document image and cite relevant local rules in footnotes."
+                    "Confirm the numbers, dates, and names from the document image and cite verified official government portals in footnotes."
                 )
             else:
                 full_prompt = custom_prompt
@@ -519,7 +616,7 @@ class GemmaAgent:
                 filename = os.path.basename(target)
                 doc_prompt = (
                     f"--- Attached Document: {filename} ---\n{content}\n\n"
-                    f"{prompt or 'Explain this document in simple A1-B2 English and cite local government rules with footnotes:'}"
+                    f"{prompt or 'Explain this document in simple A1-B2 English and cite verified country legal portals with footnotes:'}"
                 )
                 return self.run(prompt=doc_prompt, on_token=on_token)
 
@@ -529,7 +626,7 @@ class GemmaAgent:
                 filename = os.path.basename(target)
                 doc_prompt = (
                     f"--- Attached Document: {filename} ---\n{content}\n\n"
-                    f"{prompt or 'Explain this document in simple A1-B2 English and cite local government rules with footnotes:'}"
+                    f"{prompt or 'Explain this document in simple A1-B2 English and cite verified country legal portals with footnotes:'}"
                 )
                 return self.run(prompt=doc_prompt, on_token=on_token)
 
@@ -618,6 +715,7 @@ class GemmaAgent:
 
 def build_agent(client: Optional[Client] = None) -> GemmaAgent:
     agent = GemmaAgent(client or GeminiClient(), system=SYSTEM_PROMPT)
+    agent.add_tools([country_legal_portal_tool()])
     rules_dir = os.environ.get("LETTERLENS_RULES")
     if not rules_dir:
         default_rules = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules")
@@ -644,7 +742,7 @@ def describe(
 def interactive_shell():
     agent = build_agent()
     print("=================================================================")
-    print("  LetterLens Gemma 4 Agent with Local Government Footnotes")
+    print("  LetterLens Gemma 4 Agent with Global Country Legal Portals")
     print("  Enter picture path (.png, .jpg), markdown (.md), or text.")
     print("  Type 'exit' to quit.")
     print("=================================================================\n")

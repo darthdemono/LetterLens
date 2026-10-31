@@ -30,6 +30,7 @@ from agent import (
     SYSTEM_PROMPT as SYSTEM,
     URL,
     describe,
+    country_legal_portal_tool,
 )
 
 Agent = GemmaAgent
@@ -121,6 +122,7 @@ def folder_tools(root):
 
 def build_agent(client=None):
     a = GemmaAgent(client or GeminiClient(), system=SYSTEM)
+    a.add_tools([country_legal_portal_tool()])
     rules = os.environ.get("LETTERLENS_RULES")
     if not rules:
         default_rules = os.path.join(ROOT, "rules")
@@ -704,7 +706,7 @@ input[type="text"]::placeholder {
         <h1>LetterLens</h1>
         <span class="badge-model">Gemma 4 Multimodal</span>
       </div>
-      <div class="tagline">Plain English document intelligence agent with local OCR &amp; footnotes</div>
+      <div class="tagline">Plain English document intelligence agent with country legal repositories</div>
     </div>
     <a href="/letterlens.zip" download class="btn-secondary" title="Export source code">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -746,7 +748,7 @@ input[type="text"]::placeholder {
       <div class="msg-sender">LetterLens Agent</div>
       <div class="msg">
         <div class="md-p"><strong>LetterLens Agent ready.</strong> Provide an official letter, notice, bill, or legal document as a <strong>picture</strong>, <strong>Markdown file (.md)</strong>, or <strong>plain text</strong>.</div>
-        <div class="md-p">The agent explains what the document wants, deadlines, fees, and next steps in clear A1-B2 plain English, with footnotes citing local government rules.</div>
+        <div class="md-p">The agent consults official country legal portals as its primary source of truth and explains documents in clear A1-B2 plain English with verified footnotes.</div>
       </div>
     </div>
   </div>
@@ -827,7 +829,7 @@ document.getElementById('sampleMdBtn').addEventListener('click', async () => {
       const text = await res.text();
       pendingFiles.push({ name: 'lease_amendment_notice.md', content: text });
       renderPreviews();
-      input.value = 'Explain this notice in simple English and cite local government rules with footnotes.';
+      input.value = 'Explain this notice in simple English and cite official legal portals with footnotes.';
       input.focus();
     }
   } catch (err) {
@@ -842,7 +844,7 @@ document.getElementById('sampleImgBtn').addEventListener('click', async () => {
       const dataUrl = await res.text();
       pendingImages.push({ name: 'sample_letter_scan.png', dataUrl: dataUrl });
       renderPreviews();
-      input.value = 'Explain this scanned letter in simple English and include footnotes for local government rules.';
+      input.value = 'Explain this scanned letter in simple English and cite official country legal portals in footnotes.';
       input.focus();
     }
   } catch (err) {
@@ -851,7 +853,7 @@ document.getElementById('sampleImgBtn').addEventListener('click', async () => {
 });
 
 document.getElementById('sampleTxtBtn').addEventListener('click', () => {
-  input.value = 'A tenant in Budapest received a notice that their utility cost is increasing by 8,500 HUF. What are their rights under Budapest municipal decrees? Add footnotes for local government data.';
+  input.value = 'A tenant in Germany received an official utility adjustment notice (Nebenkostenabrechnung). What are the official legal portals and rights for contesting it under German tenancy law?';
   input.focus();
 });
 
@@ -1036,7 +1038,7 @@ function parseMarkdown(md) {
   flushTable();
 
   if (footnoteDefs.length > 0) {
-    let fnHtml = '<div class="md-footnotes"><div class="md-footnotes-title">Footnotes &amp; Local Government Data</div>';
+    let fnHtml = '<div class="md-footnotes"><div class="md-footnotes-title">Footnotes &amp; Verified Legal Portals</div>';
     footnoteDefs.forEach(fn => {
       fnHtml += `<div class="md-fn-item" id="fn-${fn.id}"><span class="md-fn-num">[${fn.id}]</span>${inlineFormat(fn.text)} <a href="#fnref-${fn.id}" class="fn-back" title="Back to text">&#8617;</a></div>`;
     });
@@ -1104,7 +1106,7 @@ async function handleSubmit(e) {
 
   input.value = '';
   addMsg('u', text || '(Analyzed attachments)', currentImages, currentFiles);
-  const bubble = addMsg('a', 'LetterLens Agent is analyzing input with Gemma 4 and local government rules...');
+  const bubble = addMsg('a', 'LetterLens Agent is analyzing input with Gemma 4 and official legal portals...');
   sendBtn.disabled = true;
 
   try {
@@ -1249,7 +1251,7 @@ def make_app_server(port=8080, host="127.0.0.1"):
                             ocr_results.append(f"[Document Text Extracted (Image {idx + 1})]:\n\"\"\"\n{extracted}\n\"\"\"")
                     if ocr_results:
                         ocr_block = "\n\n".join(ocr_results)
-                        msg = f"{ocr_block}\n\n{msg or 'Explain this document in simple A1-B2 English and cite local government rules with footnotes.'}"
+                        msg = f"{ocr_block}\n\n{msg or 'Explain this document in simple A1-B2 English and cite verified country legal portals with footnotes.'}"
 
                 agent_inst = get_agent(sid)
                 agent_inst.run(msg, images=images, files=files, on_token=lambda t: _emit({"t": t}))
