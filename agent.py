@@ -257,10 +257,19 @@ class Client:
             try:
                 with response:
                     if "event-stream" in response.headers.get("Content-Type", ""):
-                        return self._read_stream(response, on_token)
-                    return self._read_json(response, on_token)
+                        reply = self._read_stream(response, on_token)
+                    else:
+                        reply = self._read_json(response, on_token)
             finally:
                 self.pool.release(key)
+            if reply["content"] or reply.get("tool_calls"):
+                return reply
+            attempt += 1
+            if attempt >= limit or not self.reasoning:
+                raise ApiError(0, "The model returned an empty answer. Try again, or run "
+                                  "python agent.py --check to test the keys and the model name.")
+            self.reasoning = None
+            payload.pop("reasoning_effort", None)
 
     @staticmethod
     def _read_json(response, on_token):
@@ -531,6 +540,37 @@ def took(started):
     return f"({seconds * 1000:.0f} ms)" if seconds < 1 else f"({seconds:.1f} s)"
 
 
+def explain(err):
+    message = str(err)
+    if err.code == 429:
+        return f"rate limited or out of quota (daily limits reset on their own): {message}"
+    if err.code in (401, 403):
+        return f"rejected, check the key: {message}"
+    if err.code == 404:
+        return f"model or endpoint not found, check LETTERLENS_MODEL: {message}"
+    if err.code == 0:
+        return message
+    return f"error {err.code}: {message}"
+
+
+def check_keys(client, out=print):
+    working = 0
+    for number, key in enumerate(client.pool.all() or [""], 1):
+        label = f"key {number}" if key else ("local model" if client.offline else "no key")
+        payload = {"model": client.model, "max_tokens": 16,
+                   "messages": [{"role": "user", "content": "Say ok"}]}
+        started = time.perf_counter()
+        try:
+            with client._open(payload, key) as response:
+                response.read()
+        except ApiError as err:
+            out(f"{label}: {explain(err)}")
+        else:
+            working += 1
+            out(f"{label}: working {took(started)}")
+    return working
+
+
 def interactive_shell(agent):
     print("LetterLens. Enter an image path, a .md/.txt path, or text. Type 'exit' to quit.\n")
     while True:
@@ -559,7 +599,12 @@ def main(argv=None):
     parser.add_argument("--offline", action="store_true", help="use a local model, no cloud")
     parser.add_argument("--country", help="country the document comes from")
     parser.add_argument("-i", "--interactive", action="store_true")
+    parser.add_argument("--check", action="store_true", help="test each API key and the model")
     args = parser.parse_args(argv)
+    if args.check:
+        client = Client(offline=args.offline)
+        print(f"model {client.model} at {client.base_url}")
+        return 0 if check_keys(client) else 1
     agent = build_agent(offline=args.offline)
     if args.country:
         agent.set_country_context(args.country)

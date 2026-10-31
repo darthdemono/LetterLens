@@ -425,3 +425,16 @@ def test_cli_prints_time_taken(monkeypatch, capsys):
     monkeypatch.setattr(agent, "build_agent", lambda offline=False: GemmaAgent(Script(say("Hi"))))
     assert agent.main(["what is a deposit"]) == 0
     assert capsys.readouterr().err.strip().endswith(("ms)", "s)"))
+
+
+def test_cli_check_reports_and_sets_exit_code(monkeypatch, capsys):
+    class Fake:
+        model = "m"
+        base_url = "http://x"
+
+    monkeypatch.setattr(agent, "Client", lambda offline=False: Fake())
+    monkeypatch.setattr(agent, "check_keys", lambda client: 2)
+    assert agent.main(["--check"]) == 0
+    assert "model m at http://x" in capsys.readouterr().out
+    monkeypatch.setattr(agent, "check_keys", lambda client: 0)
+    assert agent.main(["--check", "--offline"]) == 1

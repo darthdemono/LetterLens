@@ -128,7 +128,8 @@ def test_json_response_path(llm):
 
 def test_json_response_without_content_or_callback(llm):
     llm.script.append(("json", json.dumps({"choices": [{"message": {"content": None}}]})))
-    assert make_client(llm).chat([]) == {"role": "assistant", "content": ""}
+    with pytest.raises(ApiError, match="empty answer"):
+        make_client(llm).chat([])
 
 
 def test_client_error_message_comes_from_body(llm):
@@ -352,3 +353,57 @@ def test_keys_are_released_after_streaming(llm):
     client = make_client(llm, keys=("a",))
     client.chat([])
     assert client.pool._busy["a"] == 0
+
+
+def test_empty_answer_retries_without_reasoning(llm):
+    llm.script += [ok_reply(""), ok_reply("real answer")]
+    client = make_client(llm, reasoning="low")
+    assert client.chat([])["content"] == "real answer"
+    assert "reasoning_effort" in llm.requests[0]["body"]
+    assert "reasoning_effort" not in llm.requests[1]["body"]
+
+
+def test_empty_answer_without_reasoning_is_an_error(llm):
+    llm.script += [ok_reply("")]
+    with pytest.raises(ApiError, match="empty answer"):
+        make_client(llm).chat([])
+
+
+def test_empty_answer_with_tool_calls_is_fine(llm):
+    calls = [{"id": "1", "type": "function", "function": {"name": "x", "arguments": "{}"}}]
+    llm.script.append(("json", json.dumps({"choices": [{"message": {"content": "",
+                                                                    "tool_calls": calls}}]})))
+    assert make_client(llm).chat([])["tool_calls"] == calls
+
+
+@pytest.mark.parametrize(
+    "code, text",
+    [(429, "out of quota"), (403, "rejected"), (401, "rejected"), (404, "LETTERLENS_MODEL"),
+     (500, "error 500"), (0, "boom")],
+)
+def test_explain_describes_each_failure(code, text):
+    assert text in agent.explain(ApiError(code, "boom"))
+
+
+def test_check_keys_reports_every_key(llm):
+    llm.script += [("error", (429, json.dumps({"error": {"message": "quota"}}))), ok_reply()]
+    lines = []
+    assert agent.check_keys(make_client(llm, keys=("a", "b")), lines.append) == 1
+    assert "key 1: rate limited" in lines[0] and "quota" in lines[0]
+    assert lines[1].startswith("key 2: working (")
+    assert llm.requests[0]["body"]["max_tokens"] == 16
+
+
+def test_check_keys_without_any_key(llm):
+    llm.script.append(("error", (401, "{}")))
+    lines = []
+    assert agent.check_keys(make_client(llm, keys=()), lines.append) == 0
+    assert lines[0].startswith("no key: rejected")
+
+
+def test_check_keys_labels_local_model(llm):
+    llm.script.append(ok_reply())
+    lines = []
+    client = Client(base_url=llm.url, offline=True)
+    assert agent.check_keys(client, lines.append) == 1
+    assert lines[0].startswith("local model: working")

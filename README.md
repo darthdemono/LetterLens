@@ -36,6 +36,7 @@ python app.py serve --offline          # same, with a local model
 python agent.py samples/sample_letter_hu.txt
 python agent.py samples/sample_letter_scan.png "What is the deadline?" --country Hungary
 python agent.py -i                     # chat in the terminal
+python agent.py --check                # test every API key and the model name
 ```
 
 Keys go in `.env` or the environment (any variable that looks like `GEMINI…KEY`, comma-separated lists allowed, or `LETTERLENS_API_KEY`). Several keys are balanced: each request goes to the least busy healthy key, a rate-limited key (429) is benched for its `Retry-After` time (default 20 s) and the request switches to the other key at once, and a rejected key (401/403) is benched for 10 minutes.
