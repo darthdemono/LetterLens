@@ -315,7 +315,7 @@ def test_describe_plain_text_and_prompt(sample_files):
 
 
 def test_describe_rejects_unsupported_and_missing(sample_files):
-    with pytest.raises(ValueError, match="Unsupported file type .pdf"):
+    with pytest.raises(ValueError, match="No readable text"):
         run_describe(str(sample_files / "doc.pdf"), sample_files)
     with pytest.raises(ValueError, match="without extension"):
         run_describe(str(sample_files / "noext"), sample_files)
@@ -438,3 +438,24 @@ def test_cli_check_reports_and_sets_exit_code(monkeypatch, capsys):
     assert "model m at http://x" in capsys.readouterr().out
     monkeypatch.setattr(agent, "check_keys", lambda client: 0)
     assert agent.main(["--check", "--offline"]) == 1
+
+
+def test_describe_reads_text_pdfs_and_scanned_pdfs(tmp_path):
+    from pathlib import Path
+    data = Path(__file__).parent / "data"
+    client = Script(say("ok"), say("ok"))
+    bot = GemmaAgent(client)
+    agent.describe(bot, str(data / "chromium.pdf"))
+    first = client.calls[0]["messages"][-1]["content"]
+    assert "--- Document: chromium.pdf ---" in first and "Tisztelt" in first
+    agent.describe(bot, str(data / "scan.pdf"))
+    second = client.calls[1]["messages"][-1]["content"]
+    assert second[1]["image_url"]["url"].startswith("data:image/jpeg;base64,")
+
+
+def test_describe_rejects_huge_pdfs(tmp_path, monkeypatch):
+    monkeypatch.setattr(agent.pdf, "MAX_PDF_BYTES", 10)
+    big = tmp_path / "big.pdf"
+    big.write_bytes(b"%PDF" + bytes(50))
+    with pytest.raises(ValueError, match="too large"):
+        agent.describe(GemmaAgent(Script()), str(big))

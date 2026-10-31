@@ -9,6 +9,7 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
+import pdf
 import tools
 from config import (
     BASE_URL,
@@ -23,6 +24,7 @@ from config import (
 from images import (
     IMAGE_EXTS,
     MARKDOWN_EXTS,
+    PDF_EXTS,
     TEXT_EXTS,
     as_image,
     load_image_file,
@@ -523,13 +525,21 @@ def describe(agent, target, prompt=None, on_token=None, country=None):
         if ext in IMAGE_EXTS:
             return agent.run(prompt, images=[load_image_file(path)], on_token=on_token,
                              country=country)
+        if ext in PDF_EXTS:
+            with open(path, "rb") as handle:
+                data = handle.read(pdf.MAX_PDF_BYTES + 1)
+            if len(data) > pdf.MAX_PDF_BYTES:
+                raise ValueError("This PDF is too large.")
+            files, pictures = pdf.inputs(data, os.path.basename(path))
+            return agent.run(prompt, images=pictures, files=files, on_token=on_token,
+                             country=country)
         if ext in MARKDOWN_EXTS | TEXT_EXTS:
             with open(path, encoding="utf-8", errors="replace") as handle:
                 files = [{"name": os.path.basename(path), "content": handle.read()}]
             return agent.run(prompt, files=files, on_token=on_token, country=country)
         raise ValueError(f"Unsupported file type {ext or 'without extension'}. "
-                         "Use an image, .md or .txt file.")
-    if " " not in path and ext in IMAGE_EXTS | MARKDOWN_EXTS | TEXT_EXTS | {".pdf", ".docx"}:
+                         "Use a PDF, an image, .md or .txt file.")
+    if " " not in path and ext in IMAGE_EXTS | MARKDOWN_EXTS | TEXT_EXTS | PDF_EXTS | {".docx"}:
         raise ValueError(f"File not found: {path}")
     text = f"{prompt}\n\n{path}" if prompt else path
     return agent.run(text, on_token=on_token, country=country)

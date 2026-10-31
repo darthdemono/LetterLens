@@ -7,6 +7,7 @@ from collections import namedtuple
 ALLOWED_MIMES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 MARKDOWN_EXTS = {".md", ".markdown"}
+PDF_EXTS = {".pdf"}
 TEXT_EXTS = {".txt", ".rst", ".csv", ".log", ".json", ".yaml", ".yml", ".html"}
 MAX_IMAGE_BYTES = 12 * 1024 * 1024
 
