@@ -20,7 +20,7 @@
 
   const store = {
     get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
-    set(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* storage blocked */ } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch (e) {} },
   };
 
   let toastTimer = 0;
@@ -418,7 +418,7 @@
         el.className = 'mode mode-warn';
         el.title = 'Add GEMINI_1_KEY to .env, or start with --offline.';
       }
-    } catch (e) { /* status is optional */ }
+    } catch (e) {}
   }
 
   function updateCountryNote() {
