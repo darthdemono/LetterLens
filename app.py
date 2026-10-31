@@ -1,298 +1,362 @@
-import base64
+import argparse
+import gzip
+import hashlib
 import io
 import json
-import mimetypes
+import logging
 import os
 import re
 import sys
+import threading
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 import zipfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-if sys.platform.startswith("win"):
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    if hasattr(sys.stderr, "reconfigure"):
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+import agent as agent_module
+from agent import ApiError, build_agent
+from config import LOCAL_MODEL, MODEL, ROOT, VERSION, KeyPool
+from images import MARKDOWN_EXTS, TEXT_EXTS, parse_data_url
+from ocr import LocalOCR
 
-import agent
-from agent import (
-    Client,
-    GeminiClient,
-    GemmaAgent,
-    KeyPool,
-    LocalOCR,
-    MarkdownParser,
-    MODEL,
-    SYSTEM_PROMPT as SYSTEM,
-    URL,
-    describe,
-    country_legal_portal_tool,
+log = logging.getLogger("letterlens.server")
+
+MAX_BODY = int(os.environ.get("LETTERLENS_MAX_BODY", 30 * 1024 * 1024))
+MAX_ATTACHMENTS = 5
+MAX_FILE_CHARS = 200_000
+MAX_MESSAGE_CHARS = 20_000
+SID_RE = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
+LOOPBACK = {"127.0.0.1", "localhost", "[::1]", "::1"}
+
+PAGES = {
+    "/": ("static/index.html", "text/html; charset=utf-8"),
+    "/styles.css": ("static/styles.css", "text/css; charset=utf-8"),
+    "/app.js": ("static/app.js", "application/javascript; charset=utf-8"),
+    "/render.js": ("static/render.js", "application/javascript; charset=utf-8"),
+    "/favicon.svg": ("static/favicon.svg", "image/svg+xml"),
+    "/api/countries": ("rules/country_legal_portals.json", "application/json; charset=utf-8"),
+    "/sample/notice.md": ("samples/sample_document.md", "text/markdown; charset=utf-8"),
+    "/sample/rent_hu.txt": ("samples/sample_letter_hu.txt", "text/plain; charset=utf-8"),
+    "/sample/scan.png": ("samples/sample_letter_scan.png", "image/png"),
+}
+
+CSP = (
+    "default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; "
+    "connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
 )
 
-Agent = GemmaAgent
-IMAGE_EXTS = agent.IMAGE_EXTS
-TEXT_EXTS = agent.TEXT_EXTS
-MARKDOWN_EXTS = agent.MARKDOWN_EXTS
+ZIP_FILES = {
+    "README.md", "LICENSE", "NOTICE", "SUBMISSION.md", "pyproject.toml", ".gitignore",
+    "app.py", "agent.py", "config.py", "images.py", "ocr.py", "tools.py", "ocr_win.ps1",
+}
+ZIP_DIRS = {"static", "rules", "samples", "tests", ".github"}
+ZIP_SKIP = {"__pycache__", ".pytest_cache", ".ruff_cache"}
 
 
-def folder_tools(root):
-    root = os.path.realpath(root)
-    text_exts = (".md", ".txt", ".rst", ".csv", ".json", ".yaml", ".yml")
-
-    def _walk():
-        for d, dirs, files in os.walk(root):
-            dirs[:] = [x for x in dirs if x not in {".git", ".venv", "__pycache__"}]
-            for n in sorted(files):
-                if n.endswith(text_exts):
-                    yield os.path.relpath(os.path.join(d, n), root).replace(os.sep, "/")
-
-    def list_files():
-        return "\n".join(sorted(_walk())) or "no files"
-
-    def read_file(path: str):
-        p = os.path.realpath(os.path.join(root, path))
-        if p != root and not p.startswith(root + os.sep):
-            return "error: path outside folder"
-        with open(p, encoding="utf-8", errors="replace") as f:
-            return f.read(20000)
-
-    def search_docs(query: str):
-        words = [w for w in re.findall(r"\w+", query.lower()) if len(w) > 2]
-        hits = []
-        for rel in _walk():
-            with open(os.path.join(root, rel), encoding="utf-8", errors="replace") as f:
-                lines = f.read().splitlines()
-            score = sum(ln.lower().count(w) for ln in lines for w in words)
-            if score:
-                best = max(lines, key=lambda l: sum(w in l.lower() for w in words))
-                hits.append(f"{rel}: {best.strip()[:180]}")
-        return "\n".join(hits[:5]) or "no matches"
-
-    return [
-        {
-            "name": "list_files",
-            "fn": list_files,
-            "schema": {
-                "type": "function",
-                "function": {
-                    "name": "list_files",
-                    "description": "List readable text files in the rules folder.",
-                    "parameters": {"type": "object", "properties": {}},
-                },
-            },
-        },
-        {
-            "name": "read_file",
-            "fn": read_file,
-            "schema": {
-                "type": "function",
-                "function": {
-                    "name": "read_file",
-                    "description": "Read a text file from the rules folder by relative path.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {"path": {"type": "string"}},
-                        "required": ["path"],
-                    },
-                },
-            },
-        },
-        {
-            "name": "search_docs",
-            "fn": search_docs,
-            "schema": {
-                "type": "function",
-                "function": {
-                    "name": "search_docs",
-                    "description": "Keyword search over the rules folder.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {"query": {"type": "string"}},
-                        "required": ["query"],
-                    },
-                },
-            },
-        },
-    ]
+class ClientGone(Exception):
+    pass
 
 
-def build_agent(client=None):
-    a = GemmaAgent(client or GeminiClient(), system=SYSTEM)
-    a.add_tools([country_legal_portal_tool()])
-    rules = os.environ.get("LETTERLENS_RULES")
-    if not rules:
-        default_rules = os.path.join(ROOT, "rules")
-        if os.path.isdir(default_rules):
-            rules = default_rules
-    if rules and os.path.isdir(rules):
-        a.add_tools(folder_tools(rules))
-    return a
+class CachedFile:
+    def __init__(self, key, body, compressed, etag):
+        self.key = key
+        self.body = body
+        self.compressed = compressed
+        self.etag = etag
 
 
-SKIP_DIRS = {".git", ".venv", "__pycache__", ".pytest_cache", ".ruff_cache", "build", "dist"}
-SKIP_NAMES = (".env", "CLAUDE", "AGENTS", "CODEX", "GEMINI")
-ROOT = os.path.dirname(os.path.abspath(__file__))
+class FileCache:
+    def __init__(self):
+        self._items = {}
+        self._lock = threading.Lock()
+
+    def get(self, path):
+        stat = os.stat(path)
+        key = (stat.st_mtime_ns, stat.st_size)
+        with self._lock:
+            item = self._items.get(path)
+            if item and item.key == key:
+                return item
+        with open(path, "rb") as handle:
+            body = handle.read()
+        packed = gzip.compress(body, 6) if len(body) > 600 else None
+        if packed is not None and len(packed) >= len(body):
+            packed = None
+        item = CachedFile(key, body, packed, f'"{hashlib.sha1(body).hexdigest()[:16]}"')
+        with self._lock:
+            self._items[path] = item
+        return item
+
+
+class Session:
+    def __init__(self, agent):
+        self.agent = agent
+        self.lock = threading.Lock()
+        self.used = 0.0
+
+
+class SessionStore:
+    def __init__(self, factory, limit=50, ttl=3600, clock=time.monotonic):
+        self.factory = factory
+        self.limit = limit
+        self.ttl = ttl
+        self.clock = clock
+        self._items = {}
+        self._lock = threading.Lock()
+
+    def acquire(self, sid):
+        now = self.clock()
+        with self._lock:
+            for key in [k for k, s in self._items.items()
+                        if now - s.used > self.ttl and not s.lock.locked()]:
+                del self._items[key]
+            session = self._items.get(sid)
+            if session is None:
+                if len(self._items) >= self.limit:
+                    idle = [k for k, s in self._items.items() if not s.lock.locked()]
+                    if idle:
+                        del self._items[min(idle, key=lambda k: self._items[k].used)]
+                session = self._items[sid] = Session(self.factory())
+            session.used = now
+            return session
+
+    def drop(self, sid):
+        with self._lock:
+            return self._items.pop(sid, None) is not None
+
+    def __len__(self):
+        return len(self._items)
+
+
+def validate_chat(body):
+    if not isinstance(body, dict):
+        raise ValueError("Request must be a JSON object")
+    sid = body.get("sid", "default")
+    if not isinstance(sid, str) or not SID_RE.match(sid):
+        raise ValueError("Invalid session id")
+    message = body.get("message") or ""
+    if not isinstance(message, str) or len(message) > MAX_MESSAGE_CHARS:
+        raise ValueError("Message is missing or too long")
+    country = body.get("country")
+    if country is not None and (not isinstance(country, str) or len(country) > 80):
+        raise ValueError("Invalid country")
+    images = body.get("images") or []
+    files = body.get("files") or []
+    if not isinstance(images, list) or not isinstance(files, list):
+        raise ValueError("images and files must be lists")
+    if len(images) + len(files) > MAX_ATTACHMENTS:
+        raise ValueError(f"At most {MAX_ATTACHMENTS} attachments per message")
+    pictures = [parse_data_url(url) for url in images]
+    documents = []
+    for item in files:
+        if not isinstance(item, dict) or not isinstance(item.get("content"), str):
+            raise ValueError("Each file needs a name and text content")
+        name = os.path.basename(str(item.get("name") or "document.txt"))[:120]
+        if os.path.splitext(name)[1].lower() not in TEXT_EXTS | MARKDOWN_EXTS:
+            raise ValueError(f"Unsupported file type: {name}. Use an image, .md or .txt file.")
+        if len(item["content"]) > MAX_FILE_CHARS:
+            raise ValueError(f"{name} is too long")
+        documents.append({"name": name, "content": item["content"]})
+    if not (message.strip() or pictures or documents):
+        raise ValueError("Nothing to analyse")
+    return {"sid": sid, "message": message, "images": pictures, "files": documents,
+            "country": country}
 
 
 def source_zip(root=ROOT):
-    buf = io.BytesIO()
-    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        for dirpath, dirs, files in os.walk(root):
-            dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS and not d.endswith(".egg-info"))
-            for name in sorted(files):
-                if name.startswith(SKIP_NAMES) or name.endswith(".pyc"):
-                    continue
-                path = os.path.join(dirpath, name)
-                z.write(path, os.path.join("letterlens", os.path.relpath(path, root)))
-    return buf.getvalue()
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+
+        def add(path):
+            archive.write(path, os.path.join("letterlens", os.path.relpath(path, root)))
+
+        for name in sorted(os.listdir(root)):
+            path = os.path.join(root, name)
+            if os.path.isfile(path) and name in ZIP_FILES:
+                add(path)
+            elif os.path.isdir(path) and name in ZIP_DIRS:
+                for folder, dirs, names in os.walk(path):
+                    dirs[:] = sorted(d for d in dirs if d not in ZIP_SKIP)
+                    for item in sorted(names):
+                        if not item.endswith(".pyc"):
+                            add(os.path.join(folder, item))
+    return buffer.getvalue()
 
 
-STATIC_DIR = os.path.join(ROOT, "static")
+def status_payload(offline):
+    return {
+        "version": VERSION,
+        "mode": "offline" if offline else "cloud",
+        "model": LOCAL_MODEL if offline else MODEL,
+        "keys": 0 if offline else KeyPool().size(),
+        "ocr": LocalOCR.engine(),
+    }
 
 
-def make_app_server(port=8080, host="127.0.0.1"):
-    sessions = {}
-
-    def get_agent(sid):
-        if sid not in sessions:
-            if len(sessions) >= 50:
-                sessions.pop(next(iter(sessions)))
-            sessions[sid] = build_agent()
-        return sessions[sid]
+def make_app_server(port=8080, host="127.0.0.1", offline=False, factory=None, root=ROOT):
+    factory = factory or (lambda: build_agent(offline=offline))
+    store = SessionStore(factory)
+    cache = FileCache()
+    loopback_only = host in LOOPBACK
 
     class Handler(BaseHTTPRequestHandler):
-        def _send(self, code, content_type, data):
+        protocol_version = "HTTP/1.1"
+        server_version = "LetterLens"
+
+        def log_message(self, fmt, *args):
+            log.debug("%s %s", self.address_string(), fmt % args)
+
+        def _headers(self, code, ctype, length=None, extra=None):
             self.send_response(code)
-            self.send_header("Content-Type", content_type)
-            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Content-Type", ctype)
+            if length is not None:
+                self.send_header("Content-Length", str(length))
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "no-referrer")
+            for key, value in (extra or {}).items():
+                self.send_header(key, value)
             self.end_headers()
-            self.wfile.write(data)
+
+        def _send(self, code, ctype, data, extra=None):
+            self._headers(code, ctype, len(data), extra)
+            if self.command != "HEAD":
+                self.wfile.write(data)
+
+        def _json(self, code, obj):
+            self._send(code, "application/json; charset=utf-8", json.dumps(obj).encode("utf-8"),
+                       {"Cache-Control": "no-store"})
+
+        def _allowed(self):
+            host = self.headers.get("Host", "")
+            name = host.rsplit(":", 1)[0] if not host.endswith("]") else host
+            if loopback_only and name not in LOOPBACK:
+                self._json(403, {"error": "Forbidden host"})
+                return False
+            origin = self.headers.get("Origin")
+            if origin and urllib.parse.urlsplit(origin).netloc != host:
+                self._json(403, {"error": "Forbidden origin"})
+                return False
+            return True
+
+        def _file(self, rel, ctype):
+            try:
+                item = cache.get(os.path.join(root, rel))
+            except OSError:
+                return self._json(404, {"error": "not found"})
+            extra = {"ETag": item.etag, "Cache-Control": "no-cache", "Vary": "Accept-Encoding"}
+            if ctype.startswith("text/html"):
+                extra["Content-Security-Policy"] = CSP
+            if self.headers.get("If-None-Match") == item.etag:
+                return self._send(304, ctype, b"", extra)
+            body = item.body
+            if item.compressed and "gzip" in self.headers.get("Accept-Encoding", ""):
+                body = item.compressed
+                extra["Content-Encoding"] = "gzip"
+            return self._send(200, ctype, body, extra)
+
+        def do_HEAD(self):
+            self.do_GET()
 
         def do_GET(self):
-            parsed_path = urllib.parse.urlsplit(self.path).path
-            if parsed_path in {"", "/"}:
-                index_path = os.path.join(STATIC_DIR, "index.html")
-                if os.path.isfile(index_path):
-                    with open(index_path, "rb") as f:
-                        self._send(200, "text/html; charset=utf-8", f.read())
-                else:
-                    self._send(404, "text/plain", b"index.html not found")
-            elif parsed_path == "/styles.css":
-                css_path = os.path.join(STATIC_DIR, "styles.css")
-                if os.path.isfile(css_path):
-                    with open(css_path, "rb") as f:
-                        self._send(200, "text/css; charset=utf-8", f.read())
-                else:
-                    self._send(404, "text/plain", b"styles.css not found")
-            elif parsed_path == "/app.js":
-                js_path = os.path.join(STATIC_DIR, "app.js")
-                if os.path.isfile(js_path):
-                    with open(js_path, "rb") as f:
-                        self._send(200, "application/javascript; charset=utf-8", f.read())
-                else:
-                    self._send(404, "text/plain", b"app.js not found")
-            elif parsed_path == "/api/countries":
-                portals_path = os.path.join(ROOT, "rules", "country_legal_portals.json")
-                if os.path.isfile(portals_path):
-                    with open(portals_path, "rb") as f:
-                        self._send(200, "application/json; charset=utf-8", f.read())
-                else:
-                    self._send(404, "text/plain", b"country portals not found")
-            elif parsed_path == "/letterlens.zip":
-                data = source_zip()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/zip")
-                self.send_header("Content-Disposition", 'attachment; filename="letterlens.zip"')
-                self.send_header("Content-Length", str(len(data)))
-                self.end_headers()
-                self.wfile.write(data)
-            elif parsed_path == "/sample/notice.md":
-                sample_file = os.path.join(ROOT, "samples", "sample_document.md")
-                if os.path.isfile(sample_file):
-                    with open(sample_file, "rb") as f:
-                        data = f.read()
-                    self._send(200, "text/markdown; charset=utf-8", data)
-                else:
-                    self._send(404, "text/plain", b"not found")
-            elif parsed_path == "/sample/scan.png":
-                sample_img = os.path.join(ROOT, "samples", "sample_letter_scan.png")
-                if os.path.isfile(sample_img):
-                    with open(sample_img, "rb") as f:
-                        b64 = base64.b64encode(f.read()).decode("utf-8")
-                    data_url = f"data:image/png;base64,{b64}"
-                    self._send(200, "text/plain; charset=utf-8", data_url.encode("utf-8"))
-                else:
-                    self._send(404, "text/plain", b"not found")
-            else:
-                self._send(404, "text/plain; charset=utf-8", b"not found")
+            if not self._allowed():
+                return None
+            path = urllib.parse.urlsplit(self.path).path
+            if path in PAGES:
+                return self._file(*PAGES[path])
+            if path == "/api/status":
+                return self._json(200, status_payload(offline))
+            if path == "/letterlens.zip":
+                data = source_zip(root)
+                return self._send(200, "application/zip", data, {
+                    "Content-Disposition": 'attachment; filename="letterlens.zip"'})
+            return self._json(404, {"error": "not found"})
+
+        def _read_body(self):
+            if "application/json" not in self.headers.get("Content-Type", ""):
+                raise ValueError("Content-Type must be application/json")
+            try:
+                length = int(self.headers.get("Content-Length", ""))
+            except ValueError:
+                raise ValueError("Content-Length is required") from None
+            if length < 0 or length > MAX_BODY:
+                raise ValueError("Request is too large")
+            try:
+                return json.loads(self.rfile.read(length).decode("utf-8"))
+            except (ValueError, UnicodeDecodeError):
+                raise ValueError("Body is not valid JSON") from None
 
         def do_POST(self):
-            parsed_path = urllib.parse.urlsplit(self.path).path
-            if parsed_path != "/chat":
-                return self._send(404, "text/plain; charset=utf-8", b"not found")
-
-            self.send_response(200)
-            self.send_header("Content-Type", "application/x-ndjson")
-            self.end_headers()
-
-            def _emit(obj):
-                self.wfile.write((json.dumps(obj) + "\n").encode("utf-8"))
-                self.wfile.flush()
-
+            self.close_connection = True
+            if not self._allowed():
+                return None
+            path = urllib.parse.urlsplit(self.path).path
+            if path not in {"/chat", "/reset"}:
+                return self._json(404, {"error": "not found"})
             try:
-                length = int(self.headers.get("Content-Length", 0))
-                body = json.loads(self.rfile.read(length).decode("utf-8"))
-                sid = str(body.get("sid", "default"))
-                msg = body.get("message", "")
-                images = body.get("images") or None
-                files = body.get("files") or None
-                country = body.get("country") or None
+                body = self._read_body()
+                if path == "/reset":
+                    sid = body.get("sid") if isinstance(body, dict) else None
+                    if not isinstance(sid, str) or not SID_RE.match(sid):
+                        raise ValueError("Invalid session id")
+                    return self._json(200, {"ok": store.drop(sid)})
+                request = validate_chat(body)
+            except ValueError as exc:
+                return self._json(400, {"error": str(exc)})
+            return self._stream_chat(request)
 
-                if images:
-                    ocr_results = []
-                    for idx, img in enumerate(images):
-                        extracted = LocalOCR.extract_text(img)
-                        if extracted:
-                            ocr_results.append(f"[Document Text Extracted (Image {idx + 1})]:\n\"\"\"\n{extracted}\n\"\"\"")
-                    if ocr_results:
-                        ocr_block = "\n\n".join(ocr_results)
-                        msg = f"{ocr_block}\n\n{msg or 'Explain this document in simple A1-B2 English and cite verified country legal portals with footnotes.'}"
+        def _stream_chat(self, request):
+            self._headers(200, "application/x-ndjson", extra={
+                "Cache-Control": "no-store", "Connection": "close", "X-Accel-Buffering": "no"})
 
-                agent_inst = get_agent(sid)
-                if country:
-                    agent_inst.set_country_context(country)
-                agent_inst.run(msg, images=images, files=files, on_token=lambda t: _emit({"t": t}), country=country)
-            except Exception as e:
-                _emit({"error": str(e)})
+            def emit(obj):
+                try:
+                    self.wfile.write((json.dumps(obj) + "\n").encode("utf-8"))
+                    self.wfile.flush()
+                except OSError:
+                    raise ClientGone from None
 
-        def log_message(self, *args):
-            pass
+            session = store.acquire(request["sid"])
+            try:
+                with session.lock:
+                    session.agent.run(
+                        request["message"], images=request["images"], files=request["files"],
+                        on_event=emit, country=request["country"],
+                    )
+                emit({"done": True})
+            except ClientGone:
+                return
+            except Exception as exc:
+                known = isinstance(exc, (ApiError, ValueError))
+                if not known:
+                    log.exception("chat failed")
+                try:
+                    emit({"error": str(exc) if known else "Unexpected error. See the server log."})
+                except ClientGone:
+                    return
 
     return ThreadingHTTPServer((host, port), Handler)
 
 
-def main(argv):
-    if argv[:1] == ["serve"]:
-        host = os.environ.get("LETTERLENS_HOST", "127.0.0.1")
-        port = int(os.environ.get("LETTERLENS_PORT", "8080"))
-        server = make_app_server(port=port, host=host)
-        print(f"http://{host}:{port}")
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] != ["serve"]:
+        return agent_module.main(argv)
+    parser = argparse.ArgumentParser(prog="letterlens serve")
+    parser.add_argument("--host", default=os.environ.get("LETTERLENS_HOST", "127.0.0.1"))
+    parser.add_argument("--port", type=int, default=int(os.environ.get("LETTERLENS_PORT", "8080")))
+    parser.add_argument("--offline", action="store_true", help="use a local model, no cloud")
+    parser.add_argument("-v", "--verbose", action="store_true")
+    args = parser.parse_args(argv[1:])
+    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.WARNING)
+    server = make_app_server(port=args.port, host=args.host, offline=args.offline)
+    mode = "offline (local model)" if args.offline else "cloud"
+    print(f"LetterLens {VERSION} [{mode}] http://{args.host}:{args.port}")
+    try:
         server.serve_forever()
-        return 0
-    if not argv:
-        print("Usage: python app.py <file-or-text> | serve")
-        return 2
-
-    target = argv[0]
-    custom_prompt = argv[1] if len(argv) > 1 else None
-
-    describe(target, prompt=custom_prompt, stream=True)
+    except KeyboardInterrupt:
+        server.shutdown()
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())
