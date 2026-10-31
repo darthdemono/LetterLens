@@ -7,8 +7,10 @@
   const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
   const TEXT_EXT = /\.(md|markdown|txt|rst|csv|log|json|ya?ml|html)$/i;
   const IMAGE_EXT = /\.(png|jpe?g|webp|gif)$/i;
+  const PDF_EXT = /\.pdf$/i;
+  const PDF_MAX = 18 * 1024 * 1024;
 
-  const state = { sid: newSid(), images: [], files: [], busy: false, controller: null, countries: {} };
+  const state = { sid: newSid(), images: [], files: [], busy: false, controller: null, stream: null, countries: {} };
 
   function newSid() {
     const bytes = new Uint8Array(12);
@@ -67,17 +69,65 @@
         if (IMAGE_TYPES.includes(file.type) || IMAGE_EXT.test(file.name)) {
           const dataUrl = await shrinkImage(file);
           state.images.push({ name: file.name || 'pasted-image.png', dataUrl, size: file.size });
+        } else if (PDF_EXT.test(file.name) || file.type === 'application/pdf') {
+          if (file.size > PDF_MAX) {
+            toast(file.name + ' is larger than 18 MB. Try a smaller PDF or a photo of the page.');
+          } else {
+            const url = await readAs(file, 'readAsDataURL');
+            state.files.push({ name: file.name, data: url.split(',')[1] || '', size: file.size });
+          }
         } else if (TEXT_EXT.test(file.name)) {
           const content = await readAs(file, 'readAsText');
           state.files.push({ name: file.name, content, size: file.size });
         } else {
-          toast(file.name + ' is not supported. Use a photo (PNG, JPG, WebP) or a .md or .txt file.');
+          toast(file.name + ' is not supported. Use a photo, a PDF, or a .md or .txt file.');
         }
       } catch (err) {
         toast('Could not read ' + (file.name || 'that file') + '. Try a JPG or PNG.');
       }
     }
     renderChips();
+  }
+
+  function stopCamera() {
+    if (state.stream) state.stream.getTracks().forEach((t) => t.stop());
+    state.stream = null;
+    $('cameraVideo').srcObject = null;
+  }
+
+  async function openCamera() {
+    const media = navigator.mediaDevices;
+    if (!media || !media.getUserMedia || window.matchMedia('(pointer: coarse)').matches) {
+      $('cameraInput').click();
+      return;
+    }
+    try {
+      state.stream = await media.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 } },
+        audio: false,
+      });
+    } catch (err) {
+      toast('The camera is blocked or missing. Allow it in the browser, or attach a photo.');
+      return;
+    }
+    $('cameraVideo').srcObject = state.stream;
+    $('cameraDialog').showModal();
+  }
+
+  function takePhoto() {
+    const video = $('cameraVideo');
+    if (!video.videoWidth) {
+      toast('The camera is still starting. Try again in a moment.');
+      return;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    canvas.toBlob((blob) => {
+      $('cameraDialog').close();
+      if (blob) addFiles([new File([blob], 'camera-' + Date.now() + '.jpg', { type: 'image/jpeg' })]);
+    }, 'image/jpeg', 0.92);
   }
 
   function chip(label, size, thumb, onRemove) {
@@ -274,7 +324,7 @@
           sid: state.sid,
           message: text,
           images: images.map((i) => i.dataUrl),
-          files: files.map((f) => ({ name: f.name, content: f.content })),
+          files: files.map((f) => (f.data ? { name: f.name, data: f.data } : { name: f.name, content: f.content })),
           country: $('countrySelect').value,
         }),
       });
@@ -434,6 +484,11 @@
     });
     $('attachBtn').addEventListener('click', () => $('fileInput').click());
     $('pickBtn').addEventListener('click', () => $('fileInput').click());
+    $('cameraBtn').addEventListener('click', openCamera);
+    $('cameraInput').addEventListener('change', (e) => { addFiles(e.target.files); e.target.value = ''; });
+    $('shootBtn').addEventListener('click', takePhoto);
+    $('cameraCancel').addEventListener('click', () => $('cameraDialog').close());
+    $('cameraDialog').addEventListener('close', stopCamera);
     $('fileInput').addEventListener('change', (e) => { addFiles(e.target.files); e.target.value = ''; });
     $('stopBtn').addEventListener('click', () => state.controller && state.controller.abort());
     $('btnNew').addEventListener('click', reset);

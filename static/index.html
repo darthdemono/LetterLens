@@ -35,9 +35,9 @@
   <main>
     <section id="intro" class="intro">
       <h1>Understand your legal documents.</h1>
-      <p class="lead">Photograph or paste a legal document. LetterLens explains it in plain English: what it says, what to do, by when, and what it costs.</p>
+      <p class="lead">Photograph, upload a PDF or paste a legal document. LetterLens explains it in plain English: what it says, what to do, by when, and what it costs.</p>
       <div class="pick">
-        <button id="pickBtn" class="primary" type="button">Choose a photo or file</button>
+        <button id="pickBtn" class="primary" type="button">Choose a photo, PDF or file</button>
         <span class="hint">or drop it anywhere on this page</span>
       </div>
       <p class="try">
@@ -58,9 +58,13 @@
   <div class="composer-wrap">
     <div id="previews" class="previews" hidden></div>
     <form id="chatForm" class="composer">
-      <input type="file" id="fileInput" class="sr-only" multiple accept="image/png,image/jpeg,image/webp,image/gif,.md,.markdown,.txt,.csv,.log,.json,.yaml,.yml,.html" tabindex="-1">
-      <button id="attachBtn" class="icon" type="button" aria-label="Attach a photo or file">
+      <input type="file" id="fileInput" class="sr-only" multiple accept="image/png,image/jpeg,image/webp,image/gif,application/pdf,.pdf,.md,.markdown,.txt,.csv,.log,.json,.yaml,.yml,.html" tabindex="-1">
+      <button id="attachBtn" class="icon" type="button" aria-label="Attach a photo, PDF or file">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+      </button>
+      <input type="file" id="cameraInput" class="sr-only" accept="image/*" capture="environment" tabindex="-1">
+      <button id="cameraBtn" class="icon" type="button" aria-label="Take a photo of the document">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
       </button>
       <textarea id="userInput" rows="1" aria-label="Your message" placeholder="Paste the document text, or ask a question" autocomplete="off"></textarea>
       <button id="sendBtn" class="icon send" type="submit" aria-label="Send">
@@ -75,6 +79,14 @@
       <a href="/letterlens.zip" download>Source code</a>
     </p>
   </div>
+
+  <dialog id="cameraDialog" class="camera" aria-label="Camera">
+    <video id="cameraVideo" class="camera-video" autoplay playsinline muted></video>
+    <div class="camera-bar">
+      <button id="cameraCancel" class="ghost" type="button">Cancel</button>
+      <button id="shootBtn" class="primary" type="button">Take photo</button>
+    </div>
+  </dialog>
 
   <div id="toast" class="toast" role="alert" hidden></div>
   <div id="sr" class="sr-only" aria-live="polite"></div>

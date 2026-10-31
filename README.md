@@ -1,6 +1,6 @@
 # LetterLens
 
-Legal documents are hard to read, and the deadline is easy to miss. LetterLens takes a photo, a scan, a `.md`/`.txt` file or pasted text of a legal document (a notice, a contract, a permit, a bill), and explains it in plain English (A1 to B2): who sent it, what it asks, the deadline, any money, and what happens next. It starts from Hungary (rent, residence permits, municipal notices) and can be pointed at any other country.
+Legal documents are hard to read, and the deadline is easy to miss. LetterLens takes a photo (or a live camera shot), a scan, a PDF, a `.md`/`.txt` file or pasted text of a legal document (a notice, a contract, a permit, a bill), and explains it in plain English (A1 to B2): who sent it, what it asks, the deadline, any money, and what happens next. It starts from Hungary (rent, residence permits, municipal notices) and can be pointed at any other country.
 
 ## How the model is used
 
@@ -35,6 +35,7 @@ python app.py serve                    # web app on http://127.0.0.1:8080
 python app.py serve --offline          # same, with a local model
 python agent.py samples/sample_letter_hu.txt
 python agent.py samples/sample_letter_scan.png "What is the deadline?" --country Hungary
+python agent.py lease.pdf              # a PDF
 python agent.py -i                     # chat in the terminal
 python agent.py --check                # test every API key and the model name
 ```
@@ -51,6 +52,21 @@ Keys go in `.env` or the environment (any variable that looks like `GEMINI…KEY
 | `LETTERLENS_OCR` | `off` to skip local OCR |
 | `LETTERLENS_OCR_LANG`, `LETTERLENS_TESSERACT_LANG` | OCR language |
 | `LETTERLENS_HOST`, `LETTERLENS_PORT` | Server address |
+| `LETTERLENS_TOKEN` | Access code used by `--share` / `--tunnel` (random if unset) |
+
+## Use it from your phone
+
+The camera button opens the phone camera (or a live camera view on a computer). To reach the app from your phone, share it through a tunnel with a private access code:
+
+```bash
+python app.py serve --tunnel
+```
+
+`--share` and `--tunnel` listen on all network interfaces (behind the access code), so the terminal also prints a same-Wi-Fi link like `http://192.168.1.20:8080/?t=CODE`. Your phone can use that right away with no install; Windows may ask to allow Python through the firewall on first run. The tunnel link works from anywhere and needs [`cloudflared`](https://developers.cloudflare.com/argo-tunnel/trycloudflare) (`winget install --id Cloudflare.cloudflared`). It prints a link like `https://random-words.trycloudflare.com/?t=CODE`; open it on the phone once and the code is remembered in a cookie. Without `--tunnel`, `--share` only turns on the access code, for use with your own tunnel (Tailscale, ngrok, same Wi-Fi with `--host 0.0.0.0`). Set `LETTERLENS_TOKEN` to keep the same code between runs.
+
+- Anyone with the full link can use your API keys while sharing is on. Press Ctrl+C to stop it. Without `--share` the server only answers on this computer.
+- The live camera view needs HTTPS, which the tunnel provides. On a phone, the camera button opens the camera app, which works everywhere.
+- Quick tunnels are for testing: no uptime promise, and Cloudflare may hold back streamed output, so an answer can appear all at once instead of word by word.
 
 ## Speed and safety
 
@@ -63,7 +79,7 @@ Keys go in `.env` or the environment (any variable that looks like `GEMINI…KEY
 ## Limits, said plainly
 
 - Not legal advice. Every answer ends with a disclaimer.
-- No PDF support yet. Export a page as an image.
+- PDFs: text PDFs are read directly (standard fonts and embedded Unicode fonts, compressed or not). Scanned PDFs are handled when the pages are plain JPEG or Flate images. Password-protected PDFs, JPEG 2000 scans and exotic font encodings are refused with a clear message; export those pages as images instead. The reader is written with the standard library only (`pdf.py`).
 - Local OCR: Windows uses `Windows.Media.Ocr`; other systems use Tesseract if installed (`pip install ".[ocr]"` plus the Tesseract program). Without OCR the model still reads the image itself.
 - The notes in `rules/` are **starter data**. Only lines marked `[verified]` come from an official page; the rest is demo text. Check the official portal before you act.
 - Personal data in a document is sent to the model you choose. Use `--offline` for sensitive documents.

@@ -17,7 +17,7 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["app", "agent", "config", "images", "ocr", "tools"]
+py-modules = ["app", "agent", "config", "images", "ocr", "pdf", "tools"]
 
 [tool.ruff]
 line-length = 100

@@ -254,6 +254,11 @@ th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
 .icon.send { background: var(--accent); color: var(--accent-ink); }
 .icon.send:hover { filter: brightness(1.1); }
 
+.camera { border: 0; padding: 0; border-radius: 16px; max-width: min(92vw, 720px); background: var(--paper); color: var(--ink); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
+.camera::backdrop { background: rgba(10, 12, 18, 0.6); }
+.camera-video { display: block; width: 100%; max-height: 70vh; background: #000; }
+.camera-bar { display: flex; justify-content: flex-end; gap: 8px; padding: 12px; }
+
 .fine { margin: 8px auto 0; font-size: 0.78rem; color: var(--muted); text-align: center; }
 .fine a { color: inherit; margin-left: 6px; }
 
