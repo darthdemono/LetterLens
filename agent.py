@@ -13,6 +13,12 @@ import urllib.parse
 import urllib.request
 from typing import Any, Callable, Dict, List, Optional, Union
 
+if sys.platform.startswith("win"):
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 _env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 if os.path.isfile(_env_path):
     with open(_env_path, encoding="utf-8") as _f:
@@ -34,6 +40,9 @@ SYSTEM_PROMPT = (
     "If an official term is needed, explain what it means in simple words. "
     "Use short sentences and clear bullet points. "
     "Do not use any emojis. "
+    "Add footnote markers ([^1], [^2]) to statements citing local government data, official rules, "
+    "ordinances, municipal offices, or statutory deadlines. "
+    "Always search available local government rules tools before answering. "
     "Structure every reply with these Markdown sections:\n"
     "### Summary\n"
     "What this document is and who sent it in 1 or 2 simple sentences.\n"
@@ -46,7 +55,10 @@ SYSTEM_PROMPT = (
     "### What Happens If You Do Nothing\n"
     "The consequences if you ignore this letter.\n"
     "### Summary Table\n"
-    "A simple Markdown table comparing options or summarizing key details.\n\n"
+    "A simple Markdown table comparing options or summarizing key details.\n"
+    "### Footnotes\n"
+    "List all cited local government rules, municipal decree numbers, official government departments, "
+    "and legal references formatted as [^1]: Source description.\n\n"
     "Always end with a short notice: Disclaimer: This is a plain language explanation, not formal legal advice."
 )
 
@@ -267,6 +279,7 @@ class MarkdownParser:
             "amounts": [],
             "contacts": [],
             "actions": [],
+            "footnotes": [],
         }
 
         date_patterns = [
@@ -296,6 +309,10 @@ class MarkdownParser:
                 fields["actions"].append(s[5:].strip())
             elif re.match(r"^\d+\.\s+\*\*(.*?)\*\*", s):
                 fields["actions"].append(s)
+            elif re.match(r"^\[\^(\d+)\]:\s*(.*)$", s):
+                m_fn = re.match(r"^\[\^(\d+)\]:\s*(.*)$", s)
+                if m_fn:
+                    fields["footnotes"].append({"id": m_fn.group(1), "text": m_fn.group(2)})
 
         return fields
 
@@ -306,12 +323,14 @@ class MarkdownParser:
             clean = re.sub(r"\*\*(.*?)\*\*", r"\1", clean)
             clean = re.sub(r"\*(.*?)\*", r"\1", clean)
             clean = re.sub(r"^#{1,6}\s+", "", clean, flags=re.MULTILINE)
+            clean = re.sub(r"\[\^(\d+)\]", r"[\1]", clean)
             return clean
 
         BOLD = "\033[1m"
         BLUE = "\033[38;5;75m"
         CYAN = "\033[38;5;80m"
         GRAY = "\033[38;5;244m"
+        YELLOW = "\033[38;5;220m"
         RESET = "\033[0m"
 
         out_lines = []
@@ -349,6 +368,13 @@ class MarkdownParser:
             elif in_table:
                 flush_table()
 
+            m_fn_def = re.match(r"^\[\^(\d+)\]:\s*(.*)$", line.strip())
+            if m_fn_def:
+                fn_num = m_fn_def.group(1)
+                fn_content = m_fn_def.group(2)
+                out_lines.append(f"  {BOLD}{YELLOW}[^{fn_num}]{RESET} {fn_content}")
+                continue
+
             m_h = re.match(r"^(#{1,6})\s+(.*)$", line)
             if m_h:
                 level = len(m_h.group(1))
@@ -366,11 +392,13 @@ class MarkdownParser:
                 indent = m_b.group(1)
                 text = m_b.group(2)
                 text = re.sub(r"\*\*(.*?)\*\*", f"{BOLD}\\1{RESET}", text)
+                text = re.sub(r"\[\^(\d+)\]", f"{BOLD}{YELLOW}[^\\1]{RESET}", text)
                 out_lines.append(f"{indent}  * {text}")
                 continue
 
             styled = re.sub(r"\*\*(.*?)\*\*", f"{BOLD}\\1{RESET}", line)
             styled = re.sub(r"\*(.*?)\*", f"\033[3m\\1{RESET}", styled)
+            styled = re.sub(r"\[\^(\d+)\]", f"{BOLD}{YELLOW}[^\\1]{RESET}", styled)
             out_lines.append(styled)
 
         if in_table:
@@ -463,12 +491,12 @@ class GemmaAgent:
     ) -> str:
         if isinstance(target, bytes) or (isinstance(target, str) and self._is_image_target(target)):
             ocr_text = LocalOCR.extract_text(target)
-            custom_prompt = prompt or "Explain this official letter or document in simple A1-B2 English:"
+            custom_prompt = prompt or "Explain this official letter or document in simple A1-B2 English and add footnotes for local government data:"
             if ocr_text:
                 full_prompt = (
                     f"[Extracted Document Text]:\n\"\"\"\n{ocr_text}\n\"\"\"\n\n"
                     f"{custom_prompt}\n"
-                    "Confirm the numbers, dates, and names from the document image."
+                    "Confirm the numbers, dates, and names from the document image and cite relevant local rules in footnotes."
                 )
             else:
                 full_prompt = custom_prompt
@@ -483,7 +511,7 @@ class GemmaAgent:
                 filename = os.path.basename(target)
                 doc_prompt = (
                     f"--- Attached Document: {filename} ---\n{content}\n\n"
-                    f"{prompt or 'Explain this document in simple A1-B2 English:'}"
+                    f"{prompt or 'Explain this document in simple A1-B2 English and cite local government rules with footnotes:'}"
                 )
                 return self.run(prompt=doc_prompt, on_token=on_token)
 
@@ -493,7 +521,7 @@ class GemmaAgent:
                 filename = os.path.basename(target)
                 doc_prompt = (
                     f"--- Attached Document: {filename} ---\n{content}\n\n"
-                    f"{prompt or 'Explain this document in simple A1-B2 English:'}"
+                    f"{prompt or 'Explain this document in simple A1-B2 English and cite local government rules with footnotes:'}"
                 )
                 return self.run(prompt=doc_prompt, on_token=on_token)
 
@@ -512,7 +540,7 @@ class GemmaAgent:
         files: Optional[List[Dict[str, str]]] = None,
         on_token: Optional[Callable[[str], None]] = None,
     ) -> str:
-        prompt_text = prompt or "Explain this document in simple A1-B2 English:"
+        prompt_text = prompt or "Explain this document in simple A1-B2 English with footnotes for local government data:"
 
         if files:
             file_sections = []
@@ -583,6 +611,10 @@ class GemmaAgent:
 def build_agent(client: Optional[Client] = None) -> GemmaAgent:
     agent = GemmaAgent(client or GeminiClient(), system=SYSTEM_PROMPT)
     rules_dir = os.environ.get("LETTERLENS_RULES")
+    if not rules_dir:
+        default_rules = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules")
+        if os.path.isdir(default_rules):
+            rules_dir = default_rules
     if rules_dir and os.path.isdir(rules_dir):
         import app
         if hasattr(app, "folder_tools"):
@@ -604,7 +636,7 @@ def describe(
 def interactive_shell():
     agent = build_agent()
     print("=================================================================")
-    print("  LetterLens Gemma 4 Agent")
+    print("  LetterLens Gemma 4 Agent with Local Government Footnotes")
     print("  Enter picture path (.png, .jpg), markdown (.md), or text.")
     print("  Type 'exit' to quit.")
     print("=================================================================\n")

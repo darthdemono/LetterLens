@@ -101,6 +101,15 @@ class TestLetterLens(unittest.TestCase):
         self.assertTrue(bool(k1))
         self.assertTrue(bool(k2))
 
+    def test_markdown_parser_extracts_footnotes(self):
+        text = "Under municipal law[^1], you have 14 days.\n\n[^1]: Budapest Municipal Decree No. 14/2021"
+        fields = app.MarkdownParser.extract_key_fields(text)
+        self.assertEqual(len(fields["footnotes"]), 1)
+        self.assertEqual(fields["footnotes"][0]["id"], "1")
+        self.assertEqual(fields["footnotes"][0]["text"], "Budapest Municipal Decree No. 14/2021")
+        terminal_out = app.MarkdownParser.to_terminal_text(text, use_color=False)
+        self.assertIn("[1]", terminal_out)
+
 
 def test_thought_text_is_removed_from_the_reply(monkeypatch=None):
     TestLetterLens().test_thought_text_is_removed_from_the_reply()
@@ -124,6 +133,10 @@ def test_agent_handles_markdown_files():
 
 def test_agent_handles_pictures_multimodal():
     TestLetterLens().test_agent_handles_pictures_multimodal()
+
+
+def test_markdown_parser_extracts_footnotes():
+    TestLetterLens().test_markdown_parser_extracts_footnotes()
 
 
 if __name__ == "__main__":

@@ -12,6 +12,12 @@ import urllib.request
 import zipfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+if sys.platform.startswith("win"):
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 import agent
 from agent import (
     Client,
@@ -116,6 +122,10 @@ def folder_tools(root):
 def build_agent(client=None):
     a = GemmaAgent(client or GeminiClient(), system=SYSTEM)
     rules = os.environ.get("LETTERLENS_RULES")
+    if not rules:
+        default_rules = os.path.join(ROOT, "rules")
+        if os.path.isdir(default_rules):
+            rules = default_rules
     if rules and os.path.isdir(rules):
         a.add_tools(folder_tools(rules))
     return a
@@ -469,6 +479,53 @@ h1 {
   border-radius: 0 0.4rem 0.4rem 0;
 }
 
+.md-fnref {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  text-decoration: none;
+  padding: 0 0.15rem;
+  vertical-align: super;
+  line-height: 0;
+}
+.md-fnref:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.md-footnotes {
+  margin-top: 1.15rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.md-footnotes-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #93c5fd;
+  margin-bottom: 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.md-fn-item {
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+}
+.md-fn-num {
+  font-weight: 600;
+  color: var(--accent-cyan);
+  margin-right: 0.25rem;
+}
+.fn-back {
+  color: var(--text-dim);
+  text-decoration: none;
+  margin-left: 0.35rem;
+}
+.fn-back:hover {
+  color: var(--accent-cyan);
+}
+
 .table-container {
   overflow-x: auto;
   margin: 0.85rem 0;
@@ -647,7 +704,7 @@ input[type="text"]::placeholder {
         <h1>LetterLens</h1>
         <span class="badge-model">Gemma 4 Multimodal</span>
       </div>
-      <div class="tagline">Plain English document intelligence agent with local OCR</div>
+      <div class="tagline">Plain English document intelligence agent with local OCR &amp; footnotes</div>
     </div>
     <a href="/letterlens.zip" download class="btn-secondary" title="Export source code">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -668,7 +725,7 @@ input[type="text"]::placeholder {
       Scanned Letter (Image)
     </button>
     <button type="button" class="pill-sample" id="sampleTxtBtn">
-      Legal Inquiry (Text)
+      Local Government Inquiry
     </button>
   </div>
 
@@ -689,7 +746,7 @@ input[type="text"]::placeholder {
       <div class="msg-sender">LetterLens Agent</div>
       <div class="msg">
         <div class="md-p"><strong>LetterLens Agent ready.</strong> Provide an official letter, notice, bill, or legal document as a <strong>picture</strong>, <strong>Markdown file (.md)</strong>, or <strong>plain text</strong>.</div>
-        <div class="md-p">The agent explains what the document wants, the deadlines, any money required, and what happens next in clear A1-B2 plain English.</div>
+        <div class="md-p">The agent explains what the document wants, deadlines, fees, and next steps in clear A1-B2 plain English, with footnotes citing local government rules.</div>
       </div>
     </div>
   </div>
@@ -770,7 +827,7 @@ document.getElementById('sampleMdBtn').addEventListener('click', async () => {
       const text = await res.text();
       pendingFiles.push({ name: 'lease_amendment_notice.md', content: text });
       renderPreviews();
-      input.value = 'Explain this notice in simple English.';
+      input.value = 'Explain this notice in simple English and cite local government rules with footnotes.';
       input.focus();
     }
   } catch (err) {
@@ -785,7 +842,7 @@ document.getElementById('sampleImgBtn').addEventListener('click', async () => {
       const dataUrl = await res.text();
       pendingImages.push({ name: 'sample_letter_scan.png', dataUrl: dataUrl });
       renderPreviews();
-      input.value = 'Explain this scanned letter in simple English.';
+      input.value = 'Explain this scanned letter in simple English and include footnotes for local government rules.';
       input.focus();
     }
   } catch (err) {
@@ -794,7 +851,7 @@ document.getElementById('sampleImgBtn').addEventListener('click', async () => {
 });
 
 document.getElementById('sampleTxtBtn').addEventListener('click', () => {
-  input.value = 'A tenant received a letter saying their building maintenance cost increases by 8,500 HUF on Jan 1. If they disagree, they have 14 days to write back. Explain what this means in simple words.';
+  input.value = 'A tenant in Budapest received a notice that their utility cost is increasing by 8,500 HUF. What are their rights under Budapest municipal decrees? Add footnotes for local government data.';
   input.focus();
 });
 
@@ -853,6 +910,7 @@ function parseMarkdown(md) {
   let inList = false;
   let inTable = false;
   let tableRows = [];
+  let footnoteDefs = [];
 
   function flushList() {
     if (inList) {
@@ -898,12 +956,21 @@ function parseMarkdown(md) {
     out = out.replace(/`([^`]+)`/g, '<code class="md-code">$1</code>');
     out = out.replace(/\\*\\*([^\\*]+)\\*\\*/g, '<strong class="md-strong">$1</strong>');
     out = out.replace(/(?:^|[^*])\\*([^*]+)\\*/g, ' <em class="md-em">$1</em>');
+    out = out.replace(/\\[\\^(\\d+)\\]/g, '<sup><a href="#fn-$1" id="fnref-$1" class="md-fnref">[$1]</a></sup>');
     return out;
   }
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i];
     const line = rawLine.trim();
+
+    const fnDefMatch = line.match(/^\\[\\^(\\d+)\\]:\\s*(.*)$/);
+    if (fnDefMatch) {
+      flushList();
+      flushTable();
+      footnoteDefs.push({ id: fnDefMatch[1], text: fnDefMatch[2] });
+      continue;
+    }
 
     if (line.startsWith('|') && line.endsWith('|')) {
       flushList();
@@ -967,6 +1034,16 @@ function parseMarkdown(md) {
 
   flushList();
   flushTable();
+
+  if (footnoteDefs.length > 0) {
+    let fnHtml = '<div class="md-footnotes"><div class="md-footnotes-title">Footnotes &amp; Local Government Data</div>';
+    footnoteDefs.forEach(fn => {
+      fnHtml += `<div class="md-fn-item" id="fn-${fn.id}"><span class="md-fn-num">[${fn.id}]</span>${inlineFormat(fn.text)} <a href="#fnref-${fn.id}" class="fn-back" title="Back to text">&#8617;</a></div>`;
+    });
+    fnHtml += '</div>';
+    html += fnHtml;
+  }
+
   return html;
 }
 
@@ -1027,7 +1104,7 @@ async function handleSubmit(e) {
 
   input.value = '';
   addMsg('u', text || '(Analyzed attachments)', currentImages, currentFiles);
-  const bubble = addMsg('a', 'LetterLens Agent is analyzing input with Gemma 4 and local OCR...');
+  const bubble = addMsg('a', 'LetterLens Agent is analyzing input with Gemma 4 and local government rules...');
   sendBtn.disabled = true;
 
   try {
@@ -1172,7 +1249,7 @@ def make_app_server(port=8080, host="127.0.0.1"):
                             ocr_results.append(f"[Document Text Extracted (Image {idx + 1})]:\n\"\"\"\n{extracted}\n\"\"\"")
                     if ocr_results:
                         ocr_block = "\n\n".join(ocr_results)
-                        msg = f"{ocr_block}\n\n{msg or 'Explain this document in simple A1-B2 English and confirm the dates and amounts.'}"
+                        msg = f"{ocr_block}\n\n{msg or 'Explain this document in simple A1-B2 English and cite local government rules with footnotes.'}"
 
                 agent_inst = get_agent(sid)
                 agent_inst.run(msg, images=images, files=files, on_token=lambda t: _emit({"t": t}))
