@@ -1,0 +1,17 @@
+[Unit]
+Description=letterlens, Gemma 4 letter explainer behind hacktoberfest.darthdemono.com
+After=network-online.target
+
+[Service]
+# The vault password comes from the shared env file; the Gemini key is injected by unv and never written to disk.
+EnvironmentFile=/home/darthdemono/docker/.env
+Environment=UNV_SERVER_URL=http://localhost:8743
+Environment=LETTERLENS_HOST=10.10.0.2
+Environment=LETTERLENS_PORT=8765
+WorkingDirectory=/home/darthdemono/Code/letterlens
+ExecStart=/home/darthdemono/.local/bin/unv exec --entry Gemini=TINYHARNESS_API_KEY -- /home/darthdemono/Code/letterlens/.venv/bin/python app.py serve
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

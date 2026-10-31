@@ -1,0 +1,8 @@
+Dear Mr Example,
+
+Our records show that your rent for October is unpaid. Please transfer the amount of 120,000 HUF
+to the account named below within 8 days of this letter. If we do not receive it, we may start
+the procedure described in your lease.
+
+Sincerely, Example Housing Ltd.
+(Invented sample for testing, not a real letter.)

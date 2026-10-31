@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Environment
+.env
+.env.*
+
+# Local working files
+.agents/
+.claude/
+.codex/
+.gemini/
+.serena/
+Handoff/
+handoff/
+Research/
+research/
+CLAUDE*.md
+AGENTS*.md
+CODEX*.md
+GEMINI*.md
