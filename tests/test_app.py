@@ -12,6 +12,7 @@ import sys
 import threading
 import time
 import zipfile
+from pathlib import Path
 
 import pytest
 
@@ -21,6 +22,7 @@ from agent import ApiError, GemmaAgent
 from config import ROOT
 from images import Image
 
+ROOT_DATA = Path(__file__).parent / "data"
 PNG_URL = "data:image/png;base64," + base64.b64encode(b"\x89PNG data").decode()
 
 
@@ -218,6 +220,9 @@ def test_sessions_keep_history_and_reset_clears_it(server):
         ({"message": "x", "files": ["a.txt"]}, "name and text content"),
         ({"message": "x", "files": [{"name": "a.txt", "content": 5}]}, "name and text content"),
         ({"message": "x", "files": [{"name": "a.exe", "content": "x"}]}, "Unsupported file type"),
+        ({"message": "x", "files": [{"name": "a.pdf"}]}, "has no data"),
+        ({"message": "x", "files": [{"name": "a.pdf", "data": "***"}]}, "not valid base64"),
+        ({"message": "x", "files": [{"name": "a.pdf", "data": "aGVsbG8="}]}, "not a PDF"),
         ({"message": "x", "files": [{"name": "a.txt", "content": "y" * 200_001}]}, "too long"),
         ({"message": "  "}, "Nothing to analyse"),
         ({}, "Nothing to analyse"),
@@ -469,3 +474,34 @@ def test_image_objects_reach_the_agent(server):
 
     server(factory=Spy).chat(sid="spy", message="x", images=[PNG_URL])
     assert seen == [Image("image/png", b"\x89PNG data")]
+
+
+def pdf_payload(name):
+    raw = (ROOT_DATA / name).read_bytes()
+    return base64.b64encode(raw).decode()
+
+
+def test_pdf_uploads_become_text_or_pictures():
+    text = app.validate_chat({"message": "", "files": [
+        {"name": "../letter.pdf", "data": pdf_payload("chromium.pdf")}]})
+    assert text["files"][0]["name"] == "letter.pdf" and "Tisztelt" in text["files"][0]["content"]
+    assert text["images"] == []
+    scan = app.validate_chat({"message": "", "files": [
+        {"name": "scan.PDF", "data": pdf_payload("scan.pdf")}]})
+    assert scan["files"] == [] and scan["images"][0].mime == "image/jpeg"
+
+
+def test_pdf_too_large_is_rejected(monkeypatch):
+    monkeypatch.setattr(app.pdf, "MAX_PDF_BYTES", 10)
+    with pytest.raises(ValueError, match="too large"):
+        app.validate_chat({"message": "", "files": [
+            {"name": "a.pdf", "data": pdf_payload("chromium.pdf")}]})
+
+
+def test_pdf_reaches_the_agent_over_http(server):
+    client = EchoClient("Read it")
+    srv = server(factory=lambda: GemmaAgent(client))
+    response, events = srv.chat(sid="pdf", message="Explain", files=[
+        {"name": "lease.pdf", "data": pdf_payload("chromium.pdf")}])
+    assert response.status == 200 and events[-1] == {"done": True}
+    assert "--- Document: lease.pdf ---" in client.seen[0][-1]["content"]

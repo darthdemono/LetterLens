@@ -1,11 +1,19 @@
 import argparse
+import base64
+import binascii
 import gzip
 import hashlib
+import hmac
+import http.cookies
 import io
 import json
 import logging
 import os
 import re
+import secrets
+import shutil
+import socket
+import subprocess
 import sys
 import threading
 import time
@@ -14,9 +22,10 @@ import zipfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import agent as agent_module
+import pdf
 from agent import ApiError, build_agent
 from config import LOCAL_MODEL, MODEL, ROOT, VERSION, KeyPool
-from images import MARKDOWN_EXTS, TEXT_EXTS, parse_data_url
+from images import MARKDOWN_EXTS, PDF_EXTS, TEXT_EXTS, parse_data_url
 from ocr import LocalOCR
 
 log = logging.getLogger("letterlens.server")
@@ -47,7 +56,8 @@ CSP = (
 
 ZIP_FILES = {
     "README.md", "LICENSE", "NOTICE", "SUBMISSION.md", "pyproject.toml", ".gitignore",
-    "app.py", "agent.py", "config.py", "images.py", "ocr.py", "tools.py", "ocr_win.ps1",
+    "app.py", "agent.py", "config.py", "images.py", "ocr.py", "pdf.py", "tools.py",
+    "ocr_win.ps1",
 }
 ZIP_DIRS = {"static", "rules", "samples", "tests", ".github"}
 ZIP_SKIP = {"__pycache__", ".pytest_cache", ".ruff_cache"}
@@ -128,6 +138,18 @@ class SessionStore:
         return len(self._items)
 
 
+def read_pdf(data, name):
+    if not isinstance(data, str):
+        raise ValueError(f"{name} has no data")
+    try:
+        raw = base64.b64decode(data, validate=True)
+    except (binascii.Error, ValueError):
+        raise ValueError(f"{name} is not valid base64") from None
+    if len(raw) > pdf.MAX_PDF_BYTES:
+        raise ValueError(f"{name} is too large")
+    return pdf.inputs(raw, name)
+
+
 def validate_chat(body):
     if not isinstance(body, dict):
         raise ValueError("Request must be a JSON object")
@@ -149,11 +171,19 @@ def validate_chat(body):
     pictures = [parse_data_url(url) for url in images]
     documents = []
     for item in files:
-        if not isinstance(item, dict) or not isinstance(item.get("content"), str):
+        if not isinstance(item, dict):
             raise ValueError("Each file needs a name and text content")
         name = os.path.basename(str(item.get("name") or "document.txt"))[:120]
-        if os.path.splitext(name)[1].lower() not in TEXT_EXTS | MARKDOWN_EXTS:
-            raise ValueError(f"Unsupported file type: {name}. Use an image, .md or .txt file.")
+        ext = os.path.splitext(name)[1].lower()
+        if ext in PDF_EXTS:
+            texts, found = read_pdf(item.get("data"), name)
+            documents += texts
+            pictures += found
+            continue
+        if not isinstance(item.get("content"), str):
+            raise ValueError("Each file needs a name and text content")
+        if ext not in TEXT_EXTS | MARKDOWN_EXTS:
+            raise ValueError(f"Unsupported file type: {name}. Use a PDF, image, .md or .txt file.")
         if len(item["content"]) > MAX_FILE_CHARS:
             raise ValueError(f"{name} is too long")
         documents.append({"name": name, "content": item["content"]})
@@ -193,11 +223,64 @@ def status_payload(offline):
     }
 
 
-def make_app_server(port=8080, host="127.0.0.1", offline=False, factory=None, root=ROOT):
+TUNNEL_URL = re.compile(r"https://[a-z0-9-]+\.trycloudflare\.com")
+COOKIE = "ll_token"
+LOCKED_CSP = "default-src 'none'; style-src 'unsafe-inline'"
+LOCKED_PAGE = (
+    b"<!doctype html><meta charset=utf-8><title>LetterLens</title>"
+    b"<p style='font:16px system-ui;margin:2rem'>This LetterLens is private. "
+    b"Open the full link that was printed in the terminal, the one that ends with <code>?t=</code> "
+    b"and a code.</p>"
+)
+
+
+def lan_address():
+    probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        probe.connect(("10.255.255.255", 1))
+        return probe.getsockname()[0]
+    except OSError:
+        return None
+    finally:
+        probe.close()
+
+
+def start_tunnel(port, token, out=print, which=shutil.which, popen=subprocess.Popen, wait=25):
+    exe = which("cloudflared")
+    if not exe:
+        out("cloudflared is not installed, so there is no phone link. Install it with "
+            "'winget install --id Cloudflare.cloudflared' and run again with --tunnel.")
+        return None
+    proc = popen([exe, "tunnel", "--no-autoupdate", "--url", f"http://127.0.0.1:{port}"],
+                 stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+
+    shown = threading.Event()
+
+    def watch():
+        for line in proc.stderr:
+            found = None if shown.is_set() else TUNNEL_URL.search(line)
+            if found:
+                shown.set()
+                out(f"Open this on your phone from anywhere: {found.group(0)}/?t={token}")
+
+    def hint():
+        if not shown.is_set():
+            out("No tunnel link yet. Check your internet, or run this alone to see the error: "
+                f"cloudflared tunnel --url http://127.0.0.1:{port}")
+
+    threading.Thread(target=watch, daemon=True).start()
+    timer = threading.Timer(wait, hint)
+    timer.daemon = True
+    timer.start()
+    return proc
+
+
+def make_app_server(port=8080, host="127.0.0.1", offline=False, factory=None, root=ROOT,
+                    token=None):
     factory = factory or (lambda: build_agent(offline=offline))
     store = SessionStore(factory)
     cache = FileCache()
-    loopback_only = host in LOOPBACK
+    loopback_only = host in LOOPBACK and not token
 
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
@@ -213,6 +296,7 @@ def make_app_server(port=8080, host="127.0.0.1", offline=False, factory=None, ro
                 self.send_header("Content-Length", str(length))
             self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("Referrer-Policy", "no-referrer")
+            self.send_header("Permissions-Policy", "camera=(self)")
             for key, value in (extra or {}).items():
                 self.send_header(key, value)
             self.end_headers()
@@ -226,6 +310,27 @@ def make_app_server(port=8080, host="127.0.0.1", offline=False, factory=None, ro
             self._send(code, "application/json; charset=utf-8", json.dumps(obj).encode("utf-8"),
                        {"Cache-Control": "no-store"})
 
+        def _has_token(self):
+            jar = http.cookies.SimpleCookie(self.headers.get("Cookie", ""))
+            morsel = jar.get(COOKIE)
+            return bool(morsel) and hmac.compare_digest(morsel.value, token)
+
+        def _login(self):
+            parts = urllib.parse.urlsplit(self.path)
+            given = (urllib.parse.parse_qs(parts.query).get("t") or [""])[0]
+            if given and hmac.compare_digest(given, token):
+                secure = "; Secure" if self.headers.get("X-Forwarded-Proto") == "https" else ""
+                self._send(302, "text/plain", b"", {
+                    "Location": parts.path or "/", "Cache-Control": "no-store",
+                    "Set-Cookie": f"{COOKIE}={token}; Path=/; HttpOnly; SameSite=Lax{secure}"})
+                return False
+            if parts.path == "/":
+                self._send(401, "text/html; charset=utf-8", LOCKED_PAGE,
+                           {"Content-Security-Policy": LOCKED_CSP})
+            else:
+                self._json(401, {"error": "Locked. Open the private link from the terminal."})
+            return False
+
         def _allowed(self):
             host = self.headers.get("Host", "")
             name = host.rsplit(":", 1)[0] if not host.endswith("]") else host
@@ -236,6 +341,8 @@ def make_app_server(port=8080, host="127.0.0.1", offline=False, factory=None, ro
             if origin and urllib.parse.urlsplit(origin).netloc != host:
                 self._json(403, {"error": "Forbidden origin"})
                 return False
+            if token and not self._has_token():
+                return self._login()
             return True
 
         def _file(self, rel, ctype):
@@ -347,19 +454,38 @@ def main(argv=None):
     if argv[:1] != ["serve"]:
         return agent_module.main(argv)
     parser = argparse.ArgumentParser(prog="letterlens serve")
-    parser.add_argument("--host", default=os.environ.get("LETTERLENS_HOST", "127.0.0.1"))
+    parser.add_argument("--host", default=os.environ.get("LETTERLENS_HOST"))
     parser.add_argument("--port", type=int, default=int(os.environ.get("LETTERLENS_PORT", "8080")))
     parser.add_argument("--offline", action="store_true", help="use a local model, no cloud")
     parser.add_argument("-v", "--verbose", action="store_true")
+    parser.add_argument("--share", action="store_true",
+                        help="require a private access code so a phone or tunnel can connect")
+    parser.add_argument("--tunnel", action="store_true",
+                        help="start a Cloudflare tunnel and print a link for your phone")
     args = parser.parse_args(argv[1:])
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.WARNING)
-    server = make_app_server(port=args.port, host=args.host, offline=args.offline)
+    token = None
+    if args.share or args.tunnel:
+        token = os.environ.get("LETTERLENS_TOKEN") or secrets.token_urlsafe(16)
+    host = args.host or ("0.0.0.0" if token else "127.0.0.1")
+    extra = {"token": token} if token else {}
+    server = make_app_server(port=args.port, host=host, offline=args.offline, **extra)
     mode = "offline (local model)" if args.offline else "cloud"
-    print(f"LetterLens {VERSION} [{mode}] http://{args.host}:{args.port}")
+    suffix = f"/?t={token}" if token else ""
+    print(f"LetterLens {VERSION} [{mode}] http://127.0.0.1:{args.port}{suffix}")
+    if token:
+        lan = lan_address()
+        if lan and host == "0.0.0.0":
+            print(f"Phone on the same Wi-Fi: http://{lan}:{args.port}/?t={token}")
+        print("Sharing is on: anyone with the link can use your API keys. Ctrl+C stops it.")
+    tunnel = start_tunnel(args.port, token) if args.tunnel else None
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         server.shutdown()
+    finally:
+        if tunnel:
+            tunnel.terminate()
     return 0
 
 
