@@ -43,12 +43,15 @@ SYSTEM_PROMPT = (
     "Primary Source of Information: You have access to a verified repository of official legal sites, "
     "gazettes, immigration authorities, and municipal registries for all countries via the lookup_country_legal_portal tool "
     "and rules database. You MUST consult this country legal repository as your primary source of truth. "
-    "Always check the country repository and add footnote markers ([^1], [^2]) citing the verified official "
+    "Always check the country repository and add footnote citations formatted as direct hyperlinks to the verified official "
     "government legal site, gazette, or authority portal for the relevant country. "
-    "Strict Legal Scope Requirement: You are strictly limited to legal, official, administrative, "
-    "governmental, tenancy, visa, tax, and contractual documents or questions. "
-    "If the input, attached document, image, or question is NOT about a legal, administrative, "
-    "or official government matter, you MUST refuse to answer. "
+    "Allowed Inquiries: "
+    "1. Legal, official, administrative, governmental, tenancy, visa, tax, and contractual documents, letters, notices, and questions. "
+    "2. Generic 'TO AI' questions about your capabilities, identity, instructions, and supported document formats "
+    "(such as 'what can you do?', 'who are you?', 'how do I use this?', 'help', 'what features do you have?'). "
+    "When asked a generic 'TO AI' question, explain your document intelligence capabilities in simple A1-B2 English. "
+    "Strict Legal Scope Requirement: If the input is NOT about a legal, administrative, or official matter, "
+    "AND is NOT a generic 'TO AI' inquiry about your capabilities, you MUST refuse to answer. "
     "When refusing, reply with only this sentence: "
     "'I can only assist with legal, administrative, and official documents, such as government notices, "
     "permits, tenancy agreements, contracts, and bills. Please provide a legal or official document.'\n\n"
@@ -66,9 +69,51 @@ SYSTEM_PROMPT = (
     "### Summary Table\n"
     "A simple Markdown table comparing options or summarizing key details.\n"
     "### Footnotes\n"
-    "List all cited local government rules, municipal decree numbers, and verified official country legal portals "
-    "from the repository formatted as [^1]: Official Government Source / URL - Description.\n\n"
+    "List all cited verified country legal portals and official government sources formatted as a numbered list with the hyperlink of the source:\n"
+    "1. {{hyperlink of source}} - Description\n"
+    "2. {{hyperlink of source}} - Description\n"
+    "Never write footnotes as plain text without an official hyperlink.\n\n"
     "Always end with a short notice: Disclaimer: This is a plain language explanation, not formal legal advice."
+)
+
+GENERIC_AI_INQUIRIES = {
+    "what can you do",
+    "what can you do?",
+    "what are you",
+    "what are you?",
+    "who are you",
+    "who are you?",
+    "how do i use this",
+    "how do i use this?",
+    "how does this work",
+    "how does this work?",
+    "help",
+    "what documents do you support",
+    "what documents do you support?",
+    "what files can i upload",
+    "what files can i upload?",
+    "what features do you have",
+    "what features do you have?",
+    "hi",
+    "hello",
+    "hey",
+}
+
+GENERIC_AI_RESPONSE = (
+    "### LetterLens Capabilities\n\n"
+    "I am **LetterLens**, an AI document intelligence agent designed to help you understand complex legal documents, "
+    "official government letters, tenancy agreements, and residency permits in simple **A1–B2 plain English**.\n\n"
+    "### What I Can Do For You\n"
+    "* **Explain Letters & Documents:** Upload pictures (photos, scans), Markdown files (`.md`), or paste text from government offices, immigration departments, landlords, or utility companies.\n"
+    "* **Local OCR Acceleration:** I automatically extract text from pictures locally using native OS OCR to verify dates, numbers, and reference codes.\n"
+    "* **Global Country Legal Repository:** I check verified government gazettes, legislation databases, immigration authorities, and tenancy boards across 195+ countries as my primary source of truth.\n"
+    "* **Deadlines & Costs:** I highlight exact dates you must respond by and any fees or amounts you owe or can dispute.\n"
+    "* **Action Steps:** I give you clear, numbered steps on what you should do next.\n"
+    "* **Hyperlinked Footnotes:** Every cited official portal is formatted as a direct hyperlink so you can verify it yourself.\n\n"
+    "### How To Get Started\n"
+    "1. Click **Notice Document (.md)** or **Scanned Letter (Image)** to try a sample document.\n"
+    "2. Drag and drop any document picture (`.png`, `.jpg`, `.webp`) or Markdown file into the chat.\n"
+    "3. Or ask a question about official government rules, residency permits, or tenant rights."
 )
 
 THOUGHT_RE = re.compile(r"<thought>.*?</thought>", re.DOTALL)
@@ -233,7 +278,7 @@ try {
                         ps_script,
                         target_path,
                     ]
-                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+                    res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout)
                     text = res.stdout.strip()
                     if text:
                         return text
@@ -321,7 +366,11 @@ class MarkdownParser:
             elif re.match(r"^\[\^(\d+)\]:\s*(.*)$", s):
                 m_fn = re.match(r"^\[\^(\d+)\]:\s*(.*)$", s)
                 if m_fn:
-                    fields["footnotes"].append({"id": m_fn.group(1), "text": m_fn.group(2)})
+                    fields["footnotes"].append({"id": m_fn.group(1), "text": m_fn.group(2).strip()})
+            elif re.match(r"^(\d+)\.\s+(.*)$", s):
+                m_fn = re.match(r"^(\d+)\.\s+(.*)$", s)
+                if m_fn and ("http://" in m_fn.group(2) or "https://" in m_fn.group(2)):
+                    fields["footnotes"].append({"id": m_fn.group(1), "text": m_fn.group(2).strip()})
 
         return fields
 
@@ -571,12 +620,37 @@ def country_legal_portal_tool():
 
 
 class GemmaAgent:
-    def __init__(self, client: Optional[Client] = None, system: str = SYSTEM_PROMPT, max_steps: int = 6):
+    def __init__(
+        self,
+        client: Optional[Client] = None,
+        system: str = SYSTEM_PROMPT,
+        max_steps: int = 6,
+        country: Optional[str] = None,
+    ):
         self.client = client or GeminiClient()
         self.system = system
         self.max_steps = max_steps
         self.tools: Dict[str, Dict[str, Any]] = {}
         self.messages: List[Dict[str, Any]] = [{"role": "system", "content": system}]
+        self.last_accepted_analysis: Optional[str] = None
+        self.country: Optional[str] = None
+        if country:
+            self.set_country_context(country)
+
+    def set_country_context(self, country: str) -> None:
+        if not country or country.lower() in {"auto", "all", "none"}:
+            self.country = None
+            return
+        self.country = country
+        portals_tool = country_legal_portal_tool()
+        details_str = portals_tool["fn"](country)
+        country_instruction = (
+            f"[User Setting - Active Country Jurisdiction: {country}]\n"
+            f"Official Legal Portals & Primary Repository Information:\n{details_str}\n\n"
+            f"You MUST use this country's verified official legal portals as your primary source of truth, "
+            f"and format all citations as numbered direct hyperlinks (1. {{hyperlink of source}} - Description)."
+        )
+        self.messages.append({"role": "system", "content": country_instruction})
 
     def add_tools(self, tools_list: List[Dict[str, Any]]) -> None:
         for t in tools_list:
@@ -593,7 +667,10 @@ class GemmaAgent:
         target: Union[str, bytes],
         prompt: Optional[str] = None,
         on_token: Optional[Callable[[str], None]] = None,
+        country: Optional[str] = None,
     ) -> str:
+        if country and country != self.country:
+            self.set_country_context(country)
         if isinstance(target, bytes) or (isinstance(target, str) and self._is_image_target(target)):
             ocr_text = LocalOCR.extract_text(target)
             custom_prompt = prompt or "Explain this official letter or document in simple A1-B2 English and add footnotes citing official country legal portals:"
@@ -644,7 +721,17 @@ class GemmaAgent:
         images: Optional[List[Any]] = None,
         files: Optional[List[Dict[str, str]]] = None,
         on_token: Optional[Callable[[str], None]] = None,
+        country: Optional[str] = None,
     ) -> str:
+        if country and country != self.country:
+            self.set_country_context(country)
+
+        norm_prompt = (prompt or "").strip().lower().rstrip("?.! ")
+        if not images and not files and norm_prompt in GENERIC_AI_INQUIRIES:
+            if on_token:
+                on_token(GENERIC_AI_RESPONSE)
+            return GENERIC_AI_RESPONSE
+
         prompt_text = prompt or "Explain this document in simple A1-B2 English with footnotes for local government data:"
 
         if files:
@@ -678,13 +765,14 @@ class GemmaAgent:
 
         self.messages.append(user_msg)
 
+        msg = {"role": "assistant", "content": ""}
         for _ in range(self.max_steps):
             schema = self._tools_schema()
             msg = self.client.chat(self.messages, tools=schema, on_token=on_token)
             calls = msg.get("tool_calls")
             self.messages.append(msg)
             if not calls:
-                return msg.get("content", "")
+                break
             for c in calls:
                 fn_name = c["function"]["name"]
                 fn_args = c["function"]["arguments"]
@@ -701,7 +789,21 @@ class GemmaAgent:
                     "content": res,
                 })
 
-        return msg.get("content", "")
+        final_content = msg.get("content", "")
+        refusal_marker = "I can only assist with legal, administrative, and official documents"
+        if refusal_marker in final_content:
+            if self.last_accepted_analysis:
+                full_denial = (
+                    f"{final_content.strip()}\n\n"
+                    f"### Previous Document Analysis\n"
+                    f"{self.last_accepted_analysis}"
+                )
+                return full_denial
+            return final_content
+
+        if final_content and not final_content.startswith("error:"):
+            self.last_accepted_analysis = final_content
+        return final_content
 
     @staticmethod
     def _is_image_target(target: str) -> bool:

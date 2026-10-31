@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LetterLens: Plain English Legal Document Intelligence Agent</title>
+  <meta name="description" content="LetterLens is an AI agent powered by Gemma 4 that explains official letters, notices, contracts, and permits in A1-B2 plain English with verified country legal portals.">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <line x1="16" y1="13" x2="8" y2="13"></line>
+      <line x1="16" y1="17" x2="8" y2="17"></line>
+      <polyline points="10 9 9 9 8 9"></polyline>
+    </svg>
+    <span>LetterLens</span>
+  </a>
+  <span class="tag-badge">Gemma 4 &bull; 195 Countries</span>
+  
+  <div class="searchlike">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input type="text" id="topSearchInput" placeholder="Lookup legal portals: Hungary, Germany, US, UK, Japan...">
+  </div>
+
+  <div class="country-setting-wrap" title="Set Active Country Jurisdiction for Context Window">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+    <select id="countrySelect" aria-label="Select Country Jurisdiction Context">
+      <option value="">Auto Jurisdiction</option>
+    </select>
+  </div>
+
+  <nav class="top" aria-label="Main Navigation">
+    <a href="/letterlens.zip" download class="add" title="Download Source Code Archive">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      <span>+ Download</span>
+    </a>
+  </nav>
+</header>
+
+<nav class="rail" aria-label="Section Navigation">
+  <button type="button" data-group="start" aria-label="Start &amp; Chat" aria-pressed="true" title="Start &amp; Chat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+    <span>Start</span>
+  </button>
+  <button type="button" data-group="portals" aria-label="Legal Portals" aria-pressed="false" title="Global Legal Portals">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+    <span>Portals</span>
+  </button>
+  <button type="button" data-group="rules" aria-label="Rules &amp; Laws" aria-pressed="false" title="Local Ordinances &amp; Rules">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+    </svg>
+    <span>Rules</span>
+  </button>
+  <button type="button" data-group="about" aria-label="About AI" aria-pressed="false" title="About LetterLens">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <span>About</span>
+  </button>
+</nav>
+
+<aside class="side" aria-label="Sidebar">
+  <div class="side-g" data-group="start">
+    <p class="side-h">Document Analysis</p>
+    <button type="button" class="side-i active">Overview</button>
+    <button type="button" class="side-i" id="sideWhatCanYouDo">What can you do?</button>
+    <p class="side-h">Quick Samples</p>
+    <a class="side-i" href="/sample/notice.md" target="_blank">Notice (.md) <span class="count">lease</span></a>
+    <a class="side-i" href="/sample/scan.png" target="_blank">Scanned Letter <span class="count">png</span></a>
+  </div>
+
+  <div class="side-g" data-group="portals" hidden>
+    <p class="side-h">Country Legal Portals</p>
+    <div style="padding: 0 4px 6px;">
+      <input type="text" id="portalSearchInput" placeholder="Filter 195 countries..." style="width:100%; padding:6px 8px; border-radius:6px; background:var(--bg); border:1px solid var(--line2); color:var(--ink); font-size:0.78rem;">
+    </div>
+    <div class="side-country-list" id="countryListContainer">
+      <div style="padding: 8px; font-size:0.78rem; color:var(--muted)">Loading official legal portals...</div>
+    </div>
+  </div>
+
+  <div class="side-g" data-group="rules" hidden>
+    <p class="side-h">Knowledge Base</p>
+    <button type="button" class="side-i">Budapest Housing Decree 14/2021</button>
+    <button type="button" class="side-i">OIF Residency &amp; Visa Guidelines</button>
+    <button type="button" class="side-i">German Mietrecht &amp; BAMF</button>
+    <button type="button" class="side-i">UK Tenancy &amp; Immigration UKVI</button>
+  </div>
+
+  <div class="side-g" data-group="about" hidden>
+    <p class="side-h">Agent Intelligence</p>
+    <button type="button" class="side-i">Model: Gemma 4 (26B-A4B-IT)</button>
+    <button type="button" class="side-i">Native OCR: Windows.Media.Ocr</button>
+    <button type="button" class="side-i">Secrets Pool: Multi-Key Rotation</button>
+    <button type="button" class="side-i">Plain English: A1–B2 Standard</button>
+  </div>
+</aside>
+
+<main id="main">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <h1>Plain English document intelligence agent with verified global legal sources.</h1>
+        <p class="lead">Official letters, tenancy agreements, and government notices are hard to read. LetterLens reads scans and documents, and explains what you need to do, deadlines, and fees in simple <strong>A1–B2 plain English</strong> with official source citations.</p>
+        <div class="actions">
+          <button type="button" class="btn primary" id="btnSampleNotice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span>Notice Document (.md)</span>
+          </button>
+          <button type="button" class="btn secondary" id="btnSampleScan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Scanned Letter (Image)</span>
+          </button>
+          <button type="button" class="btn secondary" id="btnWhatCanYouDo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>What can you do?</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="term" role="region" aria-label="Terminal Status">
+        <div class="term-head">
+          <span>letterlens-cli &bull; engine status</span>
+          <span class="green">&bull; ready</span>
+        </div>
+        <pre><code><span class="dim">$</span> letterlens status
+{ <span class="accent">"model"</span>: <span class="green">"gemma-4-26b-a4b-it"</span>,
+  <span class="accent">"language"</span>: <span class="green">"A1-B2 Plain English"</span>,
+  <span class="accent">"primary_source"</span>: <span class="green">"195 Country Legal Portals"</span>,
+  <span class="accent">"local_ocr"</span>: <span class="green">"Windows.Media.Ocr"</span>,
+  <span class="accent">"footnote_format"</span>: <span class="green">"1. {{hyperlink of source}}"</span> }</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="chat-workspace">
+    <div id="log" aria-live="polite">
+      <div class="msg-wrap agent">
+        <div class="msg-sender">LetterLens Agent</div>
+        <div class="msg-bubble">
+          <p><strong>LetterLens Agent is ready.</strong> Provide an official letter, notice, bill, or legal document as a <strong>picture</strong>, <strong>Markdown file (.md)</strong>, or <strong>plain text</strong>.</p>
+          <p>The agent consults official country legal portals as its primary source of truth and explains documents in clear A1–B2 plain English with verified hyperlinks in footnotes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-previews" id="previewBar"></div>
+
+    <form id="chatForm">
+      <div id="dropZone">
+        <input type="file" id="fileInput" multiple style="display:none" accept="image/*,.md,.txt">
+        <button type="button" class="icon-btn" id="attachBtn" title="Attach picture (.png, .jpg) or document (.md, .txt)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+          </svg>
+        </button>
+        <input type="text" id="userInput" placeholder="Ask a question, paste text, or drag and drop a letter, contract, or notice..." autocomplete="off">
+        <button type="submit" class="icon-btn send-btn" id="sendBtn" title="Send document to agent">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="footer-content">
+    <div>LetterLens &bull; Plain English Legal Document Intelligence Agent</div>
+    <div class="footer-links">
+      <a href="/sample/notice.md" target="_blank">Notice Sample</a>
+      <a href="/sample/scan.png" target="_blank">Scan Sample</a>
+      <a href="/letterlens.zip" download>Export Code (.zip)</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>

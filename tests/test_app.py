@@ -159,6 +159,94 @@ class TestLetterLens(unittest.TestCase):
         tool_desc = agent_inst.tools["lookup_country_legal_portal"]["schema"]["function"]["description"]
         self.assertIn("Primary Source of Information", tool_desc)
 
+    def test_generic_ai_questions_are_allowed_and_answered(self):
+        class FakeClient:
+            def chat(self, messages, tools=None, on_token=None):
+                return {"role": "assistant", "content": "not called"}
+
+        agent_inst = app.Agent(FakeClient())
+        res = agent_inst.run("what can you do")
+        self.assertIn("LetterLens Capabilities", res)
+        self.assertIn("Local OCR Acceleration", res)
+        res_help = agent_inst.run("help")
+        self.assertIn("LetterLens Capabilities", res_help)
+
+    def test_denial_of_acceptance_replies_past_prompt_results(self):
+        calls = []
+
+        class FakeClient:
+            def chat(self, messages, tools=None, on_token=None):
+                calls.append(len(messages))
+                if len(calls) == 1:
+                    return {"role": "assistant", "content": "### Summary\nLease breakdown of 500 EUR."}
+                return {
+                    "role": "assistant",
+                    "content": "I can only assist with legal, administrative, and official documents, such as government notices, permits, tenancy agreements, contracts, and bills. Please provide a legal or official document."
+                }
+
+        agent_inst = app.Agent(FakeClient())
+        first_res = agent_inst.run("Explain this lease with 500 EUR rent")
+        self.assertIn("Lease breakdown of 500 EUR", first_res)
+
+        second_res = agent_inst.run("Write a poem about puppies")
+        self.assertIn("I can only assist with legal", second_res)
+        self.assertIn("Previous Document Analysis", second_res)
+        self.assertIn("Lease breakdown of 500 EUR", second_res)
+
+    def test_footnotes_hyperlink_display_format(self):
+        text = "Under federal tenancy rules[^1], rent caps apply.\n\n1. https://www.gesetze-im-internet.de - Federal Ministry of Justice\n2. https://www.bmwsb.bund.de - Housing Ministry"
+        fields = app.MarkdownParser.extract_key_fields(text)
+        self.assertEqual(len(fields["footnotes"]), 2)
+        self.assertEqual(fields["footnotes"][0]["id"], "1")
+        self.assertIn("https://www.gesetze-im-internet.de", fields["footnotes"][0]["text"])
+
+    def test_static_files_serving(self):
+        server = app.make_app_server(port=0)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        base = f"http://127.0.0.1:{server.server_address[1]}"
+        r_html = urllib.request.urlopen(base + "/")
+        self.assertEqual(r_html.status, 200)
+        self.assertIn(b"LetterLens", r_html.read())
+
+        r_css = urllib.request.urlopen(base + "/styles.css")
+        self.assertEqual(r_css.status, 200)
+        self.assertIn(b"--accent", r_css.read())
+
+        r_js = urllib.request.urlopen(base + "/app.js")
+        self.assertEqual(r_js.status, 200)
+        self.assertIn(b"parseMarkdown", r_js.read())
+
+        r_api = urllib.request.urlopen(base + "/api/countries")
+        self.assertEqual(r_api.status, 200)
+        self.assertIn(b"Hungary", r_api.read())
+        server.shutdown()
+
+
+    def test_country_settings_injects_into_context_window(self):
+        recorded = []
+
+        class FakeClient:
+            def chat(self, messages, tools=None, on_token=None):
+                recorded.extend(messages)
+                return {"role": "assistant", "content": "Analysis for Germany"}
+
+        agent_inst = app.Agent(FakeClient())
+        agent_inst.set_country_context("Germany")
+        self.assertEqual(agent_inst.country, "Germany")
+        found_context = any(
+            m.get("role") == "system" and "gesetze-im-internet.de" in m.get("content", "")
+            for m in agent_inst.messages
+        )
+        self.assertTrue(found_context)
+
+        agent_inst.run("Explain notice", country="France")
+        self.assertEqual(agent_inst.country, "France")
+        found_france = any(
+            m.get("role") == "system" and "legifrance.gouv.fr" in m.get("content", "")
+            for m in agent_inst.messages
+        )
+        self.assertTrue(found_france)
+
 
 def test_thought_text_is_removed_from_the_reply(monkeypatch=None):
     TestLetterLens().test_thought_text_is_removed_from_the_reply()
@@ -202,6 +290,26 @@ def test_country_legal_portal_aliases_and_listing():
 
 def test_agent_registers_country_legal_portal_tool():
     TestLetterLens().test_agent_registers_country_legal_portal_tool()
+
+
+def test_generic_ai_questions_are_allowed_and_answered():
+    TestLetterLens().test_generic_ai_questions_are_allowed_and_answered()
+
+
+def test_denial_of_acceptance_replies_past_prompt_results():
+    TestLetterLens().test_denial_of_acceptance_replies_past_prompt_results()
+
+
+def test_footnotes_hyperlink_display_format():
+    TestLetterLens().test_footnotes_hyperlink_display_format()
+
+
+def test_static_files_serving():
+    TestLetterLens().test_static_files_serving()
+
+
+def test_country_settings_injects_into_context_window():
+    TestLetterLens().test_country_settings_injects_into_context_window()
 
 
 if __name__ == "__main__":
