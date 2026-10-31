@@ -1,12 +1,14 @@
-# Immigration and Residence Permit Administrative Guidelines
+# Residence permit notes (starter, partly verified)
 
-## National Directorate-General for Aliens Policing (OIF) Framework
+Status: only the line marked [verified] comes from an official page: the OIF factsheet
+"Extend your permit (student)", https://oif.gov.hu/factsheets/extend-your-permit-student.
+Lines marked [unverified] are demo text. Check an official source before you rely on them.
 
-### Section 2: Residence Permit Extensions
-1. Applications for renewal of temporary residence permits must be submitted at least 30 calendar days before the current permit card expires.
-2. Incomplete document requests (Hianypotlas) must be satisfied within the deadline stated in the official summons, typically 15 calendar days from receipt.
-3. Inability to meet a summons deadline requires an immediate written request for extension submitted via the Enter Hungary portal.
+## Section 2: Residence permit extensions
+1. [verified, student permits] Submit the online extension application 45-50 days before the permit expires.
+2. [unverified] A request to add missing documents (hiánypótlás) must be answered by the deadline in the document, often about 15 days.
+3. [unverified] If you cannot meet a deadline, ask for more time in writing through the Enter Hungary portal.
 
-### Section 6: Administrative Appeals and Inaction Consequences
-1. If a renewal request is rejected due to missed deadlines or failure to remedy deficiencies, an administrative appeal must be filed within 8 calendar days of receiving the formal resolution.
-2. An expired permit without an active renewal application terminates the legal basis for employment and Schengen travel.
+## Section 6: Appeals and what happens if you do nothing
+1. [unverified] An appeal against a rejection may have to be filed within 8 days of receiving the decision. Read the deadline in the decision itself.
+2. [unverified] A permit that expired without a renewal application can end the right to work and to travel in the Schengen area.

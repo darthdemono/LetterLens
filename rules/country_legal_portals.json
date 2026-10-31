@@ -4,1364 +4,4061 @@
     "official_gazette": "Official Gazette (Rasmi Jarida) - Ministry of Justice (moj.gov.af)",
     "immigration_authority": "General Directorate of Passports and Visa Directorate",
     "housing_and_tenancy": "Ministry of Urban Development and Housing (mudh.gov.af)",
-    "tax_authority": "Afghanistan Revenue Department (ard.gov.af)"
+    "tax_authority": "Afghanistan Revenue Department (ard.gov.af)",
+    "portals": []
   },
   "Albania": {
     "code": "AL",
     "official_gazette": "https://qbz.gov.al (Center of Official Publications - Fletorja Zyrtare)",
     "immigration_authority": "https://e-albania.al and State Police Border and Migration Directorate",
     "housing_and_tenancy": "Ministry of Infrastructure and Energy and local Municipalities (Bashkia)",
-    "tax_authority": "https://www.tatime.gov.al (General Directorate of Taxes - Drejtoria e Pergjithshme e Tatimeve)"
+    "tax_authority": "https://www.tatime.gov.al (General Directorate of Taxes - Drejtoria e Pergjithshme e Tatimeve)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://qbz.gov.al"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://e-albania.al"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.tatime.gov.al"
+      }
+    ]
   },
   "Algeria": {
     "code": "DZ",
     "official_gazette": "https://www.joradp.dz (Journal Officiel de la Republique Algerienne)",
     "immigration_authority": "https://interieur.gov.dz (Ministere de l'Interieur et des Collectivites Locales)",
     "housing_and_tenancy": "Ministere de l'Habitat, de l'Urbanisme et de la Ville",
-    "tax_authority": "https://www.mfdgi.gov.dz (Direction Generale des Impots)"
+    "tax_authority": "https://www.mfdgi.gov.dz (Direction Generale des Impots)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.joradp.dz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://interieur.gov.dz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mfdgi.gov.dz"
+      }
+    ]
   },
   "Andorra": {
     "code": "AD",
     "official_gazette": "https://www.bopa.ad (Butlleti Oficial del Principat d'Andorra - BOPA)",
     "immigration_authority": "https://www.immigracio.ad (Servei d'Immigracio del Govern d'Andorra)",
     "housing_and_tenancy": "https://www.habitatge.ad (Institut Nacional de l'Habitatge)",
-    "tax_authority": "https://www.impostos.ad (Departament de Tributs i de Fronteres)"
+    "tax_authority": "https://www.impostos.ad (Departament de Tributs i de Fronteres)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.bopa.ad"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigracio.ad"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.habitatge.ad"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impostos.ad"
+      }
+    ]
   },
   "Angola": {
     "code": "AO",
     "official_gazette": "https://imprensanacional.gov.ao (Diario da Republica de Angola)",
     "immigration_authority": "https://sme.gov.ao (Servico de Migracao e Estrangeiros - SME)",
     "housing_and_tenancy": "Ministerio das Obras Publicas, Urbanismo e Habitacao",
-    "tax_authority": "https://agt.minfin.gov.ao (Administracao Geral Tributaria - AGT)"
+    "tax_authority": "https://agt.minfin.gov.ao (Administracao Geral Tributaria - AGT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://imprensanacional.gov.ao"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://sme.gov.ao"
+      },
+      {
+        "label": "Tax",
+        "url": "https://agt.minfin.gov.ao"
+      }
+    ]
   },
   "Antigua and Barbuda": {
     "code": "AG",
     "official_gazette": "https://laws.gov.ag (Official Gazette and Laws of Antigua and Barbuda)",
     "immigration_authority": "https://immigration.gov.ag (Antigua and Barbuda Department of Immigration)",
     "housing_and_tenancy": "Ministry of Housing, Lands and Urban Renewal",
-    "tax_authority": "https://ird.gov.ag (Inland Revenue Department)"
+    "tax_authority": "https://ird.gov.ag (Inland Revenue Department)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://laws.gov.ag"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.ag"
+      },
+      {
+        "label": "Tax",
+        "url": "https://ird.gov.ag"
+      }
+    ]
   },
   "Argentina": {
     "code": "AR",
     "official_gazette": "https://www.boletinoficial.gob.ar (Boletin Oficial de la Republica Argentina)",
     "immigration_authority": "https://www.argentina.gob.ar/interior/migraciones (Direccion Nacional de Migraciones)",
     "housing_and_tenancy": "https://www.argentina.gob.ar/habitat (Secretaria de Desarrollo Territorial y Habitat)",
-    "tax_authority": "https://www.afip.gob.ar (Administracion Federal de Ingresos Publicos - AFIP)"
+    "tax_authority": "https://www.afip.gob.ar (Administracion Federal de Ingresos Publicos - AFIP)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.boletinoficial.gob.ar"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.argentina.gob.ar/interior/migraciones"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.argentina.gob.ar/habitat"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.afip.gob.ar"
+      }
+    ]
   },
   "Armenia": {
     "code": "AM",
     "official_gazette": "https://www.arlis.am (Armenian Legal Information System - ARLIS)",
     "immigration_authority": "https://migration.am (Migration and Citizenship Service of Armenia)",
     "housing_and_tenancy": "Urban Development Committee of the Republic of Armenia",
-    "tax_authority": "https://www.petekamutner.am (State Revenue Committee - SRC)"
+    "tax_authority": "https://www.petekamutner.am (State Revenue Committee - SRC)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.arlis.am"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migration.am"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.petekamutner.am"
+      }
+    ]
   },
   "Australia": {
     "code": "AU",
     "official_gazette": "https://www.legislation.gov.au (Federal Register of Legislation)",
     "immigration_authority": "https://immi.homeaffairs.gov.au (Department of Home Affairs - Immigration and Citizenship)",
     "housing_and_tenancy": "https://www.consumer.vic.gov.au and State Civil and Administrative Tribunals (NCAT/VCAT/QCAT)",
-    "tax_authority": "https://www.ato.gov.au (Australian Taxation Office - ATO)"
+    "tax_authority": "https://www.ato.gov.au (Australian Taxation Office - ATO)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.legislation.gov.au"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immi.homeaffairs.gov.au"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.consumer.vic.gov.au"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ato.gov.au"
+      }
+    ]
   },
   "Austria": {
     "code": "AT",
     "official_gazette": "https://www.ris.bka.gv.at (Legal Information System of the Republic of Austria - RIS)",
     "immigration_authority": "https://www.migration.gv.at and https://www.bmi.gv.at (Federal Ministry of the Interior)",
     "housing_and_tenancy": "https://www.oesterreich.gv.at (Mietrecht Portal and Tenancy Conciliation Boards)",
-    "tax_authority": "https://www.bmf.gv.at (Federal Ministry of Finance - BMF)"
+    "tax_authority": "https://www.bmf.gv.at (Federal Ministry of Finance - BMF)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.ris.bka.gv.at"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migration.gv.at"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.bmi.gv.at"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.oesterreich.gv.at"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.bmf.gv.at"
+      }
+    ]
   },
   "Azerbaijan": {
     "code": "AZ",
     "official_gazette": "https://e-qanun.az (Single Electronic Database of Legal Acts of Azerbaijan)",
     "immigration_authority": "https://migration.gov.az (State Migration Service of the Republic of Azerbaijan)",
     "housing_and_tenancy": "State Committee on Urban Planning and Architecture",
-    "tax_authority": "https://www.taxes.gov.az (State Tax Service under Ministry of Economy)"
+    "tax_authority": "https://www.taxes.gov.az (State Tax Service under Ministry of Economy)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://e-qanun.az"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migration.gov.az"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.taxes.gov.az"
+      }
+    ]
   },
   "Bahamas": {
     "code": "BS",
     "official_gazette": "https://laws.bahamas.gov.bs (Government of the Bahamas Statute Laws)",
     "immigration_authority": "https://immigration.gov.bs (Department of Immigration)",
     "housing_and_tenancy": "Department of Housing and Tenancy Conciliation Boards",
-    "tax_authority": "https://inlandrevenue.finance.gov.bs (Department of Inland Revenue)"
+    "tax_authority": "https://inlandrevenue.finance.gov.bs (Department of Inland Revenue)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://laws.bahamas.gov.bs"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.bs"
+      },
+      {
+        "label": "Tax",
+        "url": "https://inlandrevenue.finance.gov.bs"
+      }
+    ]
   },
   "Bahrain": {
     "code": "BH",
     "official_gazette": "https://www.lloc.gov.bh (Legislation & Legal Opinion Commission - LLOC)",
     "immigration_authority": "https://www.npra.gov.bh (Nationality, Passports and Residence Affairs - NPRA)",
     "housing_and_tenancy": "https://www.housing.gov.bh (Ministry of Housing and Urban Planning)",
-    "tax_authority": "https://www.nbr.gov.bh (National Bureau for Revenue - NBR)"
+    "tax_authority": "https://www.nbr.gov.bh (National Bureau for Revenue - NBR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.lloc.gov.bh"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.npra.gov.bh"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.housing.gov.bh"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.nbr.gov.bh"
+      }
+    ]
   },
   "Bangladesh": {
     "code": "BD",
     "official_gazette": "http://bdlaws.minlaw.gov.bd (Laws of Bangladesh - Legislative and Parliamentary Affairs Division)",
     "immigration_authority": "https://www.dip.gov.bd (Department of Immigration and Passports)",
     "housing_and_tenancy": "Ministry of Housing and Public Works (mohpw.gov.bd)",
-    "tax_authority": "https://nbr.gov.bd (National Board of Revenue - NBR)"
+    "tax_authority": "https://nbr.gov.bd (National Board of Revenue - NBR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://bdlaws.minlaw.gov.bd"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.dip.gov.bd"
+      },
+      {
+        "label": "Tax",
+        "url": "https://nbr.gov.bd"
+      }
+    ]
   },
   "Barbados": {
     "code": "BB",
     "official_gazette": "https://www.barbadosparliament.com and https://gisbarbados.gov.bb (Official Gazette of Barbados)",
     "immigration_authority": "https://immigration.gov.bb (Barbados Immigration Department)",
     "housing_and_tenancy": "Ministry of Housing, Lands and Maintenance",
-    "tax_authority": "https://bra.gov.bb (Barbados Revenue Authority - BRA)"
+    "tax_authority": "https://bra.gov.bb (Barbados Revenue Authority - BRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.barbadosparliament.com"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://gisbarbados.gov.bb"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.bb"
+      },
+      {
+        "label": "Tax",
+        "url": "https://bra.gov.bb"
+      }
+    ]
   },
   "Belarus": {
     "code": "BY",
     "official_gazette": "https://pravo.by (National Legal Internet Portal of the Republic of Belarus)",
     "immigration_authority": "https://mvd.gov.by (Department on Citizenship and Migration of Ministry of Internal Affairs)",
     "housing_and_tenancy": "Ministry of Housing and Communal Services",
-    "tax_authority": "https://nalog.gov.by (Ministry of Taxes and Duties)"
+    "tax_authority": "https://nalog.gov.by (Ministry of Taxes and Duties)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://pravo.by"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://mvd.gov.by"
+      },
+      {
+        "label": "Tax",
+        "url": "https://nalog.gov.by"
+      }
+    ]
   },
   "Belgium": {
     "code": "BE",
     "official_gazette": "https://www.ejustice.just.fgov.be (Belgian Official Gazette - Moniteur Belge / Belgisch Staatsblad)",
     "immigration_authority": "https://dofi.ibz.be (Immigration Office - Dienst Vreemdelingenzaken / Office des Etrangers)",
     "housing_and_tenancy": "https://www.belgium.be/en/housing/renting_a_home (Federal Public Service Housing Framework)",
-    "tax_authority": "https://finances.belgium.be (Federal Public Service Finance - SPF Finances)"
+    "tax_authority": "https://finances.belgium.be (Federal Public Service Finance - SPF Finances)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.ejustice.just.fgov.be"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://dofi.ibz.be"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.belgium.be/en/housing/renting_a_home"
+      },
+      {
+        "label": "Tax",
+        "url": "https://finances.belgium.be"
+      }
+    ]
   },
   "Belize": {
     "code": "BZ",
     "official_gazette": "https://www.belizelaw.org (Laws of Belize and Supreme Court Legal Portal)",
     "immigration_authority": "https://ins.gov.bz (Department of Border Management and Immigration Services)",
     "housing_and_tenancy": "Ministry of Infrastructure Development and Housing",
-    "tax_authority": "https://bts.gov.bz (Belize Tax Service Department)"
+    "tax_authority": "https://bts.gov.bz (Belize Tax Service Department)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.belizelaw.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://ins.gov.bz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://bts.gov.bz"
+      }
+    ]
   },
   "Benin": {
     "code": "BJ",
     "official_gazette": "https://sgg.gouv.bj/journal-officiel (Journal Officiel de la Republique du Benin)",
     "immigration_authority": "https://evisa.gouv.bj and Direction de l'Emigration et de l'Immigration",
     "housing_and_tenancy": "Ministere du Cadre de Vie et des Transports en charge du Developpement Durable",
-    "tax_authority": "https://www.impots.bj (Direction Generale des Impots)"
+    "tax_authority": "https://www.impots.bj (Direction Generale des Impots)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://sgg.gouv.bj/journal-officiel"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://evisa.gouv.bj"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impots.bj"
+      }
+    ]
   },
   "Bhutan": {
     "code": "BT",
     "official_gazette": "https://www.judiciary.gov.bt (Judiciary of Bhutan and National Legal Portal)",
     "immigration_authority": "https://www.doi.gov.bt (Department of Immigration, Ministry of Home Affairs)",
     "housing_and_tenancy": "National Housing Development Corporation (nhdcl.bt)",
-    "tax_authority": "https://www.drc.gov.bt (Department of Revenue and Customs)"
+    "tax_authority": "https://www.drc.gov.bt (Department of Revenue and Customs)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.judiciary.gov.bt"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.doi.gov.bt"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.drc.gov.bt"
+      }
+    ]
   },
   "Bolivia": {
     "code": "BO",
     "official_gazette": "http://gacetaoficialdebolivia.gob.bo (Gaceta Oficial del Estado Plurinacional de Bolivia)",
     "immigration_authority": "https://www.migracion.gob.bo (Direccion General de Migracion)",
     "housing_and_tenancy": "https://www.oopp.gob.bo (Ministerio de Obras Publicas, Servicios y Vivienda)",
-    "tax_authority": "https://www.impuestos.gob.bo (Servicio de Impuestos Nacionales - SIN)"
+    "tax_authority": "https://www.impuestos.gob.bo (Servicio de Impuestos Nacionales - SIN)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://gacetaoficialdebolivia.gob.bo"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migracion.gob.bo"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.oopp.gob.bo"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impuestos.gob.bo"
+      }
+    ]
   },
   "Bosnia and Herzegovina": {
     "code": "BA",
     "official_gazette": "http://www.sluzbenilist.ba (Sluzbeni list Bosne i Hercegovine)",
     "immigration_authority": "http://sps.gov.ba (Service for Foreigners' Affairs - Sluzba za poslove sa strancima)",
     "housing_and_tenancy": "Ministry of Physical Planning, Civil Engineering and Ecology",
-    "tax_authority": "http://www.uino.gov.ba (Indirect Taxation Authority of Bosnia and Herzegovina - UIO)"
+    "tax_authority": "http://www.uino.gov.ba (Indirect Taxation Authority of Bosnia and Herzegovina - UIO)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.sluzbenilist.ba"
+      },
+      {
+        "label": "Immigration",
+        "url": "http://sps.gov.ba"
+      },
+      {
+        "label": "Tax",
+        "url": "http://www.uino.gov.ba"
+      }
+    ]
   },
   "Botswana": {
     "code": "BW",
     "official_gazette": "https://www.laws.gov.bw (Laws of Botswana Legal Portal)",
     "immigration_authority": "https://www.gov.bw (Department of Immigration and Citizenship, Ministry of Labour and Home Affairs)",
     "housing_and_tenancy": "Ministry of Lands and Water Affairs and Botswana Housing Corporation",
-    "tax_authority": "https://www.burs.org.bw (Botswana Unified Revenue Service - BURS)"
+    "tax_authority": "https://www.burs.org.bw (Botswana Unified Revenue Service - BURS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.laws.gov.bw"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gov.bw"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.burs.org.bw"
+      }
+    ]
   },
   "Brazil": {
     "code": "BR",
     "official_gazette": "https://www.in.gov.br (Diario Oficial da Uniao - Imprensa Nacional)",
     "immigration_authority": "https://www.gov.br/pf (Policia Federal - Imigracao e Regularizacao Migratoria)",
     "housing_and_tenancy": "https://www.gov.br/cidades (Ministerio das Cidades) and Procon consumer protection",
-    "tax_authority": "https://www.gov.br/receitafederal (Secretaria da Receita Federal do Brasil)"
+    "tax_authority": "https://www.gov.br/receitafederal (Secretaria da Receita Federal do Brasil)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.in.gov.br"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gov.br/pf"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gov.br/cidades"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gov.br/receitafederal"
+      }
+    ]
   },
   "Brunei": {
     "code": "BN",
     "official_gazette": "https://www.agc.gov.bn (Attorney General's Chambers Legislation Portal)",
     "immigration_authority": "https://www.immigration.gov.bn (Immigration and National Registration Department)",
     "housing_and_tenancy": "Housing Development Department, Ministry of Development",
-    "tax_authority": "https://www.mofe.gov.bn (Revenue Division, Ministry of Finance and Economy)"
+    "tax_authority": "https://www.mofe.gov.bn (Revenue Division, Ministry of Finance and Economy)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.agc.gov.bn"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.gov.bn"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mofe.gov.bn"
+      }
+    ]
   },
   "Bulgaria": {
     "code": "BG",
     "official_gazette": "https://dv.parliament.bg (State Gazette of the Republic of Bulgaria - Darzhaven Vestnik)",
     "immigration_authority": "https://www.mvr.bg/migration (Migration Directorate of the Ministry of Interior)",
     "housing_and_tenancy": "Ministry of Regional Development and Public Works and local Municipalities (Obshtina)",
-    "tax_authority": "https://nra.bg (National Revenue Agency - NRA / NAP)"
+    "tax_authority": "https://nra.bg (National Revenue Agency - NRA / NAP)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://dv.parliament.bg"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.mvr.bg/migration"
+      },
+      {
+        "label": "Tax",
+        "url": "https://nra.bg"
+      }
+    ]
   },
   "Burkina Faso": {
     "code": "BF",
     "official_gazette": "https://www.legiburkina.bf (LegiBurkina - Portail Juridique Officiel)",
     "immigration_authority": "Office National de l'Identification et Police Nationale",
     "housing_and_tenancy": "Ministere de l'Urbanisme, des Affaires Foncieres et de l'Habitat",
-    "tax_authority": "https://www.impots.gov.bf (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://www.impots.gov.bf (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.legiburkina.bf"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impots.gov.bf"
+      }
+    ]
   },
   "Burundi": {
     "code": "BI",
     "official_gazette": "https://justice.gov.bi (Bulletin Officiel du Burundi - BOB, Ministere de la Justice)",
     "immigration_authority": "https://migration.gov.bi (Commissariat General des Migrations)",
     "housing_and_tenancy": "Ministere des Infrastructures, de l'Equipement et des Logements Sociaux",
-    "tax_authority": "https://www.obr.bi (Office Burundais des Recettes - OBR)"
+    "tax_authority": "https://www.obr.bi (Office Burundais des Recettes - OBR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://justice.gov.bi"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migration.gov.bi"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.obr.bi"
+      }
+    ]
   },
   "Cabo Verde": {
     "code": "CV",
     "official_gazette": "https://kiosk.incv.cv (Boletim Oficial da Republica de Cabo Verde)",
     "immigration_authority": "https://defp.policianacional.cv (Direcao de Estrangeiros e Fronteiras)",
     "housing_and_tenancy": "Ministerio das Infraestruturas, Ordenamento do Territorio e Habitacao",
-    "tax_authority": "https://dnre.gov.cv (Direcao Nacional de Receitas do Estado - DNRE)"
+    "tax_authority": "https://dnre.gov.cv (Direcao Nacional de Receitas do Estado - DNRE)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://kiosk.incv.cv"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://defp.policianacional.cv"
+      },
+      {
+        "label": "Tax",
+        "url": "https://dnre.gov.cv"
+      }
+    ]
   },
   "Cambodia": {
     "code": "KH",
     "official_gazette": "http://www.sithi.org and Council of Jurists Legal Database (moj.gov.kh)",
     "immigration_authority": "https://immigration.gov.kh (General Department of Immigration, Ministry of Interior)",
     "housing_and_tenancy": "Ministry of Land Management, Urban Planning and Construction",
-    "tax_authority": "https://www.tax.gov.kh (General Department of Taxation - GDT)"
+    "tax_authority": "https://www.tax.gov.kh (General Department of Taxation - GDT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.sithi.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.kh"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.tax.gov.kh"
+      }
+    ]
   },
   "Cameroon": {
     "code": "CM",
     "official_gazette": "https://www.spm.gov.cm (Official Gazette of the Republic of Cameroon - Journal Officiel)",
     "immigration_authority": "https://www.dgsn.cm (Delegation Generale a la Surete Nationale)",
     "housing_and_tenancy": "Ministere de l'Habitat et du Developpement Urbain (MINHDU)",
-    "tax_authority": "https://www.impots.cm (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://www.impots.cm (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.spm.gov.cm"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.dgsn.cm"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impots.cm"
+      }
+    ]
   },
   "Canada": {
     "code": "CA",
     "official_gazette": "https://laws-lois.justice.gc.ca (Justice Laws Website) and https://www.gazette.gc.ca (Canada Gazette)",
     "immigration_authority": "https://www.canada.ca/en/immigration-refugees-citizenship.html (IRCC)",
     "housing_and_tenancy": "https://www.cmhc-schl.gc.ca and Provincial Landlord and Tenant Boards (LTB Ontario / TAL Quebec / RTB BC)",
-    "tax_authority": "https://www.canada.ca/en/revenue-agency.html (Canada Revenue Agency - CRA)"
+    "tax_authority": "https://www.canada.ca/en/revenue-agency.html (Canada Revenue Agency - CRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://laws-lois.justice.gc.ca"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gazette.gc.ca"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.canada.ca/en/immigration-refugees-citizenship.html"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.cmhc-schl.gc.ca"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.canada.ca/en/revenue-agency.html"
+      }
+    ]
   },
   "Central African Republic": {
     "code": "CF",
     "official_gazette": "Journal Officiel de la Republique Centrafricaine (justice.gouv.cf)",
     "immigration_authority": "Direction Generale de la Police Nationale - Division de l'Emigration et de l'Immigration",
     "housing_and_tenancy": "Ministere de l'Urbanisme, de la Reforme Fonciere, de la Ville et de l'Habitat",
-    "tax_authority": "Direction Generale des Impots et des Domaines (finances.gouv.cf)"
+    "tax_authority": "Direction Generale des Impots et des Domaines (finances.gouv.cf)",
+    "portals": []
   },
   "Chad": {
     "code": "TD",
     "official_gazette": "Journal Officiel de la Republique du Tchad (legitchad.net)",
     "immigration_authority": "Direction de la Police de l'Air et des Frontieres",
     "housing_and_tenancy": "Ministere de l'Amenagement du Territoire, de l'Urbanisme et de l'Habitat",
-    "tax_authority": "Direction Generale des Impots (finances.gouv.td)"
+    "tax_authority": "Direction Generale des Impots (finances.gouv.td)",
+    "portals": []
   },
   "Chile": {
     "code": "CL",
     "official_gazette": "https://www.diarioficial.cl (Diario Oficial de la Republica de Chile) and https://www.bcn.cl (Biblioteca del Congreso)",
     "immigration_authority": "https://serviciomigraciones.cl (Servicio Nacional de Migraciones - SERMIG)",
     "housing_and_tenancy": "https://www.minvu.gob.cl (Ministerio de Vivienda y Urbanismo - MINVU)",
-    "tax_authority": "https://www.sii.cl (Servicio de Impuestos Internos - SII)"
+    "tax_authority": "https://www.sii.cl (Servicio de Impuestos Internos - SII)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.diarioficial.cl"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.bcn.cl"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://serviciomigraciones.cl"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.minvu.gob.cl"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.sii.cl"
+      }
+    ]
   },
   "China": {
     "code": "CN",
     "official_gazette": "http://www.gov.cn/zhengce (State Council Gazettes) and http://flk.npc.gov.cn (National People's Congress Law Database)",
     "immigration_authority": "https://en.nia.gov.cn (National Immigration Administration - NIA)",
     "housing_and_tenancy": "http://www.mohurd.gov.cn (Ministry of Housing and Urban-Rural Development - MOHURD)",
-    "tax_authority": "http://www.chinatax.gov.cn (State Taxation Administration - STA)"
+    "tax_authority": "http://www.chinatax.gov.cn (State Taxation Administration - STA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.gov.cn/zhengce"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://flk.npc.gov.cn"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://en.nia.gov.cn"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "http://www.mohurd.gov.cn"
+      },
+      {
+        "label": "Tax",
+        "url": "http://www.chinatax.gov.cn"
+      }
+    ]
   },
   "Colombia": {
     "code": "CO",
     "official_gazette": "https://www.suin-juriscol.gov.co (Sistema Unico de Informacion Normativa - SUIN) and Diario Oficial",
     "immigration_authority": "https://www.migracioncolombia.gov.co (Migracion Colombia)",
     "housing_and_tenancy": "https://www.minvivienda.gov.co (Ministerio de Vivienda, Ciudad y Territorio)",
-    "tax_authority": "https://www.dian.gov.co (Direccion de Impuestos y Aduanas Nacionales - DIAN)"
+    "tax_authority": "https://www.dian.gov.co (Direccion de Impuestos y Aduanas Nacionales - DIAN)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.suin-juriscol.gov.co"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migracioncolombia.gov.co"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.minvivienda.gov.co"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.dian.gov.co"
+      }
+    ]
   },
   "Comoros": {
     "code": "KM",
     "official_gazette": "Journal Officiel de l'Union des Comores (beit-salam.km)",
     "immigration_authority": "Direction Generale de la Surete Nationale et de l'Immigration",
     "housing_and_tenancy": "Ministere de l'Amenagement du Territoire et de l'Urbanisme",
-    "tax_authority": "Direction Generale des Impots des Comores"
+    "tax_authority": "Direction Generale des Impots des Comores",
+    "portals": []
   },
   "Congo, Democratic Republic of the": {
     "code": "CD",
     "official_gazette": "https://www.journalofficiel.cd (Journal Officiel de la RDC)",
     "immigration_authority": "https://dgm.cd (Direction Generale de Migration - DGM)",
     "housing_and_tenancy": "Ministere de l'Urbanisme et Habitat",
-    "tax_authority": "https://dgi.gouv.cd (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://dgi.gouv.cd (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.journalofficiel.cd"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://dgm.cd"
+      },
+      {
+        "label": "Tax",
+        "url": "https://dgi.gouv.cd"
+      }
+    ]
   },
   "Congo, Republic of the": {
     "code": "CG",
     "official_gazette": "https://www.sgg.cg (Journal Officiel de la Republique du Congo)",
     "immigration_authority": "Direction Generale de la Surveillance du Territoire et de l'Immigration",
     "housing_and_tenancy": "Ministere de la Construction, de l'Urbanisme et de l'Habitat",
-    "tax_authority": "https://www.impots.gouv.cg (Direction Generale des Impots et des Domaines)"
+    "tax_authority": "https://www.impots.gouv.cg (Direction Generale des Impots et des Domaines)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.sgg.cg"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impots.gouv.cg"
+      }
+    ]
   },
   "Costa Rica": {
     "code": "CR",
     "official_gazette": "https://www.imprentanacional.go.cr (Diario Oficial La Gaceta)",
     "immigration_authority": "https://www.migracion.go.cr (Direccion General de Migracion y Extranjeria)",
     "housing_and_tenancy": "https://www.mivah.go.cr (Ministerio de Vivienda y Asentamientos Humanos)",
-    "tax_authority": "https://www.hacienda.go.cr (Ministerio de Hacienda - Direccion General de Tributacion)"
+    "tax_authority": "https://www.hacienda.go.cr (Ministerio de Hacienda - Direccion General de Tributacion)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.imprentanacional.go.cr"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migracion.go.cr"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.mivah.go.cr"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.hacienda.go.cr"
+      }
+    ]
   },
   "Cote d'Ivoire": {
     "code": "CI",
     "official_gazette": "https://www.sgg.gouv.ci (Journal Officiel de la Republique de Cote d'Ivoire)",
     "immigration_authority": "https://snedai.com and Direction de la Surveillance du Territoire",
     "housing_and_tenancy": "https://construction.gouv.ci (Ministere de la Construction, du Logement et de l'Urbanisme)",
-    "tax_authority": "https://www.dgi.gouv.ci (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://www.dgi.gouv.ci (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.sgg.gouv.ci"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://snedai.com"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://construction.gouv.ci"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.dgi.gouv.ci"
+      }
+    ]
   },
   "Croatia": {
     "code": "HR",
     "official_gazette": "https://narodne-novine.nn.hr (Official Gazette of the Republic of Croatia - Narodne Novine)",
     "immigration_authority": "https://mup.gov.hr (Ministry of the Interior - MUP)",
     "housing_and_tenancy": "https://mpgi.gov.hr (Ministry of Physical Planning, Construction and State Assets)",
-    "tax_authority": "https://www.porezna-uprava.hr (Tax Administration - Porezna uprava)"
+    "tax_authority": "https://www.porezna-uprava.hr (Tax Administration - Porezna uprava)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://narodne-novine.nn.hr"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://mup.gov.hr"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://mpgi.gov.hr"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.porezna-uprava.hr"
+      }
+    ]
   },
   "Cuba": {
     "code": "CU",
     "official_gazette": "https://www.gacetaoficial.gob.cu (Gaceta Oficial de la Republica de Cuba)",
     "immigration_authority": "https://www.minint.gob.cu (Direccion de Identificacion, Inmigracion y Extranjeria)",
     "housing_and_tenancy": "Instituto Nacional de Ordenamiento Territorial y Urbanismo (INOTU)",
-    "tax_authority": "https://www.onat.gob.cu (Oficina Nacional de Administracion Tributaria - ONAT)"
+    "tax_authority": "https://www.onat.gob.cu (Oficina Nacional de Administracion Tributaria - ONAT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gacetaoficial.gob.cu"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.minint.gob.cu"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.onat.gob.cu"
+      }
+    ]
   },
   "Cyprus": {
     "code": "CY",
     "official_gazette": "http://www.cylaw.org and Official Gazette of the Republic of Cyprus (mof.gov.cy/gpo)",
     "immigration_authority": "http://www.moi.gov.cy/crmd (Civil Registry and Migration Department)",
     "housing_and_tenancy": "Ministry of Interior and Rent Control Courts",
-    "tax_authority": "https://www.mof.gov.cy/tax (Tax Department - Ministry of Finance)"
+    "tax_authority": "https://www.mof.gov.cy/tax (Tax Department - Ministry of Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.cylaw.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "http://www.moi.gov.cy/crmd"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mof.gov.cy/tax"
+      }
+    ]
   },
   "Czech Republic": {
     "code": "CZ",
     "official_gazette": "https://www.zakonyprolidi.cz and https://sbirka.nssoud.cz (Collection of Laws of the Czech Republic - Sbirka zakonu)",
     "immigration_authority": "https://ipc.gov.cz and https://www.mvcr.cz (Department for Asylum and Migration Policy - OAMP)",
     "housing_and_tenancy": "https://mmr.gov.cz (Ministry of Regional Development - MMR)",
-    "tax_authority": "https://www.financnisprava.cz (Financial Administration of the Czech Republic - Financni sprava)"
+    "tax_authority": "https://www.financnisprava.cz (Financial Administration of the Czech Republic - Financni sprava)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.zakonyprolidi.cz"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://sbirka.nssoud.cz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://ipc.gov.cz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.mvcr.cz"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://mmr.gov.cz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.financnisprava.cz"
+      }
+    ]
   },
   "Denmark": {
     "code": "DK",
     "official_gazette": "https://www.retsinformation.dk (Retsinformation - Danish Legal Information System)",
     "immigration_authority": "https://www.nyidanmark.dk (Danish Immigration Service and SIRI)",
     "housing_and_tenancy": "https://www.borger.dk/bolig-og-flytning/lejebolig (Danish Rent Committee - Huslejenaevn)",
-    "tax_authority": "https://skat.dk (Danish Customs and Tax Administration - Skatteforvaltningen)"
+    "tax_authority": "https://skat.dk (Danish Customs and Tax Administration - Skatteforvaltningen)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.retsinformation.dk"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.nyidanmark.dk"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.borger.dk/bolig-og-flytning/lejebolig"
+      },
+      {
+        "label": "Tax",
+        "url": "https://skat.dk"
+      }
+    ]
   },
   "Djibouti": {
     "code": "DJ",
     "official_gazette": "https://www.presidence.dj (Journal Officiel de la Republique de Djibouti)",
     "immigration_authority": "https://www.police.dj (Direction de la Police Nationale - Section Immigration)",
     "housing_and_tenancy": "Ministere du Logement, de l'Urbanisme et de l'Environnement",
-    "tax_authority": "https://www.ministere-finances.dj (Direction Generale des Impots)"
+    "tax_authority": "https://www.ministere-finances.dj (Direction Generale des Impots)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.presidence.dj"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.police.dj"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ministere-finances.dj"
+      }
+    ]
   },
   "Dominica": {
     "code": "DM",
     "official_gazette": "Official Gazette of the Commonwealth of Dominica (dominica.gov.dm)",
     "immigration_authority": "https://immigration.gov.dm (Immigration Department, Ministry of National Security)",
     "housing_and_tenancy": "Ministry of Housing and Urban Development",
-    "tax_authority": "https://ird.gov.dm (Inland Revenue Department)"
+    "tax_authority": "https://ird.gov.dm (Inland Revenue Department)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.dm"
+      },
+      {
+        "label": "Tax",
+        "url": "https://ird.gov.dm"
+      }
+    ]
   },
   "Dominican Republic": {
     "code": "DO",
     "official_gazette": "https://www.consultoria.gov.do (Consultoria Juridica del Poder Ejecutivo - Gaceta Oficial)",
     "immigration_authority": "https://migracion.gob.do (Direccion General de Migracion - DGM)",
     "housing_and_tenancy": "https://mived.gob.do (Ministerio de la Vivienda y Edificaciones - MIVED)",
-    "tax_authority": "https://dgii.gov.do (Direccion General de Impuestos Internos - DGII)"
+    "tax_authority": "https://dgii.gov.do (Direccion General de Impuestos Internos - DGII)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.consultoria.gov.do"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migracion.gob.do"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://mived.gob.do"
+      },
+      {
+        "label": "Tax",
+        "url": "https://dgii.gov.do"
+      }
+    ]
   },
   "Ecuador": {
     "code": "EC",
     "official_gazette": "https://www.registroficial.gob.ec (Registro Oficial del Ecuador)",
     "immigration_authority": "https://www.ministeriodegobierno.gob.ec and https://www.cancilleria.gob.ec (Servicios Migratorios)",
     "housing_and_tenancy": "https://www.habitatyvivienda.gob.ec (Ministerio de Desarrollo Urbano y Vivienda - MIDUVI)",
-    "tax_authority": "https://www.sri.gob.ec (Servicio de Rentas Internas - SRI)"
+    "tax_authority": "https://www.sri.gob.ec (Servicio de Rentas Internas - SRI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.registroficial.gob.ec"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.ministeriodegobierno.gob.ec"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.cancilleria.gob.ec"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.habitatyvivienda.gob.ec"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.sri.gob.ec"
+      }
+    ]
   },
   "Egypt": {
     "code": "EG",
     "official_gazette": "The Egyptian Gazette (Al-Waqa'i' al-Misriyya) - General Organization for Government Printing Offices",
     "immigration_authority": "https://en.mfa.gov.eg and Passports, Emigration and Nationality Administration (moi.gov.eg)",
     "housing_and_tenancy": "http://www.mhuc.gov.eg (Ministry of Housing, Utilities and Urban Communities)",
-    "tax_authority": "https://www.eta.gov.eg (Egyptian Tax Authority)"
+    "tax_authority": "https://www.eta.gov.eg (Egyptian Tax Authority)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://en.mfa.gov.eg"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "http://www.mhuc.gov.eg"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.eta.gov.eg"
+      }
+    ]
   },
   "El Salvador": {
     "code": "SV",
     "official_gazette": "https://www.diariooficial.gob.sv (Diario Oficial de la Republica de El Salvador)",
     "immigration_authority": "https://www.migracion.gob.sv (Direccion General de Migracion y Extranjeria)",
     "housing_and_tenancy": "https://www.vivienda.gob.sv (Ministerio de Vivienda)",
-    "tax_authority": "https://www.mh.gob.sv (Ministerio de Hacienda - Direccion General de Impuestos Internos)"
+    "tax_authority": "https://www.mh.gob.sv (Ministerio de Hacienda - Direccion General de Impuestos Internos)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.diariooficial.gob.sv"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migracion.gob.sv"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.vivienda.gob.sv"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mh.gob.sv"
+      }
+    ]
   },
   "Equatorial Guinea": {
     "code": "GQ",
     "official_gazette": "Boletin Oficial del Estado (guineaecuatorialpress.com)",
     "immigration_authority": "Direccion General de Seguridad Nacional y Migracion",
     "housing_and_tenancy": "Ministerio de Obras Publicas, Viviendas y Urbanismo",
-    "tax_authority": "Ministerio de Hacienda y Presupuestos (hacienda.gob.gq)"
+    "tax_authority": "Ministerio de Hacienda y Presupuestos (hacienda.gob.gq)",
+    "portals": []
   },
   "Eritrea": {
     "code": "ER",
     "official_gazette": "Gazette of Eritrean Laws (Ministry of Information - shabait.com)",
     "immigration_authority": "Department of Immigration and Nationality (Ministry of Internal Affairs)",
     "housing_and_tenancy": "Ministry of Public Works and Housing",
-    "tax_authority": "Inland Revenue Department (Ministry of Finance)"
+    "tax_authority": "Inland Revenue Department (Ministry of Finance)",
+    "portals": []
   },
   "Estonia": {
     "code": "EE",
     "official_gazette": "https://www.riigiteataja.ee (Riigi Teataja - State Gazette of Estonia)",
     "immigration_authority": "https://www.politsei.ee (Police and Border Guard Board - Politsei- ja Piirivalveamet)",
     "housing_and_tenancy": "Ministry of Regional Affairs and Agriculture and Tenancy Committee (Uurikomision)",
-    "tax_authority": "https://www.emta.ee (Estonian Tax and Customs Board - Maksu- ja Tolliamet)"
+    "tax_authority": "https://www.emta.ee (Estonian Tax and Customs Board - Maksu- ja Tolliamet)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.riigiteataja.ee"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.politsei.ee"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.emta.ee"
+      }
+    ]
   },
   "Eswatini": {
     "code": "SZ",
     "official_gazette": "https://www.gov.sz (Eswatini Government Gazette)",
     "immigration_authority": "Department of Immigration, Ministry of Home Affairs (gov.sz)",
     "housing_and_tenancy": "Ministry of Housing and Urban Development",
-    "tax_authority": "https://www.ers.org.sz (Eswatini Revenue Service - ERS)"
+    "tax_authority": "https://www.ers.org.sz (Eswatini Revenue Service - ERS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gov.sz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ers.org.sz"
+      }
+    ]
   },
   "Ethiopia": {
     "code": "ET",
     "official_gazette": "https://www.lawethiopia.com and Federal Negarit Gazeta (pmo.gov.et)",
     "immigration_authority": "https://www.evisa.gov.et and Immigration and Citizenship Service (ics.gov.et)",
     "housing_and_tenancy": "Ministry of Urban and Infrastructure (mui.gov.et)",
-    "tax_authority": "https://www.mor.gov.et (Ministry of Revenues)"
+    "tax_authority": "https://www.mor.gov.et (Ministry of Revenues)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.lawethiopia.com"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.evisa.gov.et"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mor.gov.et"
+      }
+    ]
   },
   "Fiji": {
     "code": "FJ",
     "official_gazette": "https://www.laws.gov.fj (Laws of Fiji Legal Portal)",
     "immigration_authority": "https://www.immigration.gov.fj (Department of Immigration)",
     "housing_and_tenancy": "Ministry of Housing and Local Government and Fijian Competition and Consumer Commission (FCCC)",
-    "tax_authority": "https://www.frcs.org.fj (Fiji Revenue and Customs Service - FRCS)"
+    "tax_authority": "https://www.frcs.org.fj (Fiji Revenue and Customs Service - FRCS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.laws.gov.fj"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.gov.fj"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.frcs.org.fj"
+      }
+    ]
   },
   "Finland": {
     "code": "FI",
     "official_gazette": "https://www.finlex.fi (Finlex Data Bank of Finnish Legislation)",
     "immigration_authority": "https://migri.fi (Finnish Immigration Service - Maahanmuuttovirasto)",
     "housing_and_tenancy": "https://www.ym.fi (Ministry of the Environment - Housing) and Consumer Disputes Board (Kuluttajariitalautakunta)",
-    "tax_authority": "https://www.vero.fi (Finnish Tax Administration - Verohallinto)"
+    "tax_authority": "https://www.vero.fi (Finnish Tax Administration - Verohallinto)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.finlex.fi"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migri.fi"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.ym.fi"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.vero.fi"
+      }
+    ]
   },
   "France": {
     "code": "FR",
     "official_gazette": "https://www.legifrance.gouv.fr (Legifrance - Public Service of Legal Dissemination)",
     "immigration_authority": "https://administration-etrangers-en-france.interieur.gouv.fr (ANEF - Direction Generale des Etrangers en France)",
     "housing_and_tenancy": "https://www.service-public.fr/particuliers/vosdroits/N19808 (Tenancy Rules and Agence Nationale pour l'Information sur le Logement - ANIL)",
-    "tax_authority": "https://www.impots.gouv.fr (Direction Generale des Finances Publiques - DGFiP)"
+    "tax_authority": "https://www.impots.gouv.fr (Direction Generale des Finances Publiques - DGFiP)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.legifrance.gouv.fr"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://administration-etrangers-en-france.interieur.gouv.fr"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.service-public.fr/particuliers/vosdroits/N19808"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impots.gouv.fr"
+      }
+    ]
   },
   "Gabon": {
     "code": "GA",
     "official_gazette": "https://journal-officiel.ga (Journal Officiel de la Republique Gabonaise)",
     "immigration_authority": "https://www.dgdi.ga (Direction Generale de la Documentation et de l'Immigration - DGDI)",
     "housing_and_tenancy": "Ministere de l'Habitat, de l'Urbanisme et du Cadastre",
-    "tax_authority": "https://dgi.ga (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://dgi.ga (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://journal-officiel.ga"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.dgdi.ga"
+      },
+      {
+        "label": "Tax",
+        "url": "https://dgi.ga"
+      }
+    ]
   },
   "Gambia": {
     "code": "GM",
     "official_gazette": "The Gambia Gazette - Ministry of Justice (moj.gm)",
     "immigration_authority": "https://www.gid.gov.gm (Gambia Immigration Department)",
     "housing_and_tenancy": "Ministry of Lands, Regional Government and Religious Affairs",
-    "tax_authority": "https://www.gra.gm (Gambia Revenue Authority - GRA)"
+    "tax_authority": "https://www.gra.gm (Gambia Revenue Authority - GRA)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://www.gid.gov.gm"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gra.gm"
+      }
+    ]
   },
   "Georgia": {
     "code": "GE",
     "official_gazette": "https://matsne.gov.ge (Legislative Herald of Georgia - Matsne)",
     "immigration_authority": "https://sda.gov.ge and https://geoconsul.gov.ge (Public Service Development Agency)",
     "housing_and_tenancy": "Ministry of Economy and Sustainable Development of Georgia",
-    "tax_authority": "https://rs.ge (Revenue Service of Georgia)"
+    "tax_authority": "https://rs.ge (Revenue Service of Georgia)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://matsne.gov.ge"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://sda.gov.ge"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://geoconsul.gov.ge"
+      },
+      {
+        "label": "Tax",
+        "url": "https://rs.ge"
+      }
+    ]
   },
   "Germany": {
     "code": "DE",
     "official_gazette": "https://www.gesetze-im-internet.de (Federal Ministry of Justice Laws) and https://www.recht.bund.de (Bundesgesetzblatt)",
     "immigration_authority": "https://www.bamf.de (Federal Office for Migration and Refugees - BAMF) and Auslaenderbehoerde local offices",
     "housing_and_tenancy": "https://www.bmwsb.bund.de (Federal Ministry for Housing) and local Mietspiegel / Mieterverein",
-    "tax_authority": "https://www.bzst.de (Federal Central Tax Office - Bundeszentralamt fuer Steuern)"
+    "tax_authority": "https://www.bzst.de (Federal Central Tax Office - Bundeszentralamt fuer Steuern)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gesetze-im-internet.de"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.recht.bund.de"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.bamf.de"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.bmwsb.bund.de"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.bzst.de"
+      }
+    ]
   },
   "Ghana": {
     "code": "GH",
     "official_gazette": "https://lawsghana.com and Assembly Press Gazette (ghana.gov.gh)",
     "immigration_authority": "https://gis.gov.gh (Ghana Immigration Service - GIS)",
     "housing_and_tenancy": "https://mwh.gov.gh (Ministry of Works and Housing) and Rent Control Department of Ghana",
-    "tax_authority": "https://gra.gov.gh (Ghana Revenue Authority - GRA)"
+    "tax_authority": "https://gra.gov.gh (Ghana Revenue Authority - GRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://lawsghana.com"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://gis.gov.gh"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://mwh.gov.gh"
+      },
+      {
+        "label": "Tax",
+        "url": "https://gra.gov.gh"
+      }
+    ]
   },
   "Greece": {
     "code": "GR",
     "official_gazette": "https://www.et.gr (National Printing House - Efimerida tis Kyverniseos)",
     "immigration_authority": "https://migration.gov.gr (Ministry of Migration and Asylum)",
     "housing_and_tenancy": "Ministry of Environment and Energy and local Civil Courts",
-    "tax_authority": "https://www.aade.gr (Independent Authority for Public Revenue - AADE)"
+    "tax_authority": "https://www.aade.gr (Independent Authority for Public Revenue - AADE)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.et.gr"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migration.gov.gr"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.aade.gr"
+      }
+    ]
   },
   "Grenada": {
     "code": "GD",
     "official_gazette": "Government Gazette of Grenada (gov.gd)",
     "immigration_authority": "https://www.immigration.gov.gd (Immigration Department, Royal Grenada Police Force)",
     "housing_and_tenancy": "Ministry of Housing and Urban Development",
-    "tax_authority": "https://ird.gd (Inland Revenue Division)"
+    "tax_authority": "https://ird.gd (Inland Revenue Division)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.gov.gd"
+      },
+      {
+        "label": "Tax",
+        "url": "https://ird.gd"
+      }
+    ]
   },
   "Guatemala": {
     "code": "GT",
     "official_gazette": "https://dca.gob.gt (Diario de Centro America - Organo Oficial)",
     "immigration_authority": "https://igm.gob.gt (Instituto Guatemalteco de Migracion)",
     "housing_and_tenancy": "Fondo para la Vivienda (FOPAVI) y Ministerio de Comunicaciones, Infraestructura y Vivienda",
-    "tax_authority": "https://portal.sat.gob.gt (Superintendencia de Administracion Tributaria - SAT)"
+    "tax_authority": "https://portal.sat.gob.gt (Superintendencia de Administracion Tributaria - SAT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://dca.gob.gt"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://igm.gob.gt"
+      },
+      {
+        "label": "Tax",
+        "url": "https://portal.sat.gob.gt"
+      }
+    ]
   },
   "Guinea": {
     "code": "GN",
     "official_gazette": "Journal Officiel de la Republique de Guinee (justice.gov.gn)",
     "immigration_authority": "Direction Centrale de la Police de l'Air et des Frontieres",
     "housing_and_tenancy": "Ministere de l'Urbanisme, de l'Habitat et de l'Amenagement du Territoire",
-    "tax_authority": "https://dgi.gov.gn (Direction Nationale des Impots)"
+    "tax_authority": "https://dgi.gov.gn (Direction Nationale des Impots)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://dgi.gov.gn"
+      }
+    ]
   },
   "Guinea-Bissau": {
     "code": "GW",
     "official_gazette": "Boletim Oficial da Republica da Guine-Bissau",
     "immigration_authority": "Servico de Estrangeiros e Fronteiras (SEF-GB)",
     "housing_and_tenancy": "Ministerio das Obras Publicas, Habitacao e Urbanismo",
-    "tax_authority": "Direcao-Geral das Contribuicoes e Impostos"
+    "tax_authority": "Direcao-Geral das Contribuicoes e Impostos",
+    "portals": []
   },
   "Guyana": {
     "code": "GY",
     "official_gazette": "https://officialgazette.gov.gy (Official Gazette of Guyana)",
     "immigration_authority": "https://guyanapoliceforce.gy (Central Immigration and Passport Office)",
     "housing_and_tenancy": "https://moha.gov.gy and Central Housing and Planning Authority (chpa.gov.gy)",
-    "tax_authority": "https://www.gra.gov.gy (Guyana Revenue Authority - GRA)"
+    "tax_authority": "https://www.gra.gov.gy (Guyana Revenue Authority - GRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://officialgazette.gov.gy"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://guyanapoliceforce.gy"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://moha.gov.gy"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gra.gov.gy"
+      }
+    ]
   },
   "Haiti": {
     "code": "HT",
     "official_gazette": "Le Moniteur - Journal Officiel de la Republique d'Haiti (pressesnationales.ht)",
     "immigration_authority": "Direction de l'Immigration et de l'Emigration (interieur.gouv.ht)",
     "housing_and_tenancy": "Ministere des Travaux Publics, Transports et Communications",
-    "tax_authority": "https://dgi.gouv.ht (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://dgi.gouv.ht (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://dgi.gouv.ht"
+      }
+    ]
   },
   "Honduras": {
     "code": "HN",
     "official_gazette": "https://lagaceta.hn (Diario Oficial La Gaceta)",
     "immigration_authority": "https://inm.gob.hn (Instituto Nacional de Migracion - INM)",
     "housing_and_tenancy": "Secretaria de Desarrollo Comunitario, Agua y Saneamiento (SEDECOAS/CONVIVIENDA)",
-    "tax_authority": "https://www.sar.gob.hn (Servicio de Administracion de Rentas - SAR)"
+    "tax_authority": "https://www.sar.gob.hn (Servicio de Administracion de Rentas - SAR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://lagaceta.hn"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://inm.gob.hn"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.sar.gob.hn"
+      }
+    ]
   },
   "Hungary": {
     "code": "HU",
     "official_gazette": "https://magyarkozlony.hu (Magyar Kozlony) and https://njt.hu (National Legislation Database - Nemzeti Jogszabalygyujtemeny)",
     "immigration_authority": "https://oif.gov.hu (National Directorate-General for Aliens Policing - OIF) and https://enterhungary.gov.hu",
     "housing_and_tenancy": "https://budapest.hu (Budapest Metropolitan Municipality) and District Mayor Offices (Jegyzo / Polgarmesteri Hivatalok)",
-    "tax_authority": "https://nav.gov.hu (National Tax and Customs Administration - Nemzeti Ado- es Vamhivatal)"
+    "tax_authority": "https://nav.gov.hu (National Tax and Customs Administration - Nemzeti Ado- es Vamhivatal)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://magyarkozlony.hu"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://njt.hu"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://oif.gov.hu"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://enterhungary.gov.hu"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://budapest.hu"
+      },
+      {
+        "label": "Tax",
+        "url": "https://nav.gov.hu"
+      }
+    ]
   },
   "Iceland": {
     "code": "IS",
     "official_gazette": "https://www.stjornartidindi.is (Stjornartidindi - Government Gazette of Iceland) and https://www.althingi.is",
     "immigration_authority": "https://island.is/s/utlendigestofnun (Directorate of Immigration - Utlendigestofnun)",
     "housing_and_tenancy": "https://hms.is (Housing and Construction Authority - Husnaedis- og mannvirkjastofnun)",
-    "tax_authority": "https://www.rsk.is (Iceland Revenue and Customs - Skatturinn)"
+    "tax_authority": "https://www.rsk.is (Iceland Revenue and Customs - Skatturinn)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.stjornartidindi.is"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.althingi.is"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://island.is/s/utlendigestofnun"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://hms.is"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.rsk.is"
+      }
+    ]
   },
   "India": {
     "code": "IN",
     "official_gazette": "https://egazette.gov.in (The Gazette of India) and https://www.indiacode.nic.in (India Code Legislation Portal)",
     "immigration_authority": "https://indianfrro.gov.in (Foreigners Regional Registration Officer - FRRO) and https://boi.gov.in (Bureau of Immigration)",
     "housing_and_tenancy": "https://mohua.gov.in (Ministry of Housing and Urban Affairs) and State RERA Authorities",
-    "tax_authority": "https://www.incometax.gov.in (Income Tax Department, Ministry of Finance)"
+    "tax_authority": "https://www.incometax.gov.in (Income Tax Department, Ministry of Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://egazette.gov.in"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.indiacode.nic.in"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://indianfrro.gov.in"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://boi.gov.in"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://mohua.gov.in"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.incometax.gov.in"
+      }
+    ]
   },
   "Indonesia": {
     "code": "ID",
     "official_gazette": "https://peraturan.go.id (JDIHN - Jaringan Dokumentasi dan Informasi Hukum Nasional)",
     "immigration_authority": "https://www.imigrasi.go.id (Direktorat Jenderal Imigrasi)",
     "housing_and_tenancy": "https://pu.go.id (Kementerian Pekerjaan Umum dan Perumahan Rakyat - PUPR)",
-    "tax_authority": "https://www.pajak.go.id (Direktorat Jenderal Pajak - DJP)"
+    "tax_authority": "https://www.pajak.go.id (Direktorat Jenderal Pajak - DJP)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://peraturan.go.id"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.imigrasi.go.id"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://pu.go.id"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.pajak.go.id"
+      }
+    ]
   },
   "Iran": {
     "code": "IR",
     "official_gazette": "https://www.rrk.ir (Official Gazette of the Islamic Republic of Iran)",
     "immigration_authority": "Immigration and Passport Police of the Islamic Republic of Iran",
     "housing_and_tenancy": "Ministry of Roads and Urban Development (mrud.ir)",
-    "tax_authority": "https://www.intamedia.ir (Iranian National Tax Administration - INTA)"
+    "tax_authority": "https://www.intamedia.ir (Iranian National Tax Administration - INTA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.rrk.ir"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.intamedia.ir"
+      }
+    ]
   },
   "Iraq": {
     "code": "IQ",
     "official_gazette": "https://www.moj.gov.iq (Iraqi Official Gazette - Al-Waqai Al-Iraqiya, Ministry of Justice)",
     "immigration_authority": "General Directorate of Passports and Residence, Ministry of Interior",
     "housing_and_tenancy": "Ministry of Construction, Housing, Municipalities and Public Works",
-    "tax_authority": "General Commission of Taxes (mof.gov.iq)"
+    "tax_authority": "General Commission of Taxes (mof.gov.iq)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.moj.gov.iq"
+      }
+    ]
   },
   "Ireland": {
     "code": "IE",
     "official_gazette": "https://www.irishstatutebook.ie (electronic Irish Statute Book - eISB) and https://www.irisoifigiuil.ie",
     "immigration_authority": "https://www.irishimmigration.ie (Immigration Service Delivery - ISD, Department of Justice)",
     "housing_and_tenancy": "https://www.rtb.ie (Residential Tenancies Board - RTB)",
-    "tax_authority": "https://www.revenue.ie (Revenue Commissioners - Irish Tax and Customs)"
+    "tax_authority": "https://www.revenue.ie (Revenue Commissioners - Irish Tax and Customs)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.irishstatutebook.ie"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.irisoifigiuil.ie"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.irishimmigration.ie"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.rtb.ie"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.revenue.ie"
+      }
+    ]
   },
   "Israel": {
     "code": "IL",
     "official_gazette": "https://www.nevo.co.il and Reshumot (Official Gazette of the State of Israel - justice.gov.il)",
     "immigration_authority": "https://www.gov.il/en/departments/population_and_immigration_authority (Population and Immigration Authority - PIBA)",
     "housing_and_tenancy": "https://www.gov.il/en/departments/ministry_of_construction_and_housing (Ministry of Construction and Housing)",
-    "tax_authority": "https://www.gov.il/en/departments/israel_tax_authority (Israel Tax Authority)"
+    "tax_authority": "https://www.gov.il/en/departments/israel_tax_authority (Israel Tax Authority)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.nevo.co.il"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gov.il/en/departments/population_and_immigration_authority"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gov.il/en/departments/ministry_of_construction_and_housing"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gov.il/en/departments/israel_tax_authority"
+      }
+    ]
   },
   "Italy": {
     "code": "IT",
     "official_gazette": "https://www.normattiva.it (Normattiva - Laws of the Italian State) and https://www.gazzettaufficiale.it",
     "immigration_authority": "https://www.poliziadistato.it (Polizia di Stato - Ufficio Immigrazione) and https://portaleservizi.dlci.interno.it",
     "housing_and_tenancy": "https://www.agenziaentrate.gov.it (Tenancy Contract Registration) and Ministry of Infrastructure",
-    "tax_authority": "https://www.agenziaentrate.gov.it (Agenzia delle Entrate)"
+    "tax_authority": "https://www.agenziaentrate.gov.it (Agenzia delle Entrate)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.normattiva.it"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gazzettaufficiale.it"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.poliziadistato.it"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://portaleservizi.dlci.interno.it"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.agenziaentrate.gov.it"
+      }
+    ]
   },
   "Jamaica": {
     "code": "JM",
     "official_gazette": "https://moj.gov.jm (Ministry of Justice Statutes) and The Jamaica Gazette",
     "immigration_authority": "https://www.pica.gov.jm (Passport, Immigration and Citizenship Agency - PICA)",
     "housing_and_tenancy": "https://megjc.gov.jm (Ministry of Housing) and Rent Assessment Board",
-    "tax_authority": "https://www.taxadmin.com.jm (Tax Administration Jamaica - TAJ)"
+    "tax_authority": "https://www.taxadmin.com.jm (Tax Administration Jamaica - TAJ)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://moj.gov.jm"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.pica.gov.jm"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://megjc.gov.jm"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.taxadmin.com.jm"
+      }
+    ]
   },
   "Japan": {
     "code": "JP",
     "official_gazette": "https://elaws.e-gov.go.jp (e-Gov Japanese Law Search) and https://kanpou.npb.go.jp (Official Gazette Kanpou)",
     "immigration_authority": "https://www.isa.go.jp (Immigration Services Agency of Japan)",
     "housing_and_tenancy": "https://www.mlit.go.jp (Ministry of Land, Infrastructure, Transport and Tourism)",
-    "tax_authority": "https://www.nta.go.jp (National Tax Agency Japan)"
+    "tax_authority": "https://www.nta.go.jp (National Tax Agency Japan)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://elaws.e-gov.go.jp"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://kanpou.npb.go.jp"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.isa.go.jp"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.mlit.go.jp"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.nta.go.jp"
+      }
+    ]
   },
   "Jordan": {
     "code": "JO",
     "official_gazette": "http://www.pm.gov.jo (Official Gazette of the Hashemite Kingdom of Jordan)",
     "immigration_authority": "https://moi.gov.jo (Ministry of Interior - Residency and Foreigners Department)",
     "housing_and_tenancy": "Ministry of Public Works and Housing and Housing and Urban Development Corporation (hudc.gov.jo)",
-    "tax_authority": "https://www.istd.gov.jo (Income and Sales Tax Department - ISTD)"
+    "tax_authority": "https://www.istd.gov.jo (Income and Sales Tax Department - ISTD)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.pm.gov.jo"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://moi.gov.jo"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.istd.gov.jo"
+      }
+    ]
   },
   "Kazakhstan": {
     "code": "KZ",
     "official_gazette": "https://adilet.zan.kz (Information and Legal System of Regulatory Legal Acts - Adilet)",
     "immigration_authority": "https://vmp.gov.kz and Migration Service Committee of the Ministry of Internal Affairs",
     "housing_and_tenancy": "Ministry of Industry and Construction of the Republic of Kazakhstan",
-    "tax_authority": "https://kgd.gov.kz (State Revenue Committee of the Ministry of Finance)"
+    "tax_authority": "https://kgd.gov.kz (State Revenue Committee of the Ministry of Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://adilet.zan.kz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://vmp.gov.kz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://kgd.gov.kz"
+      }
+    ]
   },
   "Kenya": {
     "code": "KE",
     "official_gazette": "http://kenyalaw.org (Kenya Law Reports and Acts) and The Kenya Gazette (mygov.go.ke)",
     "immigration_authority": "https://fns.immigration.go.ke (Directorate of Immigration Services)",
     "housing_and_tenancy": "https://housingandurban.go.ke (State Department for Housing and Urban Development) and Rent Restriction Tribunal",
-    "tax_authority": "https://www.kra.go.ke (Kenya Revenue Authority - KRA)"
+    "tax_authority": "https://www.kra.go.ke (Kenya Revenue Authority - KRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://kenyalaw.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://fns.immigration.go.ke"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://housingandurban.go.ke"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.kra.go.ke"
+      }
+    ]
   },
   "Kiribati": {
     "code": "KI",
     "official_gazette": "https://www.paclii.org/ki/legis/ (Kiribati Legislation, Pacific Islands Legal Information Institute)",
     "immigration_authority": "Ministry of Foreign Affairs and Immigration (mfa.gov.ki)",
     "housing_and_tenancy": "Ministry of Infrastructure and Sustainable Energy",
-    "tax_authority": "Internal Revenue Board (mfep.gov.ki)"
+    "tax_authority": "Internal Revenue Board (mfep.gov.ki)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.paclii.org/ki/legis/"
+      }
+    ]
   },
   "Korea, South": {
     "code": "KR",
     "official_gazette": "https://www.law.go.kr (Korea National Law Information Center)",
     "immigration_authority": "https://www.hikorea.go.kr (Korea Immigration Service, Ministry of Justice)",
     "housing_and_tenancy": "https://www.molit.go.kr (Ministry of Land, Infrastructure and Transport) and Housing Lease Dispute Mediation Committee",
-    "tax_authority": "https://www.nts.go.kr (National Tax Service - NTS)"
+    "tax_authority": "https://www.nts.go.kr (National Tax Service - NTS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.law.go.kr"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.hikorea.go.kr"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.molit.go.kr"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.nts.go.kr"
+      }
+    ]
   },
   "Kosovo": {
     "code": "XK",
     "official_gazette": "https://gzk.rks-gov.net (Official Gazette of the Republic of Kosovo)",
     "immigration_authority": "https://mpb.rks-gov.net (Department for Citizenship, Asylum and Migration)",
     "housing_and_tenancy": "Ministry of Environment, Spatial Planning and Infrastructure",
-    "tax_authority": "https://www.atk-ks.org (Tax Administration of Kosovo - ATK)"
+    "tax_authority": "https://www.atk-ks.org (Tax Administration of Kosovo - ATK)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://gzk.rks-gov.net"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://mpb.rks-gov.net"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.atk-ks.org"
+      }
+    ]
   },
   "Kuwait": {
     "code": "KW",
     "official_gazette": "https://www.kna.kw and Kuwait Al-Youm (Official Gazette of Kuwait)",
     "immigration_authority": "https://www.moi.gov.kw (General Department of Residency, Ministry of Interior)",
     "housing_and_tenancy": "Public Authority for Housing Welfare (pahw.gov.kw) and Rent Dispute Department (moj.gov.kw)",
-    "tax_authority": "https://www.mof.gov.kw (Tax Administration, Ministry of Finance)"
+    "tax_authority": "https://www.mof.gov.kw (Tax Administration, Ministry of Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.kna.kw"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.moi.gov.kw"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mof.gov.kw"
+      }
+    ]
   },
   "Kyrgyzstan": {
     "code": "KG",
     "official_gazette": "http://cbd.minjust.gov.kg (Centralized Database of Legal Information of Kyrgyz Republic)",
     "immigration_authority": "Department of External Migration under the Ministry of Foreign Affairs (mfa.gov.kg)",
     "housing_and_tenancy": "State Agency of Architecture, Construction and Housing and Communal Services",
-    "tax_authority": "https://sti.gov.kg (State Tax Service under the Ministry of Finance)"
+    "tax_authority": "https://sti.gov.kg (State Tax Service under the Ministry of Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://cbd.minjust.gov.kg"
+      },
+      {
+        "label": "Tax",
+        "url": "https://sti.gov.kg"
+      }
+    ]
   },
   "Laos": {
     "code": "LA",
     "official_gazette": "https://laoofficialgazette.gov.la (Lao Official Gazette, Ministry of Justice)",
     "immigration_authority": "Department of Immigration, Ministry of Public Security",
     "housing_and_tenancy": "Ministry of Public Works and Transport (mpwt.gov.la)",
-    "tax_authority": "https://taxservice.mof.gov.la (Tax Department, Ministry of Finance)"
+    "tax_authority": "https://taxservice.mof.gov.la (Tax Department, Ministry of Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://laoofficialgazette.gov.la"
+      },
+      {
+        "label": "Tax",
+        "url": "https://taxservice.mof.gov.la"
+      }
+    ]
   },
   "Latvia": {
     "code": "LV",
     "official_gazette": "https://www.vestnesis.lv (Latvijas Vestnesis - Official Gazette) and https://likumi.lv (Legislation of Latvia)",
     "immigration_authority": "https://www.pmlp.gov.lv (Office of Citizenship and Migration Affairs - PMLP)",
     "housing_and_tenancy": "Ministry of Economics and Municipal Tenancy Boards",
-    "tax_authority": "https://www.vid.gov.lv (State Revenue Service - Valsts ienemumu dienests / VID)"
+    "tax_authority": "https://www.vid.gov.lv (State Revenue Service - Valsts ienemumu dienests / VID)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.vestnesis.lv"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://likumi.lv"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.pmlp.gov.lv"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.vid.gov.lv"
+      }
+    ]
   },
   "Lebanon": {
     "code": "LB",
     "official_gazette": "Official Gazette of the Lebanese Republic (pcm.gov.lb)",
     "immigration_authority": "https://www.general-security.gov.lb (General Directorate of General Security)",
     "housing_and_tenancy": "Public Corporation for Housing (PCH) and Ministry of Social Affairs",
-    "tax_authority": "http://www.finance.gov.lb (Directorate General of Finance)"
+    "tax_authority": "http://www.finance.gov.lb (Directorate General of Finance)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://www.general-security.gov.lb"
+      },
+      {
+        "label": "Tax",
+        "url": "http://www.finance.gov.lb"
+      }
+    ]
   },
   "Lesotho": {
     "code": "LS",
     "official_gazette": "Lesotho Government Gazette (lesotholii.org)",
     "immigration_authority": "Department of Immigration Services (homeaffairs.gov.ls)",
     "housing_and_tenancy": "Ministry of Local Government, Chieftainship, Home Affairs and Police",
-    "tax_authority": "https://www.lra.org.ls (Revenue Services Lesotho - RSL)"
+    "tax_authority": "https://www.lra.org.ls (Revenue Services Lesotho - RSL)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://www.lra.org.ls"
+      }
+    ]
   },
   "Liberia": {
     "code": "LR",
     "official_gazette": "The Liberia Official Gazette (Ministry of Foreign Affairs - mofa.gov.lr)",
     "immigration_authority": "https://lis.gov.lr (Liberia Immigration Service - LIS)",
     "housing_and_tenancy": "National Housing Authority (nha.gov.lr)",
-    "tax_authority": "https://www.lra.gov.lr (Liberia Revenue Authority - LRA)"
+    "tax_authority": "https://www.lra.gov.lr (Liberia Revenue Authority - LRA)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://lis.gov.lr"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.lra.gov.lr"
+      }
+    ]
   },
   "Libya": {
     "code": "LY",
     "official_gazette": "Official Gazette of the State of Libya (aladel.gov.ly)",
     "immigration_authority": "Department of Passports and Nationality, Ministry of Interior",
     "housing_and_tenancy": "Ministry of Housing and Construction",
-    "tax_authority": "Libyan Tax Authority (tax.gov.ly)"
+    "tax_authority": "Libyan Tax Authority (tax.gov.ly)",
+    "portals": []
   },
   "Liechtenstein": {
     "code": "LI",
     "official_gazette": "https://www.gesetze.li (Liechtenstein Legal Gazette - Landesgesetzblatt)",
     "immigration_authority": "https://www.llv.li (Auslaender- und Passamt - APA)",
     "housing_and_tenancy": "Amt fuer Volkswirtschaft and local Municipalities (Gemeinden)",
-    "tax_authority": "https://www.llv.li (Steuerverwaltung Liechtenstein)"
+    "tax_authority": "https://www.llv.li (Steuerverwaltung Liechtenstein)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gesetze.li"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.llv.li"
+      }
+    ]
   },
   "Lithuania": {
     "code": "LT",
     "official_gazette": "https://www.e-tar.lt (Register of Legal Acts - Teises aktu registras / TAR)",
     "immigration_authority": "https://migracija.lrv.lt (Migration Department under Ministry of the Interior - Migracijos departamentas)",
     "housing_and_tenancy": "Ministry of Environment of the Republic of Lithuania and Municipal Commissions",
-    "tax_authority": "https://www.vmi.lt (State Tax Inspectorate - Valstybine mokesciu inspekcija / VMI)"
+    "tax_authority": "https://www.vmi.lt (State Tax Inspectorate - Valstybine mokesciu inspekcija / VMI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.e-tar.lt"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migracija.lrv.lt"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.vmi.lt"
+      }
+    ]
   },
   "Luxembourg": {
     "code": "LU",
     "official_gazette": "https://legilux.public.lu (Legilux - Official Journal of the Grand Duchy of Luxembourg)",
     "immigration_authority": "https://guichet.public.lu (Direction de l'Immigration, Ministere des Affaires Etrangeres et Europeennes)",
     "housing_and_tenancy": "https://logement.public.lu (Ministere du Logement) and Commissions des Loyers",
-    "tax_authority": "https://impotsdirects.public.lu (Administration des Contributions Directes - ACD)"
+    "tax_authority": "https://impotsdirects.public.lu (Administration des Contributions Directes - ACD)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://legilux.public.lu"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://guichet.public.lu"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://logement.public.lu"
+      },
+      {
+        "label": "Tax",
+        "url": "https://impotsdirects.public.lu"
+      }
+    ]
   },
   "Madagascar": {
     "code": "MG",
     "official_gazette": "Journal Officiel de la Republique de Madagascar (primature.gov.mg)",
     "immigration_authority": "https://evisamada-mg.com and Police Nationale - Service de l'Immigration",
     "housing_and_tenancy": "Ministere de l'Amenagement du Territoire et des Services Fonciers",
-    "tax_authority": "https://www.impots.mg (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://www.impots.mg (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://evisamada-mg.com"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.impots.mg"
+      }
+    ]
   },
   "Malawi": {
     "code": "MW",
     "official_gazette": "The Malawi Government Gazette (malawilii.org)",
     "immigration_authority": "https://www.immigration.gov.mw (Department of Immigration and Citizenship Services)",
     "housing_and_tenancy": "Ministry of Lands, Housing and Urban Development",
-    "tax_authority": "https://www.mra.mw (Malawi Revenue Authority - MRA)"
+    "tax_authority": "https://www.mra.mw (Malawi Revenue Authority - MRA)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.gov.mw"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mra.mw"
+      }
+    ]
   },
   "Malaysia": {
     "code": "MY",
     "official_gazette": "https://www.federalgazette.agc.gov.my (Federal Government Gazette of Malaysia - AGC)",
     "immigration_authority": "https://www.imi.gov.my (Immigration Department of Malaysia - Jabatan Imigresen Malaysia)",
     "housing_and_tenancy": "https://www.kpkt.gov.my (Ministry of Housing and Local Government - KPKT)",
-    "tax_authority": "https://www.hasil.gov.my (Inland Revenue Board of Malaysia - Lembaga Hasil Dalam Negeri / LHDN)"
+    "tax_authority": "https://www.hasil.gov.my (Inland Revenue Board of Malaysia - Lembaga Hasil Dalam Negeri / LHDN)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.federalgazette.agc.gov.my"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.imi.gov.my"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.kpkt.gov.my"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.hasil.gov.my"
+      }
+    ]
   },
   "Maldives": {
     "code": "MV",
     "official_gazette": "https://www.gazette.gov.mv (Government Gazette of Maldives)",
     "immigration_authority": "https://immigration.gov.mv (Maldives Immigration)",
     "housing_and_tenancy": "Ministry of Housing, Land and Urban Development (housing.gov.mv)",
-    "tax_authority": "https://www.mira.gov.mv (Maldives Inland Revenue Authority - MIRA)"
+    "tax_authority": "https://www.mira.gov.mv (Maldives Inland Revenue Authority - MIRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gazette.gov.mv"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.mv"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mira.gov.mv"
+      }
+    ]
   },
   "Mali": {
     "code": "ML",
     "official_gazette": "Journal Officiel de la Republique du Mali (sgg-mali.ml)",
     "immigration_authority": "Direction de la Police de l'Air et des Frontieres",
     "housing_and_tenancy": "Ministere de l'Urbanisme, de l'Habitat, des Domaines, de l'Amenagement du Territoire",
-    "tax_authority": "https://www.dgi.gouv.ml (Direction Generale des Impots)"
+    "tax_authority": "https://www.dgi.gouv.ml (Direction Generale des Impots)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://www.dgi.gouv.ml"
+      }
+    ]
   },
   "Malta": {
     "code": "MT",
     "official_gazette": "https://legislation.mt (Legislation Malta) and https://www.gov.mt (The Malta Government Gazette)",
     "immigration_authority": "https://identita.gov.mt (Identita - Residency and Citizenship Agency)",
     "housing_and_tenancy": "https://housingauthority.gov.mt (Housing Authority and Private Residential Leases Unit)",
-    "tax_authority": "https://cfr.gov.mt (Commissioner for Revenue - CfR)"
+    "tax_authority": "https://cfr.gov.mt (Commissioner for Revenue - CfR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://legislation.mt"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gov.mt"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://identita.gov.mt"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://housingauthority.gov.mt"
+      },
+      {
+        "label": "Tax",
+        "url": "https://cfr.gov.mt"
+      }
+    ]
   },
   "Marshall Islands": {
     "code": "MH",
     "official_gazette": "https://www.paclii.org/mh/legis/ (Marshall Islands Legislation - PacLII)",
     "immigration_authority": "Immigration Division, Ministry of Justice (rmigovernment.org)",
     "housing_and_tenancy": "Ministry of Public Works, Infrastructure, and Utilities",
-    "tax_authority": "Division of Revenue and Taxation, Ministry of Finance"
+    "tax_authority": "Division of Revenue and Taxation, Ministry of Finance",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.paclii.org/mh/legis/"
+      }
+    ]
   },
   "Mauritania": {
     "code": "MR",
     "official_gazette": "Journal Officiel de la Republique Islamique de Mauritanie (justice.gov.mr)",
     "immigration_authority": "Agence Nationale du Registre des Populations et des Titres Securises (anrpts.mr)",
     "housing_and_tenancy": "Ministere de l'Habitat, de l'Urbanisme et de l'Amenagement du Territoire",
-    "tax_authority": "https://www.impots.mr (Direction Generale des Impots)"
+    "tax_authority": "https://www.impots.mr (Direction Generale des Impots)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://www.impots.mr"
+      }
+    ]
   },
   "Mauritius": {
     "code": "MU",
     "official_gazette": "https://attorneygeneral.govmu.org (Revised Laws of Mauritius) and Government Gazette",
     "immigration_authority": "https://passport.govmu.org (Passport and Immigration Office - PIO)",
     "housing_and_tenancy": "Ministry of Housing and Land Use Planning",
-    "tax_authority": "https://www.mra.mu (Mauritius Revenue Authority - MRA)"
+    "tax_authority": "https://www.mra.mu (Mauritius Revenue Authority - MRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://attorneygeneral.govmu.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://passport.govmu.org"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mra.mu"
+      }
+    ]
   },
   "Mexico": {
     "code": "MX",
     "official_gazette": "https://www.dof.gob.mx (Diario Oficial de la Federacion - DOF)",
     "immigration_authority": "https://www.inm.gob.mx (Instituto Nacional de Migracion - INM)",
     "housing_and_tenancy": "https://www.gob.mx/sedatu (Secretaria de Desarrollo Agrario, Territorial y Urbano) and PROFECO",
-    "tax_authority": "https://www.sat.gob.mx (Servicio de Administracion Tributaria - SAT)"
+    "tax_authority": "https://www.sat.gob.mx (Servicio de Administracion Tributaria - SAT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.dof.gob.mx"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.inm.gob.mx"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gob.mx/sedatu"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.sat.gob.mx"
+      }
+    ]
   },
   "Micronesia": {
     "code": "FM",
     "official_gazette": "https://www.fsmlaw.org (FSM Code and Legal Information System)",
     "immigration_authority": "Division of Immigration and Labor, Department of Justice (justice.gov.fm)",
     "housing_and_tenancy": "Department of Transportation, Communication and Infrastructure",
-    "tax_authority": "Customs and Tax Administration, Department of Finance and Administration"
+    "tax_authority": "Customs and Tax Administration, Department of Finance and Administration",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.fsmlaw.org"
+      }
+    ]
   },
   "Moldova": {
     "code": "MD",
     "official_gazette": "https://www.legis.md (State Registry of Legal Acts of the Republic of Moldova)",
     "immigration_authority": "https://igi.gov.md (General Inspectorate for Migration - Inspectoratul General pentru Migratie)",
     "housing_and_tenancy": "Ministry of Infrastructure and Regional Development",
-    "tax_authority": "https://sfs.md (State Tax Service - Serviciul Fiscal de Stat)"
+    "tax_authority": "https://sfs.md (State Tax Service - Serviciul Fiscal de Stat)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.legis.md"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://igi.gov.md"
+      },
+      {
+        "label": "Tax",
+        "url": "https://sfs.md"
+      }
+    ]
   },
   "Monaco": {
     "code": "MC",
     "official_gazette": "https://journaldemonaco.gouv.mc (Journal de Monaco - Bulletin Officiel de la Principaute)",
     "immigration_authority": "https://service-public-particuliers.gouv.mc (Direction de la Surete Publique - Section des Residents)",
     "housing_and_tenancy": "https://www.gouv.mc (Direction de l'Habitat)",
-    "tax_authority": "https://www.gouv.mc (Direction des Services Fiscaux)"
+    "tax_authority": "https://www.gouv.mc (Direction des Services Fiscaux)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://journaldemonaco.gouv.mc"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://service-public-particuliers.gouv.mc"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gouv.mc"
+      }
+    ]
   },
   "Mongolia": {
     "code": "MN",
     "official_gazette": "https://legalinfo.mn (Unified Legal Information System of Mongolia)",
     "immigration_authority": "https://immigration.gov.mn (Immigration Agency of Mongolia)",
     "housing_and_tenancy": "Ministry of Construction and Urban Development (mcud.gov.mn)",
-    "tax_authority": "https://mta.gov.mn (Mongolian Tax Administration - MTA)"
+    "tax_authority": "https://mta.gov.mn (Mongolian Tax Administration - MTA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://legalinfo.mn"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.mn"
+      },
+      {
+        "label": "Tax",
+        "url": "https://mta.gov.mn"
+      }
+    ]
   },
   "Montenegro": {
     "code": "ME",
     "official_gazette": "https://www.sluzbenilist.me (Sluzbeni list Crne Gore - Official Gazette of Montenegro)",
     "immigration_authority": "https://www.gov.me/mup (Ministry of the Interior - MUP)",
     "housing_and_tenancy": "Ministry of Spatial Planning, Urbanism and State Property",
-    "tax_authority": "https://www.gov.me/upravaprihoda (Revenue and Customs Administration - Uprava prihoda i carina)"
+    "tax_authority": "https://www.gov.me/upravaprihoda (Revenue and Customs Administration - Uprava prihoda i carina)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.sluzbenilist.me"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gov.me/mup"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gov.me/upravaprihoda"
+      }
+    ]
   },
   "Morocco": {
     "code": "MA",
     "official_gazette": "http://www.sgg.gov.ma (Bulletin Officiel du Royaume du Maroc - Secretariat General du Gouvernement)",
     "immigration_authority": "Direction Generale de la Surete Nationale (DGSN) and Ministere de l'Interieur",
     "housing_and_tenancy": "https://www.mhpv.gov.ma (Ministere de l'Amenagement du Territoire National, de l'Urbanisme, de l'Habitat)",
-    "tax_authority": "https://www.tax.gov.ma (Direction Generale des Impots - DGI)"
+    "tax_authority": "https://www.tax.gov.ma (Direction Generale des Impots - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.sgg.gov.ma"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.mhpv.gov.ma"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.tax.gov.ma"
+      }
+    ]
   },
   "Mozambique": {
     "code": "MZ",
     "official_gazette": "https://www.portaldogoverno.gov.mz and Boletim da Republica de Mocambique (imprensanacional.gov.mz)",
     "immigration_authority": "https://www.senami.gov.mz (Servico Nacional de Migracao - SENAMI)",
     "housing_and_tenancy": "Ministerio das Obras Publicas, Habitacao e Recursos Hidricos",
-    "tax_authority": "https://www.at.gov.mz (Autoridade Tributaria de Mocambique)"
+    "tax_authority": "https://www.at.gov.mz (Autoridade Tributaria de Mocambique)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.portaldogoverno.gov.mz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.senami.gov.mz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.at.gov.mz"
+      }
+    ]
   },
   "Myanmar": {
     "code": "MM",
     "official_gazette": "https://www.mlis.gov.mm (Myanmar Law Information System - MLIS)",
     "immigration_authority": "https://evisa.moip.gov.mm (Ministry of Immigration and Population)",
     "housing_and_tenancy": "Department of Urban and Housing Development, Ministry of Construction",
-    "tax_authority": "https://www.ird.gov.mm (Internal Revenue Department, Ministry of Planning and Finance)"
+    "tax_authority": "https://www.ird.gov.mm (Internal Revenue Department, Ministry of Planning and Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.mlis.gov.mm"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://evisa.moip.gov.mm"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ird.gov.mm"
+      }
+    ]
   },
   "Namibia": {
     "code": "NA",
     "official_gazette": "https://www.lac.org.na (Legal Assistance Centre Annotated Statutes) and Government Gazette of Namibia",
     "immigration_authority": "Ministry of Home Affairs, Immigration, Safety and Security (mhaiss.gov.na)",
     "housing_and_tenancy": "Ministry of Urban and Rural Development and National Housing Enterprise",
-    "tax_authority": "https://namra.org.na (Namibia Revenue Agency - NamRA)"
+    "tax_authority": "https://namra.org.na (Namibia Revenue Agency - NamRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.lac.org.na"
+      },
+      {
+        "label": "Tax",
+        "url": "https://namra.org.na"
+      }
+    ]
   },
   "Nauru": {
     "code": "NR",
     "official_gazette": "https://www.paclii.org/nr/legis/ (Nauru Legislation - PacLII)",
     "immigration_authority": "Department of Justice and Border Control (naurugov.nr)",
     "housing_and_tenancy": "Department of Infrastructure and Land Management",
-    "tax_authority": "Nauru Revenue Office, Department of Finance"
+    "tax_authority": "Nauru Revenue Office, Department of Finance",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.paclii.org/nr/legis/"
+      }
+    ]
   },
   "Nepal": {
     "code": "NP",
     "official_gazette": "https://lawcommission.gov.np (Nepal Law Commission Legal Acts) and Nepal Gazette",
     "immigration_authority": "https://www.immigration.gov.np (Department of Immigration, Ministry of Home Affairs)",
     "housing_and_tenancy": "Ministry of Urban Development (moud.gov.np)",
-    "tax_authority": "https://ird.gov.np (Inland Revenue Department - IRD)"
+    "tax_authority": "https://ird.gov.np (Inland Revenue Department - IRD)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://lawcommission.gov.np"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.gov.np"
+      },
+      {
+        "label": "Tax",
+        "url": "https://ird.gov.np"
+      }
+    ]
   },
   "Netherlands": {
     "code": "NL",
     "official_gazette": "https://wetten.overheid.nl (Laws and Regulations of the Netherlands) and https://www.officielebekendmakingen.nl",
     "immigration_authority": "https://ind.nl (Immigration and Naturalisation Service - IND)",
     "housing_and_tenancy": "https://www.rijksoverheid.nl/onderwerpen/huurwoning (Ministry of Housing and Huurcommissie)",
-    "tax_authority": "https://www.belastingdienst.nl (Belastingdienst)"
+    "tax_authority": "https://www.belastingdienst.nl (Belastingdienst)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://wetten.overheid.nl"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.officielebekendmakingen.nl"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://ind.nl"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.rijksoverheid.nl/onderwerpen/huurwoning"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.belastingdienst.nl"
+      }
+    ]
   },
   "New Zealand": {
     "code": "NZ",
     "official_gazette": "https://www.legislation.govt.nz (New Zealand Legislation Portal) and https://gazette.govt.nz",
     "immigration_authority": "https://www.immigration.govt.nz (Immigration New Zealand)",
     "housing_and_tenancy": "https://www.tenancy.govt.nz (Tenancy Services and Tenancy Tribunal)",
-    "tax_authority": "https://www.ird.govt.nz (Inland Revenue - Te Tari Taake)"
+    "tax_authority": "https://www.ird.govt.nz (Inland Revenue - Te Tari Taake)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.legislation.govt.nz"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://gazette.govt.nz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.govt.nz"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.tenancy.govt.nz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ird.govt.nz"
+      }
+    ]
   },
   "Nicaragua": {
     "code": "NI",
     "official_gazette": "http://lagaceta.gob.ni (La Gaceta - Diario Oficial de Nicaragua)",
     "immigration_authority": "https://www.migob.gob.ni (Direccion General de Migracion y Extranjeria - DGME)",
     "housing_and_tenancy": "Instituto de la Vivienda Urbana y Rural (INVUR)",
-    "tax_authority": "https://www.dgi.gob.ni (Direccion General de Ingresos - DGI)"
+    "tax_authority": "https://www.dgi.gob.ni (Direccion General de Ingresos - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://lagaceta.gob.ni"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migob.gob.ni"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.dgi.gob.ni"
+      }
+    ]
   },
   "Niger": {
     "code": "NE",
     "official_gazette": "Journal Officiel de la Republique du Niger (presidence.ne)",
     "immigration_authority": "Direction de la Surveillance du Territoire, Ministere de l'Interieur",
     "housing_and_tenancy": "Ministere de l'Urbanisme et du Logement",
-    "tax_authority": "https://www.dgi.ne (Direction Generale des Impots)"
+    "tax_authority": "https://www.dgi.ne (Direction Generale des Impots)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://www.dgi.ne"
+      }
+    ]
   },
   "Nigeria": {
     "code": "NG",
     "official_gazette": "https://placng.org/lawsofnigeria (Federal Laws of Nigeria) and Federal Government Gazette",
     "immigration_authority": "https://immigration.gov.ng (Nigeria Immigration Service - NIS)",
     "housing_and_tenancy": "Federal Ministry of Housing and Urban Development and State Tenancy Courts",
-    "tax_authority": "https://www.firs.gov.ng (Federal Inland Revenue Service - FIRS)"
+    "tax_authority": "https://www.firs.gov.ng (Federal Inland Revenue Service - FIRS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://placng.org/lawsofnigeria"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.ng"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.firs.gov.ng"
+      }
+    ]
   },
   "North Macedonia": {
     "code": "MK",
     "official_gazette": "https://slvesnik.com.mk (Sluzben vesnik na Republika Severna Makedonija)",
     "immigration_authority": "https://mvr.gov.mk (Ministry of Internal Affairs - Department for Foreigners)",
     "housing_and_tenancy": "Ministry of Transport and Communications and State Housing Inspectorate",
-    "tax_authority": "http://www.ujp.gov.mk (Public Revenue Office - UJP)"
+    "tax_authority": "http://www.ujp.gov.mk (Public Revenue Office - UJP)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://slvesnik.com.mk"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://mvr.gov.mk"
+      },
+      {
+        "label": "Tax",
+        "url": "http://www.ujp.gov.mk"
+      }
+    ]
   },
   "Norway": {
     "code": "NO",
     "official_gazette": "https://lovdata.no (Lovdata - Legal Information System of Norway)",
     "immigration_authority": "https://www.udi.no (Norwegian Directorate of Immigration - UDI)",
     "housing_and_tenancy": "https://www.husleietvistutvalget.no (Rent Disputes Tribunal - HTU)",
-    "tax_authority": "https://www.skatteetaten.no (Norwegian Tax Administration - Skatteetaten)"
+    "tax_authority": "https://www.skatteetaten.no (Norwegian Tax Administration - Skatteetaten)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://lovdata.no"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.udi.no"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.husleietvistutvalget.no"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.skatteetaten.no"
+      }
+    ]
   },
   "Oman": {
     "code": "OM",
     "official_gazette": "https://www.mjla.gov.om (Ministry of Justice and Legal Affairs - Official Gazette)",
     "immigration_authority": "https://www.rop.gov.om (Royal Oman Police - Directorate General of Passports and Residence)",
     "housing_and_tenancy": "https://www.housing.gov.om (Ministry of Housing and Urban Planning)",
-    "tax_authority": "https://tms.taxoman.gov.om (Tax Authority of the Sultanate of Oman)"
+    "tax_authority": "https://tms.taxoman.gov.om (Tax Authority of the Sultanate of Oman)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.mjla.gov.om"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.rop.gov.om"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.housing.gov.om"
+      },
+      {
+        "label": "Tax",
+        "url": "https://tms.taxoman.gov.om"
+      }
+    ]
   },
   "Pakistan": {
     "code": "PK",
     "official_gazette": "http://www.pakistancode.gov.pk (Pakistan Code Federal Laws) and The Gazette of Pakistan",
     "immigration_authority": "https://visa.nadra.gov.pk and Directorate General of Immigration & Passports (dgip.gov.pk)",
     "housing_and_tenancy": "Ministry of Housing and Works (mohw.gov.pk) and Rent Controller Courts",
-    "tax_authority": "https://www.fbr.gov.pk (Federal Board of Revenue - FBR)"
+    "tax_authority": "https://www.fbr.gov.pk (Federal Board of Revenue - FBR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.pakistancode.gov.pk"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://visa.nadra.gov.pk"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.fbr.gov.pk"
+      }
+    ]
   },
   "Palau": {
     "code": "PW",
     "official_gazette": "https://www.palaugov.pw (Palau National Code and Legal Documents)",
     "immigration_authority": "Division of Marine Law Enforcement and Bureau of Immigration (palaugov.pw)",
     "housing_and_tenancy": "Ministry of Public Infrastructure and Industries",
-    "tax_authority": "Bureau of Revenue and Taxation, Ministry of Finance (palaugov.pw)"
+    "tax_authority": "Bureau of Revenue and Taxation, Ministry of Finance (palaugov.pw)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.palaugov.pw"
+      }
+    ]
   },
   "Panama": {
     "code": "PA",
     "official_gazette": "https://www.gacetaoficial.gob.pa (Gaceta Oficial Digital de Panama)",
     "immigration_authority": "https://www.migracion.gob.pa (Servicio Nacional de Migracion - SNM)",
     "housing_and_tenancy": "https://www.miviot.gob.pa (Ministerio de Vivienda y Ordenamiento Territorial - MIVIOT)",
-    "tax_authority": "https://dgi.mef.gob.pa (Direccion General de Ingresos - DGI)"
+    "tax_authority": "https://dgi.mef.gob.pa (Direccion General de Ingresos - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gacetaoficial.gob.pa"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migracion.gob.pa"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.miviot.gob.pa"
+      },
+      {
+        "label": "Tax",
+        "url": "https://dgi.mef.gob.pa"
+      }
+    ]
   },
   "Papua New Guinea": {
     "code": "PG",
     "official_gazette": "https://www.paclii.org/pg/legis/ (Papua New Guinea Legislation - PacLII) and National Gazette",
     "immigration_authority": "https://ica.gov.pg (PNG Immigration and Citizenship Authority - ICA)",
     "housing_and_tenancy": "National Housing Corporation (nhc.gov.pg)",
-    "tax_authority": "https://irc.gov.pg (Internal Revenue Commission - IRC)"
+    "tax_authority": "https://irc.gov.pg (Internal Revenue Commission - IRC)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.paclii.org/pg/legis/"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://ica.gov.pg"
+      },
+      {
+        "label": "Tax",
+        "url": "https://irc.gov.pg"
+      }
+    ]
   },
   "Paraguay": {
     "code": "PY",
     "official_gazette": "https://www.gacetaoficial.gov.py (Gaceta Oficial de la Republica del Paraguay)",
     "immigration_authority": "https://www.migraciones.gov.py (Direccion Nacional de Migraciones - DNM)",
     "housing_and_tenancy": "https://www.muvh.gov.py (Ministerio de Urbanismo, Vivienda y Habitat)",
-    "tax_authority": "https://www.dnit.gov.py (Direccion Nacional de Ingresos Tributarios - DNIT)"
+    "tax_authority": "https://www.dnit.gov.py (Direccion Nacional de Ingresos Tributarios - DNIT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gacetaoficial.gov.py"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migraciones.gov.py"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.muvh.gov.py"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.dnit.gov.py"
+      }
+    ]
   },
   "Peru": {
     "code": "PE",
     "official_gazette": "https://elperuano.pe (Diario Oficial El Peruano) and SPIJ (spij.minjus.gob.pe)",
     "immigration_authority": "https://www.migraciones.gob.pe (Superintendencia Nacional de Migraciones)",
     "housing_and_tenancy": "https://www.gob.pe/vivienda (Ministerio de Vivienda, Construccion y Saneamiento)",
-    "tax_authority": "https://www.sunat.gob.pe (Superintendencia Nacional de Aduanas y de Administracion Tributaria - SUNAT)"
+    "tax_authority": "https://www.sunat.gob.pe (Superintendencia Nacional de Aduanas y de Administracion Tributaria - SUNAT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://elperuano.pe"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migraciones.gob.pe"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gob.pe/vivienda"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.sunat.gob.pe"
+      }
+    ]
   },
   "Philippines": {
     "code": "PH",
     "official_gazette": "https://www.officialgazette.gov.ph (Official Gazette of the Republic of the Philippines)",
     "immigration_authority": "https://immigration.gov.ph (Bureau of Immigration - BI)",
     "housing_and_tenancy": "https://dhsud.gov.ph (Department of Human Settlements and Urban Development)",
-    "tax_authority": "https://www.bir.gov.ph (Bureau of Internal Revenue - BIR)"
+    "tax_authority": "https://www.bir.gov.ph (Bureau of Internal Revenue - BIR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.officialgazette.gov.ph"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.ph"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://dhsud.gov.ph"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.bir.gov.ph"
+      }
+    ]
   },
   "Poland": {
     "code": "PL",
     "official_gazette": "https://isap.sejm.gov.pl (Internet System of Legal Acts - ISAP) and https://dziennikustaw.gov.pl",
     "immigration_authority": "https://www.gov.pl/web/udsc (Office for Foreigners - Urzad do Spraw Cudzoziemcow)",
     "housing_and_tenancy": "https://www.gov.pl/web/rozwoj-technologia (Ministry of Development and Technology)",
-    "tax_authority": "https://www.podatki.gov.pl (National Revenue Administration - KAS / Ministerstwo Finansow)"
+    "tax_authority": "https://www.podatki.gov.pl (National Revenue Administration - KAS / Ministerstwo Finansow)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://isap.sejm.gov.pl"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://dziennikustaw.gov.pl"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gov.pl/web/udsc"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gov.pl/web/rozwoj-technologia"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.podatki.gov.pl"
+      }
+    ]
   },
   "Portugal": {
     "code": "PT",
     "official_gazette": "https://dre.pt (Diario da Republica Eletronico - DRE)",
     "immigration_authority": "https://aima.gov.pt (Agency for Integration, Migration and Asylum - AIMA)",
     "housing_and_tenancy": "https://www.portaldahabitacao.pt (Institute for Housing and Urban Rehabilitation - IHRU)",
-    "tax_authority": "https://www.portaldasfinancas.gov.pt (Autoridade Tributaria e Aduaneira - AT)"
+    "tax_authority": "https://www.portaldasfinancas.gov.pt (Autoridade Tributaria e Aduaneira - AT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://dre.pt"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://aima.gov.pt"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.portaldahabitacao.pt"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.portaldasfinancas.gov.pt"
+      }
+    ]
   },
   "Qatar": {
     "code": "QA",
     "official_gazette": "https://www.almeezan.qa (Al Meezan Qatar Legal Portal, Ministry of Justice)",
     "immigration_authority": "https://portal.moi.gov.qa (Ministry of Interior - General Directorate of Passports)",
     "housing_and_tenancy": "https://www.mme.gov.qa (Ministry of Municipality) and Rental Dispute Settlement Committee",
-    "tax_authority": "https://www.gta.gov.qa (General Tax Authority - GTA)"
+    "tax_authority": "https://www.gta.gov.qa (General Tax Authority - GTA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.almeezan.qa"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://portal.moi.gov.qa"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.mme.gov.qa"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gta.gov.qa"
+      }
+    ]
   },
   "Romania": {
     "code": "RO",
     "official_gazette": "https://www.monitoruloficial.ro (Monitorul Oficial al Romaniei) and http://legislatie.just.ro",
     "immigration_authority": "https://igi.mai.gov.ro (General Inspectorate for Immigration - Inspectoratul General pentru Imigrari)",
     "housing_and_tenancy": "Ministry of Development, Public Works and Administration (mdlpa.ro)",
-    "tax_authority": "https://www.anaf.ro (National Agency for Fiscal Administration - ANAF)"
+    "tax_authority": "https://www.anaf.ro (National Agency for Fiscal Administration - ANAF)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.monitoruloficial.ro"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://legislatie.just.ro"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://igi.mai.gov.ro"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.anaf.ro"
+      }
+    ]
   },
   "Russia": {
     "code": "RU",
     "official_gazette": "http://pravo.gov.ru (Official Internet Portal of Legal Information)",
     "immigration_authority": "https://мвд.рф (Main Directorate for Migration Affairs of the Ministry of Internal Affairs)",
     "housing_and_tenancy": "Ministry of Construction, Housing and Utilities (minstroyrf.gov.ru)",
-    "tax_authority": "https://www.nalog.gov.ru (Federal Taxation Service - FNS)"
+    "tax_authority": "https://www.nalog.gov.ru (Federal Taxation Service - FNS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://pravo.gov.ru"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://мвд.рф"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.nalog.gov.ru"
+      }
+    ]
   },
   "Rwanda": {
     "code": "RW",
     "official_gazette": "https://www.minijust.gov.rw (Official Gazette of the Republic of Rwanda)",
     "immigration_authority": "https://www.migration.gov.rw (Directorate General of Immigration and Emigration)",
     "housing_and_tenancy": "Rwanda Housing Authority (rha.gov.rw)",
-    "tax_authority": "https://www.rra.gov.rw (Rwanda Revenue Authority - RRA)"
+    "tax_authority": "https://www.rra.gov.rw (Rwanda Revenue Authority - RRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.minijust.gov.rw"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migration.gov.rw"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.rra.gov.rw"
+      }
+    ]
   },
   "Saint Kitts and Nevis": {
     "code": "KN",
     "official_gazette": "https://lawcommission.gov.kn (St. Kitts and Nevis Legal Information) and Official Gazette",
     "immigration_authority": "Ministry of National Security, Citizenship and Immigration (gov.kn)",
     "housing_and_tenancy": "National Housing Corporation (nhcdki.com)",
-    "tax_authority": "https://www.sknird.com (Inland Revenue Department)"
+    "tax_authority": "https://www.sknird.com (Inland Revenue Department)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://lawcommission.gov.kn"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.sknird.com"
+      }
+    ]
   },
   "Saint Lucia": {
     "code": "LC",
     "official_gazette": "Saint Lucia Government Gazette (slugovprintery.com)",
     "immigration_authority": "Department of Immigration, Royal Saint Lucia Police Force (rslpf.com)",
     "housing_and_tenancy": "Ministry of Housing and Local Government",
-    "tax_authority": "https://ird.gov.lc (Inland Revenue Department)"
+    "tax_authority": "https://ird.gov.lc (Inland Revenue Department)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://ird.gov.lc"
+      }
+    ]
   },
   "Saint Vincent and the Grenadines": {
     "code": "VC",
     "official_gazette": "Government Gazette of Saint Vincent and the Grenadines (gov.vc)",
     "immigration_authority": "Immigration Department, Royal Saint Vincent and the Grenadines Police Force",
     "housing_and_tenancy": "Housing and Land Development Corporation (gov.vc)",
-    "tax_authority": "https://inlandrevenue.gov.vc (Inland Revenue Department)"
+    "tax_authority": "https://inlandrevenue.gov.vc (Inland Revenue Department)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://inlandrevenue.gov.vc"
+      }
+    ]
   },
   "Samoa": {
     "code": "WS",
     "official_gazette": "https://www.palemene.ws (Consolidated Acts of Samoa) and PacLII",
     "immigration_authority": "https://www.samoaimmigration.gov.ws (Ministry of the Prime Minister and Cabinet)",
     "housing_and_tenancy": "Ministry of Works, Transport and Infrastructure",
-    "tax_authority": "https://www.revenue.gov.ws (Ministry of Customs and Revenue)"
+    "tax_authority": "https://www.revenue.gov.ws (Ministry of Customs and Revenue)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.palemene.ws"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.samoaimmigration.gov.ws"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.revenue.gov.ws"
+      }
+    ]
   },
   "San Marino": {
     "code": "SM",
     "official_gazette": "https://www.consigliograndeegenerale.sm (Bollettino Ufficiale della Repubblica di San Marino)",
     "immigration_authority": "https://www.esteri.sm (Dipartimento Affari Esteri e Ufficio Passaporti)",
     "housing_and_tenancy": "Dipartimento Territorio e Ambiente",
-    "tax_authority": "https://www.finanze.sm (Ufficio Tributario della Repubblica di San Marino)"
+    "tax_authority": "https://www.finanze.sm (Ufficio Tributario della Repubblica di San Marino)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.consigliograndeegenerale.sm"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.esteri.sm"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.finanze.sm"
+      }
+    ]
   },
   "Sao Tome and Principe": {
     "code": "ST",
     "official_gazette": "Diario da Republica de Sao Tome e Principe (justica.gov.st)",
     "immigration_authority": "Servico de Migracao e Fronteiras (SMF)",
     "housing_and_tenancy": "Ministerio das Infraestruturas e Recursos Naturais",
-    "tax_authority": "Direcao dos Impostos (financas.gov.st)"
+    "tax_authority": "Direcao dos Impostos (financas.gov.st)",
+    "portals": []
   },
   "Saudi Arabia": {
     "code": "SA",
     "official_gazette": "https://laws.boe.gov.sa (Bureau of Experts at the Council of Ministers - Official Laws) and Um Al-Qura",
     "immigration_authority": "https://www.absher.sa and https://www.gdp.gov.sa (General Directorate of Passports - Jawazat)",
     "housing_and_tenancy": "https://www.housing.gov.sa (Ministry of Municipal and Rural Affairs and Housing) and Ejar Network",
-    "tax_authority": "https://zatca.gov.sa (Zakat, Tax and Customs Authority - ZATCA)"
+    "tax_authority": "https://zatca.gov.sa (Zakat, Tax and Customs Authority - ZATCA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://laws.boe.gov.sa"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.absher.sa"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gdp.gov.sa"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.housing.gov.sa"
+      },
+      {
+        "label": "Tax",
+        "url": "https://zatca.gov.sa"
+      }
+    ]
   },
   "Senegal": {
     "code": "SN",
     "official_gazette": "http://www.jo.gouv.sn (Journal Officiel de la Republique du Senegal)",
     "immigration_authority": "Direction de la Police des Etrangers et des Titres de Voyage",
     "housing_and_tenancy": "Ministere de l'Urbanisme, du Logement et de l'Hygiene Publique",
-    "tax_authority": "https://www.dgid.sn (Direction Generale des Impots et des Domaines - DGID)"
+    "tax_authority": "https://www.dgid.sn (Direction Generale des Impots et des Domaines - DGID)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.jo.gouv.sn"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.dgid.sn"
+      }
+    ]
   },
   "Serbia": {
     "code": "RS",
     "official_gazette": "http://www.pravno-informacioni-sistem.rs (Legal Information System of the Republic of Serbia)",
     "immigration_authority": "http://www.mup.gov.rs (Ministry of Internal Affairs - Directorate for Foreigners)",
     "housing_and_tenancy": "Ministry of Construction, Transport and Infrastructure",
-    "tax_authority": "https://www.purs.gov.rs (Tax Administration of the Republic of Serbia - Poreska uprava)"
+    "tax_authority": "https://www.purs.gov.rs (Tax Administration of the Republic of Serbia - Poreska uprava)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.pravno-informacioni-sistem.rs"
+      },
+      {
+        "label": "Immigration",
+        "url": "http://www.mup.gov.rs"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.purs.gov.rs"
+      }
+    ]
   },
   "Seychelles": {
     "code": "SC",
     "official_gazette": "https://seylii.org (Seychelles Legal Information Institute) and Official Gazette",
     "immigration_authority": "https://www.ics.gov.sc (Immigration and Civil Status Department)",
     "housing_and_tenancy": "Ministry of Lands and Housing",
-    "tax_authority": "https://www.src.gov.sc (Seychelles Revenue Commission - SRC)"
+    "tax_authority": "https://www.src.gov.sc (Seychelles Revenue Commission - SRC)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://seylii.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.ics.gov.sc"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.src.gov.sc"
+      }
+    ]
   },
   "Sierra Leone": {
     "code": "SL",
     "official_gazette": "https://sierralii.org (Sierra Leone Legal Information Institute) and The Sierra Leone Gazette",
     "immigration_authority": "https://immigration.gov.sl (Sierra Leone Immigration Department)",
     "housing_and_tenancy": "Ministry of Lands, Housing and Country Planning",
-    "tax_authority": "https://www.nra.gov.sl (National Revenue Authority - NRA)"
+    "tax_authority": "https://www.nra.gov.sl (National Revenue Authority - NRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://sierralii.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.sl"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.nra.gov.sl"
+      }
+    ]
   },
   "Singapore": {
     "code": "SG",
     "official_gazette": "https://sso.agc.gov.sg (Singapore Statutes Online - AGC)",
     "immigration_authority": "https://www.ica.gov.sg (Immigration & Checkpoints Authority - ICA)",
     "housing_and_tenancy": "https://www.hdb.gov.sg (Housing & Development Board) and State Courts Small Claims Tribunals",
-    "tax_authority": "https://www.iras.gov.sg (Inland Revenue Authority of Singapore - IRAS)"
+    "tax_authority": "https://www.iras.gov.sg (Inland Revenue Authority of Singapore - IRAS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://sso.agc.gov.sg"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.ica.gov.sg"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.hdb.gov.sg"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.iras.gov.sg"
+      }
+    ]
   },
   "Slovakia": {
     "code": "SK",
     "official_gazette": "https://www.slov-lex.sk (Slov-Lex Legal and Information Portal of the Slovak Republic)",
     "immigration_authority": "https://www.minv.sk (Bureau of Border and Foreign Police of the Presidium of Police Force)",
     "housing_and_tenancy": "Ministry of Transport and Construction of the Slovak Republic",
-    "tax_authority": "https://www.financnasprava.sk (Financial Administration of the Slovak Republic - Financna sprava)"
+    "tax_authority": "https://www.financnasprava.sk (Financial Administration of the Slovak Republic - Financna sprava)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.slov-lex.sk"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.minv.sk"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.financnasprava.sk"
+      }
+    ]
   },
   "Slovenia": {
     "code": "SI",
     "official_gazette": "https://www.uradni-list.si (Official Gazette of the Republic of Slovenia - Uradni list RS) and http://www.pisrs.si",
     "immigration_authority": "https://www.gov.si/drzavni-organi/upravne-enote/ (Administrative Units - Upravne enote) and Ministry of Interior",
     "housing_and_tenancy": "Ministry of Solidarity-Based Future and Housing Fund of the Republic of Slovenia",
-    "tax_authority": "https://www.fu.gov.si (Financial Administration of the Republic of Slovenia - FURS)"
+    "tax_authority": "https://www.fu.gov.si (Financial Administration of the Republic of Slovenia - FURS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.uradni-list.si"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.pisrs.si"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gov.si/drzavni-organi/upravne-enote/"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.fu.gov.si"
+      }
+    ]
   },
   "Solomon Islands": {
     "code": "SB",
     "official_gazette": "https://www.paclii.org/sb/legis/ (Solomon Islands Legislation - PacLII)",
     "immigration_authority": "Immigration Division, Ministry of Commerce, Industry, Labour and Immigration (commerce.gov.sb)",
     "housing_and_tenancy": "Ministry of Lands, Housing and Survey",
-    "tax_authority": "Inland Revenue Division, Ministry of Finance and Treasury (moft.gov.sb)"
+    "tax_authority": "Inland Revenue Division, Ministry of Finance and Treasury (moft.gov.sb)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.paclii.org/sb/legis/"
+      }
+    ]
   },
   "Somalia": {
     "code": "SO",
     "official_gazette": "Official Bulletin of the Federal Republic of Somalia (moj.gov.so)",
     "immigration_authority": "https://immigration.gov.so (Immigration and Naturalization Directorate)",
     "housing_and_tenancy": "Ministry of Public Works, Reconstruction and Housing",
-    "tax_authority": "Ministry of Finance Inland Revenue Department (mof.gov.so)"
+    "tax_authority": "Ministry of Finance Inland Revenue Department (mof.gov.so)",
+    "portals": [
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.so"
+      }
+    ]
   },
   "South Africa": {
     "code": "ZA",
     "official_gazette": "https://www.gov.za/documents/acts (Acts of South Africa) and Government Gazette",
     "immigration_authority": "http://www.dha.gov.za (Department of Home Affairs - DHA)",
     "housing_and_tenancy": "https://www.dhs.gov.za (Department of Human Settlements) and Rental Housing Tribunals",
-    "tax_authority": "https://www.sars.gov.za (South African Revenue Service - SARS)"
+    "tax_authority": "https://www.sars.gov.za (South African Revenue Service - SARS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.gov.za/documents/acts"
+      },
+      {
+        "label": "Immigration",
+        "url": "http://www.dha.gov.za"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.dhs.gov.za"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.sars.gov.za"
+      }
+    ]
   },
   "South Sudan": {
     "code": "SS",
     "official_gazette": "Acts of South Sudan (Ministry of Justice and Constitutional Affairs - mojca.gov.ss)",
     "immigration_authority": "Directorate of Nationality, Passports and Immigration (interior.gov.ss)",
     "housing_and_tenancy": "Ministry of Lands, Housing and Urban Development",
-    "tax_authority": "https://nra.gov.ss (National Revenue Authority - NRA)"
+    "tax_authority": "https://nra.gov.ss (National Revenue Authority - NRA)",
+    "portals": [
+      {
+        "label": "Tax",
+        "url": "https://nra.gov.ss"
+      }
+    ]
   },
   "Spain": {
     "code": "ES",
     "official_gazette": "https://www.boe.es (Boletin Oficial del Estado - Official State Gazette / BOE)",
     "immigration_authority": "https://extranjeros.inclusion.gob.es (Secretaria de Estado de Migraciones)",
     "housing_and_tenancy": "https://www.mitma.gob.es (Ministry of Housing and Urban Agenda)",
-    "tax_authority": "https://sede.agenciatributaria.gob.es (Agencia Estatal de Administracion Tributaria - AEAT)"
+    "tax_authority": "https://sede.agenciatributaria.gob.es (Agencia Estatal de Administracion Tributaria - AEAT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.boe.es"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://extranjeros.inclusion.gob.es"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.mitma.gob.es"
+      },
+      {
+        "label": "Tax",
+        "url": "https://sede.agenciatributaria.gob.es"
+      }
+    ]
   },
   "Sri Lanka": {
     "code": "LK",
     "official_gazette": "http://documents.gov.lk (The Gazette of the Democratic Socialist Republic of Sri Lanka) and LawNet",
     "immigration_authority": "http://www.immigration.gov.lk (Department of Immigration and Emigration)",
     "housing_and_tenancy": "Ministry of Urban Development and Housing and Rent Dispute Boards",
-    "tax_authority": "http://www.ird.gov.lk (Inland Revenue Department - IRD)"
+    "tax_authority": "http://www.ird.gov.lk (Inland Revenue Department - IRD)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://documents.gov.lk"
+      },
+      {
+        "label": "Immigration",
+        "url": "http://www.immigration.gov.lk"
+      },
+      {
+        "label": "Tax",
+        "url": "http://www.ird.gov.lk"
+      }
+    ]
   },
   "Sudan": {
     "code": "SD",
     "official_gazette": "The Sudan Gazette (Ministry of Justice - moj.gov.sd)",
     "immigration_authority": "General Directorate of Passports and Immigration, Ministry of Interior",
     "housing_and_tenancy": "Ministry of Physical Infrastructure and Public Utilities",
-    "tax_authority": "Tax Chamber of Sudan (mof.gov.sd)"
+    "tax_authority": "Tax Chamber of Sudan (mof.gov.sd)",
+    "portals": []
   },
   "Suriname": {
     "code": "SR",
     "official_gazette": "Staatsblad van de Republiek Suriname (gov.sr)",
     "immigration_authority": "Vreemdelingendienst, Korps Politie Suriname (politie.sr)",
     "housing_and_tenancy": "Ministerie van Openbare Werken en Ruimtelijke Ordening",
-    "tax_authority": "Directoraat der Belastingen, Ministerie van Financien en Planning (belastingdienst.sr)"
+    "tax_authority": "Directoraat der Belastingen, Ministerie van Financien en Planning (belastingdienst.sr)",
+    "portals": []
   },
   "Sweden": {
     "code": "SE",
     "official_gazette": "https://svenskforfattningssamling.se (Swedish Code of Statutes - SFS) and https://lagen.nu",
     "immigration_authority": "https://www.migrationsverket.se (Swedish Migration Agency - Migrationsverket)",
     "housing_and_tenancy": "https://www.domstol.se/hyres--och-arrendenamnden (Regional Rent and Tenancy Tribunals - Hyresnamnden)",
-    "tax_authority": "https://www.skatteverket.se (Swedish Tax Agency - Skatteverket)"
+    "tax_authority": "https://www.skatteverket.se (Swedish Tax Agency - Skatteverket)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://svenskforfattningssamling.se"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://lagen.nu"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.migrationsverket.se"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.domstol.se/hyres--och-arrendenamnden"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.skatteverket.se"
+      }
+    ]
   },
   "Switzerland": {
     "code": "CH",
     "official_gazette": "https://www.fedlex.admin.ch (Fedlex - Publication Platform for Swiss Federal Law)",
     "immigration_authority": "https://www.sem.admin.ch (State Secretariat for Migration - SEM)",
     "housing_and_tenancy": "https://www.bwo.admin.ch (Federal Housing Office - BWO) and Cantonal Tenancy Conciliation Authorities",
-    "tax_authority": "https://www.estv.admin.ch (Federal Tax Administration - FTA / ESTV)"
+    "tax_authority": "https://www.estv.admin.ch (Federal Tax Administration - FTA / ESTV)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.fedlex.admin.ch"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.sem.admin.ch"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.bwo.admin.ch"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.estv.admin.ch"
+      }
+    ]
   },
   "Syria": {
     "code": "SY",
     "official_gazette": "Official Gazette of the Syrian Arab Republic (parliament.gov.sy)",
     "immigration_authority": "Department of Immigration and Passports, Ministry of Interior",
     "housing_and_tenancy": "Ministry of Public Works and Housing",
-    "tax_authority": "General Commission for Taxes and Fees (mof.gov.sy)"
+    "tax_authority": "General Commission for Taxes and Fees (mof.gov.sy)",
+    "portals": []
   },
   "Taiwan": {
     "code": "TW",
     "official_gazette": "https://law.moj.gov.tw (Laws and Regulations Database of The Republic of China - Taiwan)",
     "immigration_authority": "https://www.immigration.gov.tw (National Immigration Agency - NIA)",
     "housing_and_tenancy": "Ministry of the Interior Construction and Planning Agency (cpami.gov.tw)",
-    "tax_authority": "https://www.ntbt.gov.tw (National Taxation Bureau, Ministry of Finance)"
+    "tax_authority": "https://www.ntbt.gov.tw (National Taxation Bureau, Ministry of Finance)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://law.moj.gov.tw"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.gov.tw"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ntbt.gov.tw"
+      }
+    ]
   },
   "Tajikistan": {
     "code": "TJ",
     "official_gazette": "https://www.adlia.tj (Unified State Register of Legal Acts of the Republic of Tajikistan)",
     "immigration_authority": "Migration Service of the Ministry of Labour, Migration and Employment of Population",
     "housing_and_tenancy": "Committee for Architecture and Construction under the Government of Tajikistan",
-    "tax_authority": "https://www.andoz.tj (Tax Committee under the Government of the Republic of Tajikistan)"
+    "tax_authority": "https://www.andoz.tj (Tax Committee under the Government of the Republic of Tajikistan)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.adlia.tj"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.andoz.tj"
+      }
+    ]
   },
   "Tanzania": {
     "code": "TZ",
     "official_gazette": "https://www.sheria.go.tz (Ministry of Constitutional and Legal Affairs) and Tanzania Gazette",
     "immigration_authority": "https://www.immigration.go.tz (Immigration Services Department)",
     "housing_and_tenancy": "Ministry of Lands, Housing and Human Settlements Development and Housing Tribunal",
-    "tax_authority": "https://www.tra.go.tz (Tanzania Revenue Authority - TRA)"
+    "tax_authority": "https://www.tra.go.tz (Tanzania Revenue Authority - TRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.sheria.go.tz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.go.tz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.tra.go.tz"
+      }
+    ]
   },
   "Thailand": {
     "code": "TH",
     "official_gazette": "http://www.ratchakitcha.soc.go.th (Royal Thai Government Gazette - Ratchakitcha)",
     "immigration_authority": "https://www.immigration.go.th (Immigration Bureau of Thailand)",
     "housing_and_tenancy": "Office of the Consumer Protection Board (ocpb.go.th) and Department of Lands",
-    "tax_authority": "https://www.rd.go.th (The Revenue Department of Thailand)"
+    "tax_authority": "https://www.rd.go.th (The Revenue Department of Thailand)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.ratchakitcha.soc.go.th"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.go.th"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.rd.go.th"
+      }
+    ]
   },
   "Timor-Leste": {
     "code": "TL",
     "official_gazette": "https://www.mj.gov.tl (Jornal da Republica de Timor-Leste)",
     "immigration_authority": "http://migracao.gov.tl (Servico de Migracao de Timor-Leste)",
     "housing_and_tenancy": "Ministerio das Obras Publicas e Habitacao",
-    "tax_authority": "https://www.mof.gov.tl (Autoridade Tributaria de Timor-Leste)"
+    "tax_authority": "https://www.mof.gov.tl (Autoridade Tributaria de Timor-Leste)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.mj.gov.tl"
+      },
+      {
+        "label": "Immigration",
+        "url": "http://migracao.gov.tl"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.mof.gov.tl"
+      }
+    ]
   },
   "Togo": {
     "code": "TG",
     "official_gazette": "https://jo.gouv.tg (Journal Officiel de la Republique Togolaise)",
     "immigration_authority": "Direction Generale de la Documentation Nationale (police.gouv.tg)",
     "housing_and_tenancy": "Ministere de l'Urbanisme, de l'Habitat et de la Reforme Fonciere",
-    "tax_authority": "https://www.otr.tg (Office Togolais des Recettes - OTR)"
+    "tax_authority": "https://www.otr.tg (Office Togolais des Recettes - OTR)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://jo.gouv.tg"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.otr.tg"
+      }
+    ]
   },
   "Tonga": {
     "code": "TO",
     "official_gazette": "https://www.crownlaw.gov.to (Legislation of Tonga - Crown Law) and PacLII",
     "immigration_authority": "Immigration Division, Ministry of Foreign Affairs (mic.gov.to)",
     "housing_and_tenancy": "Ministry of Lands and Natural Resources",
-    "tax_authority": "Ministry of Revenue and Customs (revenue.gov.to)"
+    "tax_authority": "Ministry of Revenue and Customs (revenue.gov.to)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.crownlaw.gov.to"
+      }
+    ]
   },
   "Trinidad and Tobago": {
     "code": "TT",
     "official_gazette": "https://laws.gov.tt (Laws of Trinidad and Tobago) and Official Gazette",
     "immigration_authority": "https://nationalsecurity.gov.tt (Immigration Division, Ministry of National Security)",
     "housing_and_tenancy": "https://housing.gov.tt (Ministry of Housing and Urban Development) and Rent Assessment Board",
-    "tax_authority": "https://www.ird.gov.tt (Inland Revenue Division)"
+    "tax_authority": "https://www.ird.gov.tt (Inland Revenue Division)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://laws.gov.tt"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://nationalsecurity.gov.tt"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://housing.gov.tt"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ird.gov.tt"
+      }
+    ]
   },
   "Tunisia": {
     "code": "TN",
     "official_gazette": "http://www.iort.gov.tn (Journal Officiel de la Republique Tunisienne - JORT)",
     "immigration_authority": "Direction des Frontieres et des Etrangers, Ministere de l'Interieur (interieur.gov.tn)",
     "housing_and_tenancy": "Ministere de l'Equipement et de l'Habitat",
-    "tax_authority": "https://www.finances.gov.tn (Direction Generale des Impots)"
+    "tax_authority": "https://www.finances.gov.tn (Direction Generale des Impots)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://www.iort.gov.tn"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.finances.gov.tn"
+      }
+    ]
   },
   "Turkey": {
     "code": "TR",
     "official_gazette": "https://www.resmigazete.gov.tr (T.C. Resmi Gazete - Official Gazette of the Republic of Turkey) and https://www.mevzuat.gov.tr",
     "immigration_authority": "https://www.goc.gov.tr (Presidency of Migration Management - Goc Idaresi Baskanligi)",
     "housing_and_tenancy": "Ministry of Environment, Urbanisation and Climate Change (csb.gov.tr) and Sulh Hukuk Mahkemeleri",
-    "tax_authority": "https://www.gib.gov.tr (Revenue Administration - Gelir Idaresi Baskanligi)"
+    "tax_authority": "https://www.gib.gov.tr (Revenue Administration - Gelir Idaresi Baskanligi)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.resmigazete.gov.tr"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.mevzuat.gov.tr"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.goc.gov.tr"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gib.gov.tr"
+      }
+    ]
   },
   "Turkmenistan": {
     "code": "TM",
     "official_gazette": "http://minjust.gov.tm (Unified State Registry of Legal Acts of Turkmenistan)",
     "immigration_authority": "https://migration.gov.tm (State Migration Service of Turkmenistan)",
     "housing_and_tenancy": "Ministry of Construction and Architecture",
-    "tax_authority": "Main State Tax Service of Turkmenistan"
+    "tax_authority": "Main State Tax Service of Turkmenistan",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://minjust.gov.tm"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://migration.gov.tm"
+      }
+    ]
   },
   "Tuvalu": {
     "code": "TV",
     "official_gazette": "https://www.paclii.org/tv/legis/ (Tuvalu Legislation - PacLII)",
     "immigration_authority": "Tuvalu Immigration Department, Ministry of Justice",
     "housing_and_tenancy": "Ministry of Public Works, Infrastructure, and Environment",
-    "tax_authority": "Inland Revenue Department, Ministry of Finance"
+    "tax_authority": "Inland Revenue Department, Ministry of Finance",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.paclii.org/tv/legis/"
+      }
+    ]
   },
   "Uganda": {
     "code": "UG",
     "official_gazette": "https://ulii.org (Uganda Legal Information Institute) and Uganda Gazette",
     "immigration_authority": "https://www.immigration.go.ug (Directorate of Citizenship and Immigration Control)",
     "housing_and_tenancy": "Ministry of Lands, Housing and Urban Development",
-    "tax_authority": "https://www.ura.go.ug (Uganda Revenue Authority - URA)"
+    "tax_authority": "https://www.ura.go.ug (Uganda Revenue Authority - URA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://ulii.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.immigration.go.ug"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.ura.go.ug"
+      }
+    ]
   },
   "Ukraine": {
     "code": "UA",
     "official_gazette": "https://zakon.rada.gov.ua (Legislation of Ukraine - Verkhovna Rada)",
     "immigration_authority": "https://dmsu.gov.ua (State Migration Service of Ukraine - DMSU)",
     "housing_and_tenancy": "Ministry for Communities, Territories and Infrastructure Development",
-    "tax_authority": "https://tax.gov.ua (State Tax Service of Ukraine - DPS)"
+    "tax_authority": "https://tax.gov.ua (State Tax Service of Ukraine - DPS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://zakon.rada.gov.ua"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://dmsu.gov.ua"
+      },
+      {
+        "label": "Tax",
+        "url": "https://tax.gov.ua"
+      }
+    ]
   },
   "United Arab Emirates": {
     "code": "AE",
     "official_gazette": "https://elaws.gov.ae (UAE Legislation Platform, Ministry of Justice) and Federal Official Gazette",
     "immigration_authority": "https://icp.gov.ae (Federal Authority for Identity, Citizenship, Customs and Port Security - ICP) and GDRFA Dubai",
     "housing_and_tenancy": "https://dubailand.gov.ae (Rental Dispute Centre - RDC / Ejari) and Abu Dhabi Rental Dispute Settlement Committee",
-    "tax_authority": "https://tax.gov.ae (Federal Tax Authority - FTA)"
+    "tax_authority": "https://tax.gov.ae (Federal Tax Authority - FTA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://elaws.gov.ae"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://icp.gov.ae"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://dubailand.gov.ae"
+      },
+      {
+        "label": "Tax",
+        "url": "https://tax.gov.ae"
+      }
+    ]
   },
   "United Kingdom": {
     "code": "GB",
     "official_gazette": "https://www.legislation.gov.uk (The National Archives official legislation portal)",
     "immigration_authority": "https://www.gov.uk/government/organisations/uk-visas-and-immigration (UK Visas and Immigration - UKVI)",
     "housing_and_tenancy": "https://www.gov.uk/private-renting (Private Renting Guidelines and First-tier Tribunal Property Chamber)",
-    "tax_authority": "https://www.gov.uk/government/organisations/hm-revenue-customs (HM Revenue & Customs - HMRC)"
+    "tax_authority": "https://www.gov.uk/government/organisations/hm-revenue-customs (HM Revenue & Customs - HMRC)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.legislation.gov.uk"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gov.uk/government/organisations/uk-visas-and-immigration"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gov.uk/private-renting"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gov.uk/government/organisations/hm-revenue-customs"
+      }
+    ]
   },
   "United States": {
     "code": "US",
     "official_gazette": "https://www.federalregister.gov (Federal Register) and https://www.congress.gov (Library of Congress Legislation)",
     "immigration_authority": "https://www.uscis.gov (U.S. Citizenship and Immigration Services) and https://travel.state.gov",
     "housing_and_tenancy": "https://www.hud.gov (U.S. Department of Housing and Urban Development) and State Housing Agencies",
-    "tax_authority": "https://www.irs.gov (Internal Revenue Service - IRS)"
+    "tax_authority": "https://www.irs.gov (Internal Revenue Service - IRS)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.federalregister.gov"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.congress.gov"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.uscis.gov"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://travel.state.gov"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.hud.gov"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.irs.gov"
+      }
+    ]
   },
   "Uruguay": {
     "code": "UY",
     "official_gazette": "https://www.impo.com.uy (Direccion Nacional de Impresiones y Publicaciones Oficiales - IMPO)",
     "immigration_authority": "https://www.gub.uy/ministerio-interior/migracion (Direccion Nacional de Migracion)",
     "housing_and_tenancy": "https://www.gub.uy/ministerio-vivienda-ordenamiento-territorial (MVOT)",
-    "tax_authority": "https://www.dgi.gub.uy (Direccion General Impositiva - DGI)"
+    "tax_authority": "https://www.dgi.gub.uy (Direccion General Impositiva - DGI)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.impo.com.uy"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.gub.uy/ministerio-interior/migracion"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.gub.uy/ministerio-vivienda-ordenamiento-territorial"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.dgi.gub.uy"
+      }
+    ]
   },
   "Uzbekistan": {
     "code": "UZ",
     "official_gazette": "https://lex.uz (National Database of Legislation of the Republic of Uzbekistan - LexUZ)",
     "immigration_authority": "https://gmig.uz (Department of Migration and Citizenship Registration, Ministry of Internal Affairs)",
     "housing_and_tenancy": "Ministry of Construction and Housing and Communal Services",
-    "tax_authority": "https://soliq.uz (State Tax Committee of the Republic of Uzbekistan)"
+    "tax_authority": "https://soliq.uz (State Tax Committee of the Republic of Uzbekistan)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://lex.uz"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://gmig.uz"
+      },
+      {
+        "label": "Tax",
+        "url": "https://soliq.uz"
+      }
+    ]
   },
   "Vanuatu": {
     "code": "VU",
     "official_gazette": "https://www.paclii.org/vu/legis/ (Vanuatu Legislation - PacLII) and Official Gazette",
     "immigration_authority": "https://immigration.gov.vu (Vanuatu Department of Immigration and Passport Services)",
     "housing_and_tenancy": "Ministry of Lands and Natural Resources",
-    "tax_authority": "https://customsinlandrevenue.gov.vu (Department of Customs and Inland Revenue)"
+    "tax_authority": "https://customsinlandrevenue.gov.vu (Department of Customs and Inland Revenue)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.paclii.org/vu/legis/"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://immigration.gov.vu"
+      },
+      {
+        "label": "Tax",
+        "url": "https://customsinlandrevenue.gov.vu"
+      }
+    ]
   },
   "Vatican City": {
     "code": "VA",
     "official_gazette": "https://www.vatican.va (Acta Apostolicae Sedis and Leggi e Disposizioni dello Stato della Citta del Vaticano)",
     "immigration_authority": "https://www.vatican.va (Ufficio Passaporti e Sicurezza dello Stato)",
     "housing_and_tenancy": "Amministrazione del Patrimonio della Sede Apostolica (APSA)",
-    "tax_authority": "Segreteria per l'Economia della Santa Sede (vatican.va)"
+    "tax_authority": "Segreteria per l'Economia della Santa Sede (vatican.va)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://www.vatican.va"
+      }
+    ]
   },
   "Venezuela": {
     "code": "VE",
     "official_gazette": "http://spg.mpppp.gob.ve and Gaceta Oficial de la Republica Bolivariana de Venezuela (imprentanacional.gob.ve)",
     "immigration_authority": "http://www.saime.gob.ve (Servicio Administrativo de Identificacion, Migracion y Extranjeria - SAIME)",
     "housing_and_tenancy": "https://www.minhvi.gob.ve (Ministerio del Poder Popular para Habitat y Vivienda) and SUNAVI",
-    "tax_authority": "http://declaraciones.seniat.gob.ve (Servicio Nacional Integrado de Administracion Aduanera y Tributaria - SENIAT)"
+    "tax_authority": "http://declaraciones.seniat.gob.ve (Servicio Nacional Integrado de Administracion Aduanera y Tributaria - SENIAT)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "http://spg.mpppp.gob.ve"
+      },
+      {
+        "label": "Immigration",
+        "url": "http://www.saime.gob.ve"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://www.minhvi.gob.ve"
+      },
+      {
+        "label": "Tax",
+        "url": "http://declaraciones.seniat.gob.ve"
+      }
+    ]
   },
   "Vietnam": {
     "code": "VN",
     "official_gazette": "https://congbao.chinhphu.vn (Cong Bao - Official Gazette of the Socialist Republic of Vietnam) and https://thuvienphapluat.vn",
     "immigration_authority": "https://xuatnhapcanh.gov.vn (Immigration Department, Ministry of Public Security)",
     "housing_and_tenancy": "https://moc.gov.vn (Ministry of Construction)",
-    "tax_authority": "https://www.gdt.gov.vn (General Department of Taxation of Vietnam)"
+    "tax_authority": "https://www.gdt.gov.vn (General Department of Taxation of Vietnam)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://congbao.chinhphu.vn"
+      },
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://thuvienphapluat.vn"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://xuatnhapcanh.gov.vn"
+      },
+      {
+        "label": "Housing and tenancy",
+        "url": "https://moc.gov.vn"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.gdt.gov.vn"
+      }
+    ]
   },
   "Yemen": {
     "code": "YE",
     "official_gazette": "The Official Gazette of the Republic of Yemen (Ministry of Legal Affairs - yemen.gov.ye)",
     "immigration_authority": "Immigration, Passports and Naturalization Authority (moi.gov.ye)",
     "housing_and_tenancy": "Ministry of Public Works and Highways",
-    "tax_authority": "Yemen Tax Authority (tax.gov.ye)"
+    "tax_authority": "Yemen Tax Authority (tax.gov.ye)",
+    "portals": []
   },
   "Zambia": {
     "code": "ZM",
     "official_gazette": "https://zambialii.org (Zambia Legal Information Institute) and Republic of Zambia Government Gazette",
     "immigration_authority": "https://www.zambiaimmigration.gov.zm (Department of Immigration)",
     "housing_and_tenancy": "Ministry of Infrastructure, Housing and Urban Development",
-    "tax_authority": "https://www.zra.org.zm (Zambia Revenue Authority - ZRA)"
+    "tax_authority": "https://www.zra.org.zm (Zambia Revenue Authority - ZRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://zambialii.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.zambiaimmigration.gov.zm"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.zra.org.zm"
+      }
+    ]
   },
   "Zimbabwe": {
     "code": "ZW",
     "official_gazette": "https://zimlii.org (Zimbabwe Legal Information Institute) and Zimbabwean Government Gazette",
     "immigration_authority": "https://www.evisa.gov.zw (Department of Immigration, Ministry of Home Affairs)",
     "housing_and_tenancy": "Ministry of National Housing and Social Amenities and Rent Board",
-    "tax_authority": "https://www.zimra.co.zw (Zimbabwe Revenue Authority - ZIMRA)"
+    "tax_authority": "https://www.zimra.co.zw (Zimbabwe Revenue Authority - ZIMRA)",
+    "portals": [
+      {
+        "label": "Official gazette and legislation",
+        "url": "https://zimlii.org"
+      },
+      {
+        "label": "Immigration",
+        "url": "https://www.evisa.gov.zw"
+      },
+      {
+        "label": "Tax",
+        "url": "https://www.zimra.co.zw"
+      }
+    ]
   }
 }

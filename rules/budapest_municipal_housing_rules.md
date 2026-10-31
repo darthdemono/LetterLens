@@ -1,4 +1,9 @@
-# Budapest Municipal Housing Authority Regulations
+# DEMO DATA (fictional)
+
+The authority, the decree number and the e-mail address below are invented for the demo
+scenario. Do not rely on them for a real tenancy.
+
+# Demo: Budapest Municipal Housing Authority Regulations
 
 ## Decree No. 14/2021 (V. 12.) on Municipal Tenancy Protections
 
