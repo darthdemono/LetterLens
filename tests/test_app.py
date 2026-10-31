@@ -110,6 +110,19 @@ class TestLetterLens(unittest.TestCase):
         terminal_out = app.MarkdownParser.to_terminal_text(text, use_color=False)
         self.assertIn("[1]", terminal_out)
 
+    def test_agent_refuses_non_legal_queries(self):
+        recorded = []
+
+        class FakeClient:
+            def chat(self, messages, tools=None, on_token=None):
+                recorded.append(messages[0]["content"])
+                return {"role": "assistant", "content": "I can only assist with legal, administrative, and official documents, such as government notices, permits, tenancy agreements, contracts, and bills. Please provide a legal or official document."}
+
+        agent_inst = app.Agent(FakeClient())
+        res = agent_inst.run("Can you write me a poem about summer?")
+        self.assertIn("Strict Legal Scope Requirement", recorded[0])
+        self.assertIn("I can only assist with legal, administrative, and official documents", res)
+
 
 def test_thought_text_is_removed_from_the_reply(monkeypatch=None):
     TestLetterLens().test_thought_text_is_removed_from_the_reply()
@@ -137,6 +150,10 @@ def test_agent_handles_pictures_multimodal():
 
 def test_markdown_parser_extracts_footnotes():
     TestLetterLens().test_markdown_parser_extracts_footnotes()
+
+
+def test_agent_refuses_non_legal_queries():
+    TestLetterLens().test_agent_refuses_non_legal_queries()
 
 
 if __name__ == "__main__":
