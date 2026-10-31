@@ -201,20 +201,26 @@
     $('stopBtn').hidden = !busy;
   }
 
+  function parseLine(line) {
+    try { return JSON.parse(line); } catch (e) { return null; }
+  }
+
   async function readEvents(response, onEvent) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder('utf-8');
     let buffer = '';
+    const flush = (lines) => {
+      lines.filter((l) => l.trim()).map(parseLine).filter(Boolean).forEach(onEvent);
+    };
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop();
-      lines.filter((l) => l.trim()).forEach((l) => {
-        try { onEvent(JSON.parse(l)); } catch (e) { /* ignore a broken line */ }
-      });
+      flush(lines);
     }
+    flush([buffer]);
   }
 
   async function send(override) {
@@ -239,6 +245,7 @@
     let raw = '';
     let frame = 0;
     let firstAt = null;
+    let finished = false;
     const startedAt = performance.now();
     const timer = document.createElement('p');
     timer.className = 'elapsed';
@@ -285,7 +292,9 @@
         else if (ev.status) { $('sr').textContent = ev.status; }
         else if (ev.warn) { warnings.push(ev.warn); }
         else if (ev.error) { throw new Error(ev.error); }
+        else if (ev.done) { finished = true; }
       });
+      if (!finished && !raw) throw new Error('The connection closed before an answer arrived. Check that the server is still running.');
     } catch (err) {
       if (err.name === 'AbortError') notice('info', 'Stopped.');
       else notice('error', err.message);

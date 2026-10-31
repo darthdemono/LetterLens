@@ -330,7 +330,12 @@ def make_app_server(port=8080, host="127.0.0.1", offline=False, factory=None, ro
                 if not known:
                     log.exception("chat failed")
                 try:
-                    emit({"error": str(exc) if known else "Unexpected error. See the server log."})
+                    message = "Unexpected error. See the server log."
+                    if isinstance(exc, ApiError):
+                        message = agent_module.explain(exc)
+                    elif known:
+                        message = str(exc)
+                    emit({"error": message})
                 except ClientGone:
                     return
 
