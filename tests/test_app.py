@@ -1,316 +1,471 @@
+import base64
+import copy
+import gzip
+import http.client
 import io
+import json
+import os
+import runpy
+import socket
+import struct
+import sys
 import threading
-import unittest
-from unittest.mock import patch
-import urllib.error
-import urllib.request
+import time
 import zipfile
 
+import pytest
+
+import agent
 import app
-
-
-class TestLetterLens(unittest.TestCase):
-    def test_thought_text_is_removed_from_the_reply(self):
-        with patch.object(app.Client, "chat", lambda self, m, tools=None, on_token=None: {"role": "assistant", "content": "<thought>plan</thought>pong"}):
-            seen = []
-            reply = app.GeminiClient(api_key="x").chat([], on_token=seen.append)
-            self.assertEqual(reply["content"], "pong")
-            self.assertEqual(seen, ["pong"])
-
-    def test_server_errors_are_retried_but_client_errors_are_not(self):
-        with patch.object(app.time, "sleep", lambda s: None):
-            calls = []
-
-            def flaky(self, m, tools=None, on_token=None):
-                calls.append(1)
-                if len(calls) < 3:
-                    raise urllib.error.HTTPError("u", 500, "x", {}, None)
-                return {"role": "assistant", "content": "ok"}
-
-            with patch.object(app.Client, "chat", flaky):
-                self.assertEqual(app.GeminiClient(api_key="x").chat([])["content"], "ok")
-                self.assertEqual(len(calls), 3)
-
-            def bad(self, m, tools=None, on_token=None):
-                raise urllib.error.HTTPError("u", 400, "x", {}, None)
-
-            with patch.object(app.Client, "chat", bad):
-                with self.assertRaises(urllib.error.HTTPError) as ctx:
-                    app.GeminiClient(api_key="x").chat([])
-                self.assertEqual(ctx.exception.code, 400)
-
-    def test_the_agent_answers_a_letter(self):
-        class Fake:
-            def chat(self, messages, tools=None, on_token=None):
-                return {"role": "assistant", "content": "pay by Friday"}
-
-        self.assertEqual(app.build_agent(Fake()).run("Explain this letter: ..."), "pay by Friday")
-
-    def test_download_button_and_zip(self):
-        server = app.make_app_server(port=0)
-        threading.Thread(target=server.serve_forever, daemon=True).start()
-        base = f"http://127.0.0.1:{server.server_address[1]}"
-        self.assertIn(b"/letterlens.zip", urllib.request.urlopen(base + "/").read())
-        r = urllib.request.urlopen(base + "/letterlens.zip")
-        self.assertIn("attachment", r.headers["Content-Disposition"])
-        names = zipfile.ZipFile(io.BytesIO(r.read())).namelist()
-        server.shutdown()
-        self.assertTrue("letterlens/app.py" in names and "letterlens/LICENSE" in names)
-        self.assertFalse([n for n in names if ".venv" in n or ".git/" in n or "__pycache__" in n])
-
-    def test_agent_handles_markdown_files(self):
-        recorded = []
-
-        class FakeClient:
-            def chat(self, messages, tools=None, on_token=None):
-                recorded.append(messages[-1])
-                return {"role": "assistant", "content": "Summary of rent increase"}
-
-        agent_inst = app.Agent(FakeClient())
-        res = agent_inst.run(
-            prompt="Explain this notice",
-            files=[{"name": "notice.md", "content": "# Rent Increase Notice"}]
-        )
-        self.assertEqual(res, "Summary of rent increase")
-        self.assertIn("notice.md", recorded[0]["content"])
-        self.assertIn("# Rent Increase Notice", recorded[0]["content"])
-
-    def test_agent_handles_pictures_multimodal(self):
-        recorded = []
-
-        class FakeClient:
-            def chat(self, messages, tools=None, on_token=None):
-                recorded.append(messages[-1])
-                return {"role": "assistant", "content": "Description of image"}
-
-        agent_inst = app.Agent(FakeClient())
-        res = agent_inst.run(
-            prompt="What is this picture?",
-            images=["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="]
-        )
-        self.assertEqual(res, "Description of image")
-        content = recorded[0]["content"]
-        self.assertTrue(isinstance(content, list))
-        self.assertTrue(any(part.get("type") == "image_url" for part in content))
-
-    def test_key_pool_discovers_multiple_gemini_keys(self):
-        pool = app.KeyPool()
-        self.assertGreaterEqual(pool.size(), 2)
-        k1 = pool.get_key()
-        k2 = pool.get_key()
-        self.assertTrue(bool(k1))
-        self.assertTrue(bool(k2))
-
-    def test_markdown_parser_extracts_footnotes(self):
-        text = "Under municipal law[^1], you have 14 days.\n\n[^1]: Budapest Municipal Decree No. 14/2021"
-        fields = app.MarkdownParser.extract_key_fields(text)
-        self.assertEqual(len(fields["footnotes"]), 1)
-        self.assertEqual(fields["footnotes"][0]["id"], "1")
-        self.assertEqual(fields["footnotes"][0]["text"], "Budapest Municipal Decree No. 14/2021")
-        terminal_out = app.MarkdownParser.to_terminal_text(text, use_color=False)
-        self.assertIn("[1]", terminal_out)
-
-    def test_agent_refuses_non_legal_queries(self):
-        recorded = []
-
-        class FakeClient:
-            def chat(self, messages, tools=None, on_token=None):
-                recorded.append(messages[0]["content"])
-                return {"role": "assistant", "content": "I can only assist with legal, administrative, and official documents, such as government notices, permits, tenancy agreements, contracts, and bills. Please provide a legal or official document."}
-
-        agent_inst = app.Agent(FakeClient())
-        res = agent_inst.run("Can you write me a poem about summer?")
-        self.assertIn("Strict Legal Scope Requirement", recorded[0])
-        self.assertIn("I can only assist with legal, administrative, and official documents", res)
-
-    def test_country_legal_portals_repository_coverage_and_lookup(self):
-        tool = app.country_legal_portal_tool()
-        lookup = tool["fn"]
-        res = lookup("Hungary")
-        self.assertIn("magyarkozlony.hu", res)
-        self.assertIn("oif.gov.hu", res)
-        res_de = lookup("Germany")
-        self.assertIn("gesetze-im-internet.de", res_de)
-        res_us = lookup("United States")
-        self.assertIn("federalregister.gov", res_us)
-        res_jp = lookup("Japan")
-        self.assertIn("elaws.e-gov.go.jp", res_jp)
-
-    def test_country_legal_portal_aliases_and_listing(self):
-        tool = app.country_legal_portal_tool()
-        lookup = tool["fn"]
-        res_alias = lookup("USA")
-        self.assertIn("United States", res_alias)
-        res_uk = lookup("UK")
-        self.assertIn("legislation.gov.uk", res_uk)
-        res_code = lookup("DE")
-        self.assertIn("gesetze-im-internet.de", res_code)
-        res_all = lookup("all")
-        self.assertIn("total_countries", res_all)
-        self.assertIn("Primary official legal repository loaded", res_all)
-
-    def test_agent_registers_country_legal_portal_tool(self):
-        class FakeClient:
-            def chat(self, messages, tools=None, on_token=None):
-                return {"role": "assistant", "content": "Analysis complete"}
-
-        agent_inst = app.build_agent(FakeClient())
-        self.assertIn("lookup_country_legal_portal", agent_inst.tools)
-        tool_desc = agent_inst.tools["lookup_country_legal_portal"]["schema"]["function"]["description"]
-        self.assertIn("Primary Source of Information", tool_desc)
-
-    def test_generic_ai_questions_are_allowed_and_answered(self):
-        class FakeClient:
-            def chat(self, messages, tools=None, on_token=None):
-                return {"role": "assistant", "content": "not called"}
-
-        agent_inst = app.Agent(FakeClient())
-        res = agent_inst.run("what can you do")
-        self.assertIn("LetterLens Capabilities", res)
-        self.assertIn("Local OCR Acceleration", res)
-        res_help = agent_inst.run("help")
-        self.assertIn("LetterLens Capabilities", res_help)
-
-    def test_denial_of_acceptance_replies_past_prompt_results(self):
-        calls = []
-
-        class FakeClient:
-            def chat(self, messages, tools=None, on_token=None):
-                calls.append(len(messages))
-                if len(calls) == 1:
-                    return {"role": "assistant", "content": "### Summary\nLease breakdown of 500 EUR."}
-                return {
-                    "role": "assistant",
-                    "content": "I can only assist with legal, administrative, and official documents, such as government notices, permits, tenancy agreements, contracts, and bills. Please provide a legal or official document."
-                }
-
-        agent_inst = app.Agent(FakeClient())
-        first_res = agent_inst.run("Explain this lease with 500 EUR rent")
-        self.assertIn("Lease breakdown of 500 EUR", first_res)
-
-        second_res = agent_inst.run("Write a poem about puppies")
-        self.assertIn("I can only assist with legal", second_res)
-        self.assertIn("Previous Document Analysis", second_res)
-        self.assertIn("Lease breakdown of 500 EUR", second_res)
-
-    def test_footnotes_hyperlink_display_format(self):
-        text = "Under federal tenancy rules[^1], rent caps apply.\n\n1. https://www.gesetze-im-internet.de - Federal Ministry of Justice\n2. https://www.bmwsb.bund.de - Housing Ministry"
-        fields = app.MarkdownParser.extract_key_fields(text)
-        self.assertEqual(len(fields["footnotes"]), 2)
-        self.assertEqual(fields["footnotes"][0]["id"], "1")
-        self.assertIn("https://www.gesetze-im-internet.de", fields["footnotes"][0]["text"])
-
-    def test_static_files_serving(self):
-        server = app.make_app_server(port=0)
-        threading.Thread(target=server.serve_forever, daemon=True).start()
-        base = f"http://127.0.0.1:{server.server_address[1]}"
-        r_html = urllib.request.urlopen(base + "/")
-        self.assertEqual(r_html.status, 200)
-        self.assertIn(b"LetterLens", r_html.read())
-
-        r_css = urllib.request.urlopen(base + "/styles.css")
-        self.assertEqual(r_css.status, 200)
-        self.assertIn(b"--accent", r_css.read())
-
-        r_js = urllib.request.urlopen(base + "/app.js")
-        self.assertEqual(r_js.status, 200)
-        self.assertIn(b"parseMarkdown", r_js.read())
-
-        r_api = urllib.request.urlopen(base + "/api/countries")
-        self.assertEqual(r_api.status, 200)
-        self.assertIn(b"Hungary", r_api.read())
-        server.shutdown()
-
-
-    def test_country_settings_injects_into_context_window(self):
-        recorded = []
-
-        class FakeClient:
-            def chat(self, messages, tools=None, on_token=None):
-                recorded.extend(messages)
-                return {"role": "assistant", "content": "Analysis for Germany"}
-
-        agent_inst = app.Agent(FakeClient())
-        agent_inst.set_country_context("Germany")
-        self.assertEqual(agent_inst.country, "Germany")
-        found_context = any(
-            m.get("role") == "system" and "gesetze-im-internet.de" in m.get("content", "")
-            for m in agent_inst.messages
-        )
-        self.assertTrue(found_context)
-
-        agent_inst.run("Explain notice", country="France")
-        self.assertEqual(agent_inst.country, "France")
-        found_france = any(
-            m.get("role") == "system" and "legifrance.gouv.fr" in m.get("content", "")
-            for m in agent_inst.messages
-        )
-        self.assertTrue(found_france)
-
-
-def test_thought_text_is_removed_from_the_reply(monkeypatch=None):
-    TestLetterLens().test_thought_text_is_removed_from_the_reply()
-
-
-def test_server_errors_are_retried_but_client_errors_are_not(monkeypatch=None):
-    TestLetterLens().test_server_errors_are_retried_but_client_errors_are_not()
-
-
-def test_the_agent_answers_a_letter():
-    TestLetterLens().test_the_agent_answers_a_letter()
-
-
-def test_download_button_and_zip():
-    TestLetterLens().test_download_button_and_zip()
-
-
-def test_agent_handles_markdown_files():
-    TestLetterLens().test_agent_handles_markdown_files()
-
-
-def test_agent_handles_pictures_multimodal():
-    TestLetterLens().test_agent_handles_pictures_multimodal()
-
-
-def test_markdown_parser_extracts_footnotes():
-    TestLetterLens().test_markdown_parser_extracts_footnotes()
-
-
-def test_agent_refuses_non_legal_queries():
-    TestLetterLens().test_agent_refuses_non_legal_queries()
-
-
-def test_country_legal_portals_repository_coverage_and_lookup():
-    TestLetterLens().test_country_legal_portals_repository_coverage_and_lookup()
-
-
-def test_country_legal_portal_aliases_and_listing():
-    TestLetterLens().test_country_legal_portal_aliases_and_listing()
-
-
-def test_agent_registers_country_legal_portal_tool():
-    TestLetterLens().test_agent_registers_country_legal_portal_tool()
-
-
-def test_generic_ai_questions_are_allowed_and_answered():
-    TestLetterLens().test_generic_ai_questions_are_allowed_and_answered()
-
-
-def test_denial_of_acceptance_replies_past_prompt_results():
-    TestLetterLens().test_denial_of_acceptance_replies_past_prompt_results()
-
-
-def test_footnotes_hyperlink_display_format():
-    TestLetterLens().test_footnotes_hyperlink_display_format()
-
-
-def test_static_files_serving():
-    TestLetterLens().test_static_files_serving()
-
-
-def test_country_settings_injects_into_context_window():
-    TestLetterLens().test_country_settings_injects_into_context_window()
-
-
-if __name__ == "__main__":
-    unittest.main()
+from agent import ApiError, GemmaAgent
+from config import ROOT
+from images import Image
+
+PNG_URL = "data:image/png;base64," + base64.b64encode(b"\x89PNG data").decode()
+
+
+class EchoClient:
+    offline = False
+
+    def __init__(self, text="Plain answer"):
+        self.text = text
+        self.seen = []
+
+    def chat(self, messages, tools=None, on_token=None):
+        self.seen.append(copy.deepcopy(messages))
+        on_token(self.text)
+        return {"role": "assistant", "content": self.text}
+
+
+class Server:
+    def __init__(self, factory=None, host="127.0.0.1", root=ROOT, offline=False):
+        factory = factory or (lambda: GemmaAgent(EchoClient()))
+        self.http = app.make_app_server(port=0, host=host, factory=factory, root=root,
+                                        offline=offline)
+        self.port = self.http.server_address[1]
+        threading.Thread(target=self.http.serve_forever, kwargs={"poll_interval": 0.02},
+                         daemon=True).start()
+
+    def request(self, method, path, body=None, headers=None):
+        conn = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
+        conn.request(method, path, body=body, headers=headers or {})
+        response = conn.getresponse()
+        data = response.read()
+        conn.close()
+        return response, data
+
+    def post(self, path, payload, headers=None):
+        merged = {"Content-Type": "application/json", **(headers or {})}
+        return self.request("POST", path, json.dumps(payload), merged)
+
+    def chat(self, **payload):
+        response, data = self.post("/chat", payload)
+        events = [json.loads(line) for line in data.decode().splitlines() if line]
+        return response, events
+
+    def close(self):
+        self.http.shutdown()
+        self.http.server_close()
+
+
+@pytest.fixture
+def server():
+    made = []
+
+    def build(**kwargs):
+        made.append(Server(**kwargs))
+        return made[-1]
+
+    yield build
+    for item in made:
+        item.close()
+
+
+def test_static_pages_are_served(server):
+    srv = server()
+    for path, (_, ctype) in app.PAGES.items():
+        response, body = srv.request("GET", path)
+        assert response.status == 200, path
+        assert response.getheader("Content-Type") == ctype
+        assert response.getheader("X-Content-Type-Options") == "nosniff"
+        assert body
+    response, body = srv.request("GET", "/")
+    assert b"LetterLens" in body
+    assert "script-src 'self'" in response.getheader("Content-Security-Policy")
+    response, body = srv.request("GET", "/api/countries")
+    assert "Hungary" in json.loads(body)
+    response, body = srv.request("GET", "/sample/scan.png")
+    assert body.startswith(b"\x89PNG")
+
+
+def test_gzip_etag_and_head(server):
+    srv = server()
+    response, body = srv.request("GET", "/api/countries", headers={"Accept-Encoding": "gzip"})
+    assert response.getheader("Content-Encoding") == "gzip"
+    assert "Hungary" in json.loads(gzip.decompress(body))
+    etag = response.getheader("ETag")
+    response, body = srv.request("GET", "/api/countries", headers={"If-None-Match": etag})
+    assert response.status == 304 and body == b""
+    response, body = srv.request("HEAD", "/api/countries")
+    assert response.status == 200 and body == b""
+    response, body = srv.request("GET", "/api/countries")
+    assert response.getheader("Content-Encoding") is None and body.startswith(b"{")
+
+
+def test_status_unknown_routes_and_missing_files(server, tmp_path):
+    srv = server()
+    response, body = srv.request("GET", "/api/status")
+    status = json.loads(body)
+    assert status["mode"] == "cloud" and status["version"] == app.VERSION
+    assert srv.request("GET", "/nothing")[0].status == 404
+    assert srv.request("POST", "/nothing", "{}", {"Content-Type": "application/json"})[0].status == 404
+    empty = server(root=str(tmp_path))
+    assert empty.request("GET", "/")[0].status == 404
+
+
+def test_status_payload_modes(monkeypatch):
+    monkeypatch.setenv("GEMINI_1_KEY", "a,b")
+    assert app.status_payload(False)["keys"] == 2
+    offline = app.status_payload(True)
+    assert offline["mode"] == "offline" and offline["keys"] == 0
+    assert offline["model"] == app.LOCAL_MODEL
+
+
+def test_zip_contains_only_the_allowlist(tmp_path):
+    for name in ["app.py", "README.md", ".env", "notes.py", "ocr_win.ps1"]:
+        (tmp_path / name).write_text("x", encoding="utf-8")
+    for folder in ["static", "tests", ".claude", "Handoff", "static/__pycache__"]:
+        (tmp_path / folder).mkdir(parents=True, exist_ok=True)
+    (tmp_path / "static" / "a.js").write_text("x", encoding="utf-8")
+    (tmp_path / "static" / "b.pyc").write_text("x", encoding="utf-8")
+    (tmp_path / "static" / "__pycache__" / "c.js").write_text("x", encoding="utf-8")
+    (tmp_path / ".claude" / "secret.md").write_text("x", encoding="utf-8")
+    (tmp_path / "Handoff" / "n.md").write_text("x", encoding="utf-8")
+    names = set(zipfile.ZipFile(io.BytesIO(app.source_zip(str(tmp_path)))).namelist())
+    assert names == {"letterlens/app.py", "letterlens/README.md", "letterlens/ocr_win.ps1",
+                     "letterlens/static/a.js"}
+
+
+def test_zip_endpoint_serves_a_download(server):
+    response, body = server().request("GET", "/letterlens.zip")
+    assert "attachment" in response.getheader("Content-Disposition")
+    names = zipfile.ZipFile(io.BytesIO(body)).namelist()
+    assert "letterlens/app.py" in names and "letterlens/static/render.js" in names
+    assert not [n for n in names if ".env" in n or "__pycache__" in n or ".git/" in n]
+
+
+def test_host_and_origin_checks(server):
+    srv = server()
+    assert srv.request("GET", "/", headers={"Host": "evil.example"})[0].status == 403
+    assert srv.request("GET", "/", headers={"Host": "localhost:1"})[0].status == 200
+    assert srv.request("GET", "/", headers={"Host": "[::1]:80"})[0].status == 200
+    assert srv.request("GET", "/", headers={"Host": "[::1]"})[0].status == 200
+    host = f"127.0.0.1:{srv.port}"
+    assert srv.request("GET", "/", headers={"Origin": "http://evil.example"})[0].status == 403
+    assert srv.request("GET", "/", headers={"Origin": f"http://{host}"})[0].status == 200
+    response, _ = srv.post("/chat", {"message": "hi"}, {"Origin": "http://evil.example"})
+    assert response.status == 403
+
+
+def test_non_loopback_server_skips_the_host_check(server):
+    srv = server(host="0.0.0.0")
+    assert srv.request("GET", "/", headers={"Host": "my-laptop.lan"})[0].status == 200
+    assert srv.request("GET", "/", headers={"Origin": "http://elsewhere"})[0].status == 403
+
+
+def test_chat_streams_events_and_reaches_the_agent(server):
+    client = EchoClient("Hello there")
+    srv = server(factory=lambda: GemmaAgent(client))
+    response, events = srv.chat(sid="abc", message="Explain", images=[PNG_URL],
+                                files=[{"name": "../../n.md", "content": "# Notice"}],
+                                country="Hungary")
+    assert response.status == 200
+    assert response.getheader("Content-Type") == "application/x-ndjson"
+    assert events == [{"t": "Hello there"}, {"done": True}]
+    user = client.seen[0][-1]["content"]
+    assert "--- Document: n.md ---" in user[0]["text"]
+    assert user[1]["image_url"]["url"] == PNG_URL
+    assert "njt.hu" in client.seen[0][0]["content"]
+
+
+def test_sessions_keep_history_and_reset_clears_it(server):
+    client = EchoClient()
+    srv = server(factory=lambda: GemmaAgent(client))
+    srv.chat(sid="s1", message="first")
+    srv.chat(sid="s1", message="second")
+    assert len(client.seen[1]) == len(client.seen[0]) + 2
+    response, body = srv.post("/reset", {"sid": "s1"})
+    assert json.loads(body) == {"ok": True}
+    assert json.loads(srv.post("/reset", {"sid": "s1"})[1]) == {"ok": False}
+    srv.chat(sid="s1", message="third")
+    assert len(client.seen[2]) == len(client.seen[0])
+
+
+@pytest.mark.parametrize(
+    "payload, message",
+    [
+        ({"message": "x", "sid": "bad sid!"}, "Invalid session id"),
+        ({"message": "x", "sid": 5}, "Invalid session id"),
+        ({"message": 5}, "Message is missing or too long"),
+        ({"message": "x" * (app.MAX_MESSAGE_CHARS + 1)}, "too long"),
+        ({"message": "x", "country": 5}, "Invalid country"),
+        ({"message": "x", "country": "y" * 81}, "Invalid country"),
+        ({"message": "x", "images": "nope"}, "must be lists"),
+        ({"message": "x", "files": {"a": 1}}, "must be lists"),
+        ({"message": "x", "images": [PNG_URL] * 6}, "At most 5"),
+        ({"message": "x", "images": ["/etc/passwd"]}, "data URLs"),
+        ({"message": "x", "images": ["data:text/html;base64,AAAA"]}, "Unsupported image"),
+        ({"message": "x", "files": ["a.txt"]}, "name and text content"),
+        ({"message": "x", "files": [{"name": "a.txt", "content": 5}]}, "name and text content"),
+        ({"message": "x", "files": [{"name": "a.exe", "content": "x"}]}, "Unsupported file type"),
+        ({"message": "x", "files": [{"name": "a.txt", "content": "y" * 200_001}]}, "too long"),
+        ({"message": "  "}, "Nothing to analyse"),
+        ({}, "Nothing to analyse"),
+    ],
+)
+def test_chat_validation_errors(server, payload, message):
+    response, body = server().post("/chat", payload)
+    assert response.status == 400
+    assert message in json.loads(body)["error"]
+
+
+def test_chat_accepts_default_file_name_and_empty_message():
+    request = app.validate_chat({"files": [{"content": "hello"}], "message": None})
+    assert request["files"] == [{"name": "document.txt", "content": "hello"}]
+    assert request["sid"] == "default" and request["country"] is None
+
+
+def test_validate_rejects_non_objects():
+    with pytest.raises(ValueError, match="JSON object"):
+        app.validate_chat(["x"])
+
+
+def test_body_checks(server, monkeypatch):
+    srv = server()
+    response, body = srv.request("POST", "/chat", "{}", {"Content-Type": "text/plain"})
+    assert response.status == 400 and "application/json" in json.loads(body)["error"]
+    response, body = srv.request("POST", "/chat", "{not json", {"Content-Type": "application/json"})
+    assert "valid JSON" in json.loads(body)["error"]
+    response, body = srv.request("POST", "/chat", b"\xff\xfe", {"Content-Type": "application/json"})
+    assert "valid JSON" in json.loads(body)["error"]
+    monkeypatch.setattr(app, "MAX_BODY", 10)
+    response, body = srv.request("POST", "/chat", json.dumps({"message": "long enough"}),
+                                 {"Content-Type": "application/json"})
+    assert "too large" in json.loads(body)["error"]
+    response, body = srv.post("/reset", ["x"])
+    assert response.status == 400 and "Invalid session id" in json.loads(body)["error"]
+    assert srv.post("/reset", {"sid": "bad sid"})[0].status == 400
+
+
+def raw_post(port, head, body=b""):
+    sock = socket.create_connection(("127.0.0.1", port), timeout=10)
+    sock.sendall(head.encode() + body)
+    data = b""
+    while chunk := sock.recv(4096):
+        data += chunk
+    sock.close()
+    return data.decode()
+
+
+def test_content_length_problems(server):
+    port = server().port
+    base = f"POST /chat HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nContent-Type: application/json\r\n"
+    assert "Content-Length is required" in raw_post(port, base + "\r\n")
+    assert "too large" in raw_post(port, base + "Content-Length: -5\r\n\r\n")
+
+
+def test_agent_errors_are_sent_to_the_client(server, caplog):
+    class Failing:
+        def run(self, *args, **kwargs):
+            raise self.error
+
+    def failing(error):
+        bot = Failing()
+        bot.error = error
+        return lambda: bot
+
+    for error, expected in [(ApiError(429, "slow down"), "slow down"),
+                            (ValueError("bad value"), "bad value"),
+                            (RuntimeError("secret path /home/x"), "Unexpected error")]:
+        srv = server(factory=failing(error))
+        _, events = srv.chat(sid="e", message="x")
+        assert expected in events[-1]["error"]
+        assert "secret" not in json.dumps(events)
+    assert "chat failed" in caplog.text
+
+
+class SlowAgent:
+    def __init__(self, record, wait_then_fail=False):
+        self.record = record
+        self.wait_then_fail = wait_then_fail
+
+    def run(self, prompt, on_event=None, **kwargs):
+        self.record["started"].set()
+        if self.wait_then_fail:
+            time.sleep(0.5)
+            raise ValueError("late failure")
+        for _ in range(100):
+            on_event({"t": "x" * 2000})
+            time.sleep(0.01)
+        self.record["finished"] = True
+
+
+def disconnecting_request(port):
+    sock = socket.create_connection(("127.0.0.1", port), timeout=10)
+    body = json.dumps({"message": "hi"}).encode()
+    sock.sendall((f"POST /chat HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\n"
+                  f"Content-Type: application/json\r\nContent-Length: {len(body)}\r\n\r\n").encode()
+                 + body)
+    sock.recv(10)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack("ii", 1, 0))
+    sock.close()
+
+
+@pytest.mark.parametrize("late_failure", [False, True])
+def test_client_disconnect_stops_the_agent(server, late_failure):
+    record = {"started": threading.Event(), "finished": False}
+    srv = server(factory=lambda: SlowAgent(record, wait_then_fail=late_failure))
+    disconnecting_request(srv.port)
+    assert record["started"].wait(5)
+    time.sleep(1.2)
+    assert record["finished"] is False
+
+
+def test_same_session_requests_do_not_overlap(server):
+    state = {"active": 0, "max": 0}
+
+    class Tracking:
+        def run(self, prompt, on_event=None, **kwargs):
+            state["active"] += 1
+            state["max"] = max(state["max"], state["active"])
+            time.sleep(0.15)
+            state["active"] -= 1
+
+    srv = server(factory=Tracking)
+    threads = [threading.Thread(target=srv.chat, kwargs={"sid": "same", "message": "x"})
+               for _ in range(3)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert state["max"] == 1
+
+
+class FakeClock:
+    def __init__(self):
+        self.now = 0.0
+
+    def __call__(self):
+        return self.now
+
+
+def test_session_store_reuse_expiry_and_eviction():
+    clock = FakeClock()
+    store = app.SessionStore(object, limit=2, ttl=100, clock=clock)
+    first = store.acquire("a")
+    assert store.acquire("a") is first
+    clock.now = 1
+    store.acquire("b")
+    clock.now = 2
+    store.acquire("c")
+    assert len(store) == 2 and store.acquire("a") is not first
+    clock.now = 500
+    store.acquire("d")
+    assert len(store) == 1
+    assert store.drop("d") is True and store.drop("d") is False
+
+
+def test_session_store_never_evicts_busy_sessions():
+    clock = FakeClock()
+    store = app.SessionStore(object, limit=1, ttl=10, clock=clock)
+    busy = store.acquire("a")
+    busy.lock.acquire()
+    clock.now = 100
+    store.acquire("b")
+    assert len(store) == 2
+    clock.now = 101
+    assert store.acquire("a") is busy
+    busy.lock.release()
+
+
+def test_file_cache_reloads_changes_and_skips_useless_gzip(tmp_path):
+    cache = app.FileCache()
+    path = tmp_path / "f.txt"
+    path.write_text("short", encoding="utf-8")
+    first = cache.get(str(path))
+    assert first.compressed is None and cache.get(str(path)) is first
+    path.write_text("long text " * 200, encoding="utf-8")
+    second = cache.get(str(path))
+    assert second is not first and second.compressed and len(second.compressed) < len(second.body)
+    path.write_bytes(os.urandom(2000))
+    assert cache.get(str(path)).compressed is None
+    with pytest.raises(OSError):
+        cache.get(str(tmp_path / "missing"))
+
+
+def test_main_delegates_non_serve_commands(monkeypatch):
+    seen = []
+    monkeypatch.setattr(app.agent_module, "main", lambda argv: seen.append(argv) or 7)
+    assert app.main(["letter.txt"]) == 7 and seen == [["letter.txt"]]
+
+
+class StubServer:
+    def __init__(self, interrupt):
+        self.interrupt = interrupt
+        self.stopped = False
+
+    def serve_forever(self):
+        if self.interrupt:
+            raise KeyboardInterrupt
+
+    def shutdown(self):
+        self.stopped = True
+
+
+@pytest.mark.parametrize("interrupt", [True, False])
+def test_main_serve(monkeypatch, capsys, interrupt):
+    stub = StubServer(interrupt)
+    seen = {}
+
+    def fake_make(port, host, offline):
+        seen.update(port=port, host=host, offline=offline)
+        return stub
+
+    monkeypatch.setattr(app, "make_app_server", fake_make)
+    assert app.main(["serve", "--port", "9001", "--offline", "-v"]) == 0
+    assert seen == {"port": 9001, "host": "127.0.0.1", "offline": True}
+    assert stub.stopped is interrupt
+    assert "offline (local model)" in capsys.readouterr().out
+    app.main(["serve"])
+    assert "[cloud]" in capsys.readouterr().out
+
+
+def test_main_uses_argv_by_default(monkeypatch):
+    seen = []
+    monkeypatch.setattr(sys, "argv", ["app.py", "hello"])
+    monkeypatch.setattr(app.agent_module, "main", lambda argv: seen.append(argv) or 0)
+    assert app.main() == 0 and seen == [["hello"]]
+
+
+def test_module_runs_as_script(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["app.py", "serve", "--help"])
+    with pytest.raises(SystemExit) as info:
+        runpy.run_module("app", run_name="__main__")
+    assert info.value.code == 0
+
+
+def test_default_agent_factory_builds_a_real_agent(server):
+    srv = server(factory=None, offline=True)
+    response, events = srv.chat(sid="real", message="help")
+    assert events[0]["t"] == agent.GENERIC_AI_RESPONSE
+
+
+def test_image_objects_reach_the_agent(server):
+    seen = []
+
+    class Spy:
+        def run(self, prompt, images=None, **kwargs):
+            seen.extend(images)
+
+    server(factory=Spy).chat(sid="spy", message="x", images=[PNG_URL])
+    assert seen == [Image("image/png", b"\x89PNG data")]
