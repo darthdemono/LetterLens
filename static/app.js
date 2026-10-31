@@ -2,51 +2,67 @@ const sessionId = 'session_' + Math.random().toString(36).substring(2, 10);
 let pendingImages = [];
 let pendingFiles = [];
 let allCountriesData = {};
+let dragCounter = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-  setupNavigation();
   setupChatHandlers();
   setupDragAndDrop();
   setupClipboardPaste();
+  setupAutoResizeTextarea();
+  setupNewDocAndClear();
   loadCountryPortals();
 });
 
-function setupNavigation() {
-  const railBtns = document.querySelectorAll('nav.rail button[data-group]');
-  const sideGroups = document.querySelectorAll('.side-g');
+function setupAutoResizeTextarea() {
+  const textarea = document.getElementById('userInput');
+  if (!textarea) return;
 
-  railBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetGroup = btn.getAttribute('data-group');
-      railBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-      sideGroups.forEach(g => {
-        if (g.getAttribute('data-group') === targetGroup) {
-          g.removeAttribute('hidden');
-        } else {
-          g.setAttribute('hidden', '');
-        }
-      });
-    });
+  function resize() {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 180) + 'px';
+  }
+
+  textarea.addEventListener('input', resize);
+  textarea.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+    }
   });
+}
 
-  const portalSearchInput = document.getElementById('portalSearchInput');
-  if (portalSearchInput) {
-    portalSearchInput.addEventListener('input', (e) => {
-      filterCountryList(e.target.value);
-    });
+function setupNewDocAndClear() {
+  const btnNewDoc = document.getElementById('btnNewDoc');
+  const btnClearChat = document.getElementById('btnClearChat');
+
+  function resetChat() {
+    pendingImages = [];
+    pendingFiles = [];
+    renderPreviews();
+
+    const log = document.getElementById('log');
+    if (log) {
+      log.innerHTML = `
+        <div class="msg-wrap agent">
+          <div class="msg-sender">LetterLens Agent</div>
+          <div class="msg-bubble">
+            <p><strong>LetterLens Agent is ready.</strong> Provide an official letter, notice, bill, or legal document as a <strong>picture</strong>, <strong>Markdown file (.md)</strong>, or <strong>plain text</strong>.</p>
+            <p>The agent consults official country legal portals as its primary source of truth and explains documents in clear A1–B2 plain English with verified hyperlinks in footnotes.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    const input = document.getElementById('userInput');
+    if (input) {
+      input.value = '';
+      input.style.height = 'auto';
+      input.focus();
+    }
   }
 
-  const topSearchInput = document.getElementById('topSearchInput');
-  if (topSearchInput) {
-    topSearchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const val = topSearchInput.value.trim();
-        if (val) {
-          askAboutCountry(val);
-        }
-      }
-    });
-  }
+  if (btnNewDoc) btnNewDoc.addEventListener('click', resetChat);
+  if (btnClearChat) btnClearChat.addEventListener('click', resetChat);
 }
 
 async function loadCountryPortals() {
@@ -54,8 +70,8 @@ async function loadCountryPortals() {
     const res = await fetch('/api/countries');
     if (res.ok) {
       allCountriesData = await res.json();
-      renderCountrySidebar(allCountriesData);
       populateCountryDropdown(allCountriesData);
+      updateJurisdictionBadge();
     }
   } catch (err) {
     console.error('Failed to load countries', err);
@@ -78,50 +94,23 @@ function populateCountryDropdown(data) {
   }
   select.addEventListener('change', () => {
     localStorage.setItem('letterlens_country', select.value);
+    updateJurisdictionBadge();
   });
 }
 
-function renderCountrySidebar(data) {
-  const container = document.getElementById('countryListContainer');
-  if (!container) return;
-  container.innerHTML = '';
-  const names = Object.keys(data).sort();
-  names.forEach(name => {
-    const item = document.createElement('div');
-    item.className = 'side-country-item';
-    const code = data[name].code || '';
-    item.innerHTML = `<span>${name}</span><span class="c-code">${code}</span>`;
-    item.addEventListener('click', () => {
-      setCountryContext(name);
-      askAboutCountry(name);
-    });
-    container.appendChild(item);
-  });
-}
-
-function setCountryContext(countryName) {
+function updateJurisdictionBadge() {
   const select = document.getElementById('countrySelect');
-  if (select && allCountriesData[countryName]) {
-    select.value = countryName;
-    localStorage.setItem('letterlens_country', countryName);
+  const label = document.getElementById('jurisdictionLabel');
+  if (!label) return;
+
+  const val = select ? select.value : '';
+  if (val && allCountriesData[val]) {
+    const code = allCountriesData[val].code || '';
+    const portals = (allCountriesData[val].portals || []).length;
+    label.innerHTML = `Active Jurisdiction: <strong>${escapeHtml(val)} (${code})</strong> &bull; ${portals} Official Portals Injected into Context`;
+  } else {
+    label.innerHTML = `Active Jurisdiction: <strong>Auto-detect from document</strong> (select country above to fix jurisdiction)`;
   }
-}
-
-function filterCountryList(query) {
-  const container = document.getElementById('countryListContainer');
-  if (!container) return;
-  const q = query.trim().toLowerCase();
-  const items = container.querySelectorAll('.side-country-item');
-  items.forEach(el => {
-    const text = el.textContent.toLowerCase();
-    el.style.display = text.includes(q) ? 'flex' : 'none';
-  });
-}
-
-function askAboutCountry(countryName) {
-  const input = document.getElementById('userInput');
-  input.value = `What are the verified official government legal portals, gazettes, and tenancy registries for ${countryName}?`;
-  input.focus();
 }
 
 function setupChatHandlers() {
@@ -130,13 +119,6 @@ function setupChatHandlers() {
   const fileInput = document.getElementById('fileInput');
 
   form.addEventListener('submit', handleSubmit);
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      form.dispatchEvent(new Event('submit'));
-    }
-  });
 
   document.getElementById('attachBtn').addEventListener('click', () => fileInput.click());
 
@@ -152,9 +134,10 @@ function setupChatHandlers() {
         const res = await fetch('/sample/notice.md');
         if (res.ok) {
           const text = await res.text();
-          pendingFiles.push({ name: 'lease_amendment_notice.md', content: text });
+          pendingFiles.push({ name: 'lease_amendment_notice.md', content: text, size: text.length });
           renderPreviews();
           input.value = 'Explain this notice in simple English and cite official legal portals with footnotes.';
+          input.style.height = 'auto';
           input.focus();
         }
       } catch (err) {
@@ -170,9 +153,10 @@ function setupChatHandlers() {
         const res = await fetch('/sample/scan.png');
         if (res.ok) {
           const dataUrl = await res.text();
-          pendingImages.push({ name: 'sample_letter_scan.png', dataUrl: dataUrl });
+          pendingImages.push({ name: 'sample_letter_scan.png', dataUrl: dataUrl, size: Math.round(dataUrl.length * 0.75) });
           renderPreviews();
           input.value = 'Explain this scanned letter in simple English and cite official country legal portals in footnotes.';
+          input.style.height = 'auto';
           input.focus();
         }
       } catch (err) {
@@ -188,34 +172,39 @@ function setupChatHandlers() {
       form.dispatchEvent(new Event('submit'));
     });
   }
-
-  const sideWhatCanYouDo = document.getElementById('sideWhatCanYouDo');
-  if (sideWhatCanYouDo) {
-    sideWhatCanYouDo.addEventListener('click', () => {
-      input.value = 'What can you do?';
-      form.dispatchEvent(new Event('submit'));
-    });
-  }
 }
 
 function setupDragAndDrop() {
+  const overlay = document.getElementById('dropOverlay');
   const zone = document.getElementById('dropZone');
 
-  ['dragenter', 'dragover'].forEach(name => {
-    window.addEventListener(name, (e) => {
-      e.preventDefault();
-      zone.classList.add('dragover');
-    });
+  window.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    dragCounter++;
+    if (overlay) overlay.removeAttribute('hidden');
+    if (zone) zone.classList.add('dragover');
   });
 
-  ['dragleave', 'drop'].forEach(name => {
-    window.addEventListener(name, (e) => {
-      e.preventDefault();
-      zone.classList.remove('dragover');
-    });
+  window.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter <= 0) {
+      dragCounter = 0;
+      if (overlay) overlay.setAttribute('hidden', '');
+      if (zone) zone.classList.remove('dragover');
+    }
+  });
+
+  window.addEventListener('dragover', (e) => {
+    e.preventDefault();
   });
 
   window.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dragCounter = 0;
+    if (overlay) overlay.setAttribute('hidden', '');
+    if (zone) zone.classList.remove('dragover');
+
     if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       handleFilesList(e.dataTransfer.files);
     }
@@ -237,6 +226,14 @@ function setupClipboardPaste() {
   });
 }
 
+function formatBytes(bytes) {
+  if (!bytes || bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
 function handleFilesList(files) {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -252,7 +249,11 @@ function handleFilesList(files) {
 function readFileAsImage(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
-    pendingImages.push({ name: file.name || 'pasted_image.png', dataUrl: e.target.result });
+    pendingImages.push({
+      name: file.name || 'pasted_image.png',
+      dataUrl: e.target.result,
+      size: file.size || Math.round(e.target.result.length * 0.75)
+    });
     renderPreviews();
   };
   reader.readAsDataURL(file);
@@ -261,7 +262,11 @@ function readFileAsImage(file) {
 function readFileAsText(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
-    pendingFiles.push({ name: file.name, content: e.target.result });
+    pendingFiles.push({
+      name: file.name,
+      content: e.target.result,
+      size: file.size || e.target.result.length
+    });
     renderPreviews();
   };
   reader.readAsText(file);
@@ -270,20 +275,32 @@ function readFileAsText(file) {
 function renderPreviews() {
   const bar = document.getElementById('previewBar');
   bar.innerHTML = '';
+
   pendingImages.forEach((img, idx) => {
     const chip = document.createElement('div');
     chip.className = 'upload-chip';
-    chip.innerHTML = `<span>[Image] ${escapeHtml(img.name)}</span><button type="button" title="Remove">&times;</button>`;
+    chip.innerHTML = `
+      <img class="thumb" src="${img.dataUrl}" alt="Preview">
+      <span class="chip-name">${escapeHtml(img.name)}</span>
+      <span class="chip-size">${formatBytes(img.size)}</span>
+      <button type="button" title="Remove">&times;</button>
+    `;
     chip.querySelector('button').addEventListener('click', () => {
       pendingImages.splice(idx, 1);
       renderPreviews();
     });
     bar.appendChild(chip);
   });
+
   pendingFiles.forEach((f, idx) => {
     const chip = document.createElement('div');
     chip.className = 'upload-chip';
-    chip.innerHTML = `<span>[Doc] ${escapeHtml(f.name)}</span><button type="button" title="Remove">&times;</button>`;
+    chip.innerHTML = `
+      <span class="file-badge">DOC</span>
+      <span class="chip-name">${escapeHtml(f.name)}</span>
+      <span class="chip-size">${formatBytes(f.size)}</span>
+      <button type="button" title="Remove">&times;</button>
+    `;
     chip.querySelector('button').addEventListener('click', () => {
       pendingFiles.splice(idx, 1);
       renderPreviews();
@@ -315,13 +332,13 @@ function addMessage(role, rawContent, imgs = [], files = []) {
     imgs.forEach(im => {
       const chip = document.createElement('span');
       chip.className = 'upload-chip';
-      chip.textContent = '[Image] ' + im.name;
+      chip.innerHTML = `<span class="file-badge">IMG</span> <span class="chip-name">${escapeHtml(im.name)}</span>`;
       attachments.appendChild(chip);
     });
     files.forEach(f => {
       const chip = document.createElement('span');
       chip.className = 'upload-chip';
-      chip.textContent = '[File] ' + f.name;
+      chip.innerHTML = `<span class="file-badge">DOC</span> <span class="chip-name">${escapeHtml(f.name)}</span>`;
       attachments.appendChild(chip);
     });
     bubble.appendChild(attachments);
@@ -335,7 +352,57 @@ function addMessage(role, rawContent, imgs = [], files = []) {
   wrap.appendChild(bubble);
   log.appendChild(wrap);
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  return textDiv;
+  return { bubble, textDiv, wrap };
+}
+
+function attachBubbleActions(bubble, rawMarkdown) {
+  if (bubble.querySelector('.bubble-actions')) return;
+
+  const actions = document.createElement('div');
+  actions.className = 'bubble-actions';
+
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.className = 'action-chip-btn copy-btn';
+  copyBtn.innerHTML = `
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+    <span>Copy Summary</span>
+  `;
+
+  copyBtn.addEventListener('click', async () => {
+    try {
+      const cleanText = bubble.innerText.replace(/Copy Summary|Print \/ PDF/g, '').trim();
+      await navigator.clipboard.writeText(cleanText);
+      copyBtn.classList.add('copied');
+      copyBtn.querySelector('span').textContent = 'Copied!';
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtn.querySelector('span').textContent = 'Copy Summary';
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy', err);
+    }
+  });
+
+  const printBtn = document.createElement('button');
+  printBtn.type = 'button';
+  printBtn.className = 'action-chip-btn print-btn';
+  printBtn.innerHTML = `
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 6 2 18 2 18 9"></polyline>
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+      <rect x="6" y="14" width="12" height="8"></rect>
+    </svg>
+    <span>Print / PDF</span>
+  `;
+  printBtn.addEventListener('click', () => window.print());
+
+  actions.appendChild(copyBtn);
+  actions.appendChild(printBtn);
+  bubble.appendChild(actions);
 }
 
 async function handleSubmit(e) {
@@ -355,8 +422,10 @@ async function handleSubmit(e) {
   renderPreviews();
 
   input.value = '';
+  input.style.height = 'auto';
+
   addMessage('u', text || '(Analyzed attachments)', currentImages, currentFiles);
-  const bubble = addMessage('a', 'LetterLens Agent is analyzing input with Gemma 4 and official legal portals...');
+  const { bubble, textDiv } = addMessage('a', 'LetterLens Agent is analyzing input with Gemma 4 and official legal portals...');
   sendBtn.disabled = true;
 
   try {
@@ -397,18 +466,21 @@ async function handleSubmit(e) {
           const data = JSON.parse(line);
           if (data.t) {
             accumulated += data.t;
-            bubble.innerHTML = parseMarkdown(accumulated);
+            textDiv.innerHTML = parseMarkdown(accumulated) + '<span class="streaming-cursor"></span>';
           } else if (data.error) {
             accumulated += `\n\nError: ${data.error}`;
-            bubble.innerHTML = parseMarkdown(accumulated);
+            textDiv.innerHTML = parseMarkdown(accumulated);
           }
         } catch (parseErr) {
           console.error(parseErr);
         }
       }
     }
+
+    textDiv.innerHTML = parseMarkdown(accumulated);
+    attachBubbleActions(bubble, accumulated);
   } catch (err) {
-    bubble.innerHTML = `<span style="color:#ff6b6b">Communication error: ${escapeHtml(err.message)}</span>`;
+    textDiv.innerHTML = `<span style="color:#ff6b6b">Communication error: ${escapeHtml(err.message)}</span>`;
   } finally {
     sendBtn.disabled = false;
     input.focus();
